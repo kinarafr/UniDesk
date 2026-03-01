@@ -1,0 +1,8 @@
+{
+    "name": "unidesk_admin",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "flutter run --dart-define-from-file=.env",
+        "build:web": "flutter build web --dart-define-from-file=.env"
+    }
+}

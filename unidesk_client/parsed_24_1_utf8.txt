@@ -1,0 +1,1474 @@
+﻿[
+  {
+    "Time Slots": "8.30am -11.30am",
+    "__EMPTY": "12.30pm -3.30pm",
+    "__EMPTY_1": "5.00pm -8.00pm"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45415,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45420,
+    "__EMPTY_1": "Sound of Multimedia [BG]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45422,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45427,
+    "__EMPTY_1": "Sound of Multimedia [BG]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45429,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45434,
+    "Time Slots": "Vesak Celebrations"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45436,
+    "Time Slots": "Day Following Vesak Poya Day"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45441,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45443,
+    "__EMPTY_1": "No lectures"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45448,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45450,
+    "__EMPTY_1": "Sound of Multimedia [RK]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45455,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45457,
+    "__EMPTY_1": "Sound of Multimedia [RK]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45462,
+    "__EMPTY_1": "Video Production [SS]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45464,
+    "Time Slots": "Poson Poya Day"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45469,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45471,
+    "__EMPTY_1": "Sound of Multimedia [RK]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45476,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45478
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45480,
+    "Time Slots": "MPU - 1 - 3113 [PG]",
+    "__EMPTY": "MPU - 2 -  3123 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45483,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45485,
+    "__EMPTY_1": "Sound of Multimedia [VA]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45486,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45487,
+    "Time Slots": "MPU - 1 - 3113 [PG]",
+    "__EMPTY": "MPU - 2 -  3123 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45490,
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45492,
+    "__EMPTY_1": "Sound of Multimedia [VA]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45493,
+    "Time Slots": "Poya Day"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45494,
+    "Time Slots": "MPU - 1 - 3113 [PG]-ONLINE",
+    "__EMPTY": "MPU - 2 -  3123 [PG]-ONLINE"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45497
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45499,
+    "__EMPTY_1": "Sound of Multimedia [VA]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45500
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45501,
+    "Time Slots": "MPU - 1 - 3113 [PG]-ONLINE",
+    "__EMPTY": "MPU - 2 -  3123 [PG]-ONLINE"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45504
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45506
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45507,
+    "Time Slots": "Sound of Multimedia [VA]",
+    "__EMPTY": "Sound of Multimedia [VA]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45508,
+    "Time Slots": "MPU - 1 - 3113 [PG]-ONLINE",
+    "__EMPTY": "MPU - 2 -  3123 [PG]-ONLINE"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45513
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45514
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45515,
+    "Time Slots": "Sound of Multimedia [VA]",
+    "__EMPTY": "Sound of Multimedia [VA]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45520
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45521
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45522
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45528,
+    "Time Slots": "Sound of Multimedia [VA]",
+    "__EMPTY": "Sound of Multimedia [VA]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45529,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45534,
+    "__EMPTY_1": "Sound of Multimedia [VA]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45535,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45536
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45542
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45543,
+    "Time Slots": "Multimedia Imaging 1 [VS]",
+    "__EMPTY": "Multimedia Imaging 1 [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45549,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY": "Video Production [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45550,
+    "Time Slots": "Multimedia Imaging 1 [VS]",
+    "__EMPTY": "Multimedia Imaging 1 [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45556,
+    "Time Slots": "Election Day"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45557,
+    "Time Slots": "Day after Election "
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45563
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45564,
+    "Time Slots": "Multimedia Imaging 1 [VS]",
+    "__EMPTY": "Multimedia Imaging 1 [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45570
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45571,
+    "Time Slots": "Multimedia Imaging 1 [VS]",
+    "__EMPTY": "Multimedia Imaging 1 [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45577
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45578
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45584
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45585,
+    "Time Slots": "Multimedia Imaging 1 [VS]-postponed"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45591
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45592,
+    "Time Slots": "Multimedia Imaging 1 [VS]",
+    "__EMPTY": "Multimedia Imaging 1 [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45598,
+    "Time Slots": "EXHIBITION DATES"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45599
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45605
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45606,
+    "Time Slots": "Postponed "
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45612
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45613,
+    "Time Slots": "Multimedia Imaging 1 [VS]",
+    "__EMPTY": "Multimedia Imaging 1 [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45619
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45620,
+    "Time Slots": "Multimedia Imaging 1 [VS]",
+    "__EMPTY": "Multimedia Imaging 1 [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45626,
+    "Time Slots": "MPU - 5 [GS]",
+    "__EMPTY": "MPU - 5 [GS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45627,
+    "Time Slots": "Multimedia Imaging 1 [VS]",
+    "__EMPTY": "Multimedia Imaging 1 [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45633,
+    "Time Slots": "MPU - 5 [GS]",
+    "__EMPTY": "MPU - 5 [GS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45634,
+    "Time Slots": "Multimedia Imaging 1 [VS]",
+    "__EMPTY": "Multimedia Imaging 1 [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45640,
+    "Time Slots": "Poya Day"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45641
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45647,
+    "Time Slots": "Christmas Holidays"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45648
+  },
+  {
+    "BACM 24.1": "Weekdays",
+    "Date": 45649
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45654
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45655
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45661,
+    "Time Slots": "MPU - 5 [GS]",
+    "__EMPTY": "MPU - 5 [GS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45662
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45668,
+    "Time Slots": "Multimedia Imaging 1 Presentation [VS]-Postponed"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45669
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45675,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY": "Web Design 1 [PG]",
+    "__EMPTY_1": "Video Production [KW]-progress monitoring 4pm-7pm"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45676
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45682,
+    "Time Slots": "Multimedia Imaging 1 Presentation [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45683,
+    "Time Slots": "Multimedia Imaging 1 Presentation [VS]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45689,
+    "Time Slots": "Video Production [KW]- Presentation"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45690
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45696,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY": "Web Design 1 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45697
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45703,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY": "Web Design 1 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45704,
+    "Time Slots": "MPU 5 Exam (9.00 - 11.00)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45710,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY": "Web Design 1 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45711
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45717,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY": "Web Design 1 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45718
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45724,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY": "Web Design 1 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45725
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45731,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY": "Web Design 1 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45732
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45738
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45739,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY": "Animation Studies 2 [KH]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45745
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45746,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY": "Animation Studies 2 [KH]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45752
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45753,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY": "Animation Studies 2 [KH]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45759,
+    "Time Slots": "Avurudu Vacation"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45760
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45766
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45767
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45773
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45774,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY": "Animation Studies 2 [KH]"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45778,
+    "Time Slots": "MAY DAY"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45780,
+    "Time Slots": "MPU - 3 - 3392 [PG]",
+    "__EMPTY": "MPU - 4 - 3412 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45781,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY": "Animation Studies 2 [KH]"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45784
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45785
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45787
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45788
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45791
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45792
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45794,
+    "Time Slots": "MPU - 3 - 3392 [PG]",
+    "__EMPTY": "MPU - 4 - 3412 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45795
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45798
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45799
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45801,
+    "Time Slots": "MPU - 3 - 3392 [PG]",
+    "__EMPTY": "MPU - 4 - 3412 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45802
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45805
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45806
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45808
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45809
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45812,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm) Postponed"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45813,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45815,
+    "Time Slots": "MPU - 3 - 3392 [PG]",
+    "__EMPTY": "MPU - 4 - 3412 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45816,
+    "Time Slots": "Professional Studies [PK]",
+    "__EMPTY": "Professional Studies [PK]"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45819,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45820,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45822,
+    "Time Slots": "MPU - 3 - 3392 [PG]",
+    "__EMPTY": "MPU - 4 - 3412 [PG]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45823,
+    "Time Slots": "Professional Studies [PK] Postponed",
+    "__EMPTY": "Professional Studies [PK] Postponed"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45826,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45827,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45829
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45830,
+    "Time Slots": "Professional Studies [PK] - Online",
+    "__EMPTY": "Professional Studies [PK] - Online"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45833
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45834,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45836
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45837,
+    "Time Slots": "Professional Studies [PK]",
+    "__EMPTY": "Professional Studies [PK]"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45840,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45841,
+    "__EMPTY_1": "No Lectures due to \"Clean Sri Lanka Porgramme\""
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45843
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45844,
+    "Time Slots": "Professional Studies [PK]",
+    "__EMPTY": "Professional Studies [PK]"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45847,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45848,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45850
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45851
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45854,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45855,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45857
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45858,
+    "Time Slots": "Professional Studies [PK]",
+    "__EMPTY": "Professional Studies [PK]"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45861,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45862,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45864,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45865
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45868,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45869,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45871,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45872
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45875,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45876,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45878,
+    "Time Slots": "Brainstorming Sessions - Off Campus"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45879
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45882,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45883,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)",
+    "__EMPTY_2": "Postponed due to Student Request - Assignment"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45885,
+    "Time Slots": "Brainstorming Sessions - Off Campus"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45886
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45889,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45890,
+    "__EMPTY_1": "Video Production 2 [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45892,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45893
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45896
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45897,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45899
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45900
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45903,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45904,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45906,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45907,
+    "Time Slots": "Binara Full Moon Poya Day"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45910,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45911,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45913,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45914
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45917,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45918,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45920,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45921
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45924,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45925,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45927,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45928
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45931,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45932,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45934,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45935
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45938,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45939,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45941,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45942
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45945
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45946,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45948,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY": "Multimedia Project Management [KW]"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45949
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45952,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45953,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45955
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45956,
+    "Time Slots": "Medial Law [BS] Online 9.00 am - 12.00 am",
+    "__EMPTY": "Medial Law [BS] Online 9.00 am - 12.00 am"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45959,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm) - Postponed due to ML's inability to attend "
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45960,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm) - Postponed due to ML's inability to attend "
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45962
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45963,
+    "Time Slots": "Medial Law [BS] Online 9.00 am - 12.00 am",
+    "__EMPTY": "Medial Law [BS] Online 9.00 am - 12.00 am"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45966,
+    "Time Slots": "Poya day"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45967,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45969
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45970,
+    "Time Slots": "Medial Law [BS] Online 9.00 am - 12.00 am",
+    "__EMPTY": "Medial Law [BS] Online 9.00 am - 12.00 am"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45973,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45974,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45976
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45977,
+    "Time Slots": "Medial Law [BS] Online 9.00 am - 12.00 am",
+    "__EMPTY": "Medial Law [BS] Online 9.00 am - 12.00 am"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45980,
+    "__EMPTY_1": "VFX [CJ]-(6pm-9pm)"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45981
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45983
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45984,
+    "Time Slots": "Medial Law [BS] Physical 8.30 pm - 11.30 am",
+    "__EMPTY": "Medial Law [BS] Physical 12.00 pm - 3.00 pm"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45987
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45988,
+    "Time Slots": "University closure for students due to Ditwah cyclone adverse weather conditions"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45990
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45991
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 45994
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 45995,
+    "Time Slots": "Poya day"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45997,
+    "Time Slots": "University closure for students due to Ditwah cyclone adverse weather conditions"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 45998
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 46001,
+    "__EMPTY_1": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 46002,
+    "__EMPTY_1": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 46004,
+    "Time Slots": "Web Design II - [SJ] Offline",
+    "__EMPTY": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 46005,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 46008,
+    "__EMPTY_1": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 46009,
+    "__EMPTY_1": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 46011,
+    "Time Slots": "Christmas Holidays"
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 46012
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 46015
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 46016
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 46018
+  },
+  {
+    "BACM 24.1": "Weekend",
+    "Date": 46019
+  },
+  {
+    "BACM 24.1": "Weekdays,Wednesday",
+    "Date": 46022
+  },
+  {
+    "BACM 24.1": "Weekdays,Thursday",
+    "Date": 46023
+  },
+  {
+    "BACM 24.1": "Day",
+    "Date": "Date",
+    "Time Slots": "9.00 am - 12.00 pm",
+    "__EMPTY": "1.00pm - 4.00pm",
+    "__EMPTY_1": "4.30pm - 7.30pm"
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46025,
+    "Time Slots": "Duruthu Full Moon Poya Day"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46026,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46029
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46030
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46032,
+    "Time Slots": "Web Design II - [SJ] Online",
+    "__EMPTY": "Web Design II - [SJ] Online"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46033,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46036
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46037,
+    "Time Slots": "Tamil Thai-Pongal Day"
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46039,
+    "Time Slots": "Web Design II - [SJ] Offline",
+    "__EMPTY": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46040,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46043
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46044
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46046,
+    "Time Slots": "Web Design II - [SJ] Offline",
+    "__EMPTY": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46047,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46050
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46051
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46053,
+    "Time Slots": "Web Design II - [SJ] Offline",
+    "__EMPTY": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46054,
+    "Time Slots": "Navam Full Moon Poya Day"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46057,
+    "Time Slots": "National Day"
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46058
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46060,
+    "__EMPTY": "Web Design II - [SJ] Offline",
+    "__EMPTY_1": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46061,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46064
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46065
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46067,
+    "Time Slots": "Web Design II - [SJ] Offline",
+    "__EMPTY": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46068,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46071
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46072
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46074,
+    "Time Slots": "Web Design II - [SJ] Offline",
+    "__EMPTY": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46075,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46078
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46079
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46081,
+    "Time Slots": "Web Design II - [SJ] Offline",
+    "__EMPTY": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46082,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46085
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46086
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46088,
+    "Time Slots": "Web Design II - [SJ] Offline",
+    "__EMPTY": "Web Design II - [SJ] Offline"
+  },
+  {
+    "BACM 24.1": "Sunday",
+    "Date": 46089,
+    "Time Slots": "MMP - [SS] Offline",
+    "__EMPTY": "MMP - [SS] Offline"
+  },
+  {
+    "BACM 24.1": "Wednesday",
+    "Date": 46092
+  },
+  {
+    "BACM 24.1": "Thursday",
+    "Date": 46093
+  },
+  {
+    "BACM 24.1": "Saturday",
+    "Date": 46095,
+    "Time Slots": "Web Design II - [SJ] Offline",
+    "__EMPTY": "Web Design II - [SJ] Offline"
+  }
+]

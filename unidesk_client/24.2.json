@@ -1,0 +1,1535 @@
+[
+  {
+    "__EMPTY": "BACM 24.2",
+    "Time Slots": "8.30am -11.30am",
+    "__EMPTY_1": "12.30pm -3.30pm",
+    "__EMPTY_2": "5.00pm -8.00pm"
+  },
+  {
+    "__EMPTY": "Weekdays",
+    "Date": 45621,
+    "Time Slots": "Inauguration"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45626
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45627
+  },
+  {
+    "__EMPTY": "Weekdays,Tuesday",
+    "Date": 45629
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45630,
+    "__EMPTY_2": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45633
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45634
+  },
+  {
+    "__EMPTY": "Weekdays,Tuesday",
+    "Date": 45636,
+    "__EMPTY_2": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45638,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45640,
+    "Time Slots": "Poya Day"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45641
+  },
+  {
+    "__EMPTY": "Weekdays,Tuesday",
+    "Date": 45643,
+    "__EMPTY_2": "Video Production [KW]-Postponed"
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45645,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45647,
+    "Time Slots": "Christmas Holidays"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45648
+  },
+  {
+    "__EMPTY": "Weekdays",
+    "Date": 45649
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45654
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45655
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45661
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45662
+  },
+  {
+    "__EMPTY": "Weekdays,Tuesday",
+    "Date": 45664,
+    "__EMPTY_2": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45665
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45666,
+    "__EMPTY_2": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45668
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45669
+  },
+  {
+    "__EMPTY": "Weekdays,Tuesday",
+    "Date": 45671,
+    "Time Slots": "Tamil Thai Pongal Day"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45672
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45673,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45675
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45676
+  },
+  {
+    "__EMPTY": "Weekdays,Tuesday",
+    "Date": 45678,
+    "__EMPTY_2": "Video Production [KW]-Postponed"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45679
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45680,
+    "__EMPTY_2": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45682
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45683
+  },
+  {
+    "__EMPTY": "Weekdays,Tuesday",
+    "Date": 45685,
+    "__EMPTY_2": "Video Production [KW]-Postponed"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45686
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45687,
+    "__EMPTY_2": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45689
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45690
+  },
+  {
+    "__EMPTY": "Weekdays,Tuesday",
+    "Date": 45692,
+    "Time Slots": "Independence Day "
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45693
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45694,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45696,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45697
+  },
+  {
+    "__EMPTY": "Weekdays,Tuesday",
+    "Date": 45699
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45700,
+    "Time Slots": "Navam Full Moon Poya Day"
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45701,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45703
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45704
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45707
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45708,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45710
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45711
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45714
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45715,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45717
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45718,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45721
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45722,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45724,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45725
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45728
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45729,
+    "Time Slots": "Madin Full Moon Poya Day"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45731,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45732
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45735
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45736,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45738,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45739
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45742
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45743,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45745
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45746
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45749,
+    "__EMPTY_2": "MPU - 5 [GS]-5.30pm-8.30pm"
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45750
+  },
+  {
+    "__EMPTY": "Weekdays,Friday",
+    "Date": 45751,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45752,
+    "Time Slots": "MPU - 5 [GS]",
+    "__EMPTY_1": "MPU - 5 [GS]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45753,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY_1": "Video Production [KW]",
+    "__EMPTY_2": "MPU - 5 [GS]-3.30pm-6.30pm"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45756,
+    "__EMPTY_2": "MPU - 5 [GS]-5.30pm-8.30pm"
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45757,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45759,
+    "Time Slots": "Avurudu Vacation"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45760
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45766
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45767
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45773
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45774
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45777
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45778,
+    "Time Slots": "MAY DAY"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45780,
+    "Time Slots": "Video Production [KW]",
+    "__EMPTY_1": "Video Production [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45781
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45784
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45785,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45787
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45788
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45791
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45792,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45794
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45795,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY_1": "Animation Studies 2 [KH]"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45798
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45799
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45801
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45802,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY_1": "Animation Studies 2 [KH]"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45805
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45806
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45808
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45809,
+    "Time Slots": "MPU 5 Exam (9.00 - 11.00)"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45812
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45813
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45815
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45816,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY_1": "Animation Studies 2 [KH]"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45819
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45820,
+    "__EMPTY_2": "Sound of Multimedia [VA]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45822
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45823,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY_1": "Animation Studies 2 [KH]"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45826
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45827
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45829,
+    "Time Slots": "MPU - 1 - 3113 [PG]",
+    "__EMPTY_1": "MPU - 2 -  3123 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45830,
+    "Time Slots": "Animation Studies 2 [KH]",
+    "__EMPTY_1": "Animation Studies 2 [KH]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45836,
+    "Time Slots": "MPU - 1 - 3113 [PG]",
+    "__EMPTY_1": "MPU - 2 -  3123 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45837
+  },
+  {
+    "__EMPTY": "Weekdays",
+    "Date": 45840
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45843,
+    "Time Slots": "MPU - 1 - 3113 [PG]",
+    "__EMPTY_1": "MPU - 2 -  3123 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45844
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45850,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY_1": "Web Design 1 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45851,
+    "Time Slots": "MPU - 1 - 3113 [PG]",
+    "__EMPTY_1": "MPU - 2 -  3123 [PG]"
+  },
+  {
+    "__EMPTY": "Weekdays",
+    "Date": 45854
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45857,
+    "Time Slots": "MPU - 1 - 3113 [PG]",
+    "__EMPTY_1": "MPU - 2 -  3123 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45858,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY_1": "Web Design 1 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45864,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY_1": "Web Design 1 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45865
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45871,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY_1": "Web Design 1 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45872
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45878,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45879
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45885,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45886
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45892,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45893
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45899
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45900
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45906,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45907,
+    "Time Slots": "Binara Full Moon Poya Day"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45913,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45914,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY_1": "Web Design 1 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45920,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45921,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY_1": "Web Design 1 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45927,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45928,
+    "Time Slots": "Web Design 1 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45934,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45935,
+    "Time Slots": "Web Design 1 [PG]",
+    "__EMPTY_1": "Web Design 1 [PG]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45941,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45942
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45948,
+    "Time Slots": "Multimedia Project Management [KW]",
+    "__EMPTY_1": "Multimedia Project Management [KW]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45949,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45952
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45953
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45955,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45956,
+    "Time Slots": "Medial Law [BS] Online 9.00 am - 12.00 am",
+    "__EMPTY_1": "Medial Law [BS] Online 1.00 pm - 4.00 pm"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45959
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45960
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45962,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45963,
+    "Time Slots": "Medial Law [BS] Online 9.00 am - 12.00 am",
+    "__EMPTY_1": "Medial Law [BS] Online 1.00 pm - 4.00 pm"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45966
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45967
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45969,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45970,
+    "Time Slots": "Medial Law [BS] Online 9.00 am - 12.00 am",
+    "__EMPTY_1": "Medial Law [BS] Online 1.00 pm - 4.00 pm"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45973
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45974
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45976,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45977,
+    "Time Slots": "Medial Law [BS] Online 9.00 am - 12.00 am",
+    "__EMPTY_1": "Medial Law [BS] Online 1.00 pm - 4.00 pm"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45980
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45981
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45983
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45984,
+    "Time Slots": "Medial Law [BS] Physical 8.30 pm - 11.30 am",
+    "__EMPTY_1": "Medial Law [BS] Physical 12.00 pm - 3.00 pm"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45987
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45988
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45990,
+    "Time Slots": "Postponed due to Ditwa impact"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45991
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 45994
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 45995,
+    "Time Slots": "Poya day"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45997,
+    "Time Slots": "Postponed due to Ditwa impact"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 45998
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 46001
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 46002
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 46004
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 46005,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 46008
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 46009
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 46011,
+    "Time Slots": "Christmas Holidays"
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 46012
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 46015
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 46016
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 46018
+  },
+  {
+    "__EMPTY": "Weekend",
+    "Date": 46019
+  },
+  {
+    "__EMPTY": "Weekdays,Wednesday",
+    "Date": 46022
+  },
+  {
+    "__EMPTY": "Weekdays,Thursday",
+    "Date": 46023
+  },
+  {
+    "__EMPTY": "Date",
+    "Date": "Day",
+    "Time Slots": "9.00 am - 12.00 pm",
+    "__EMPTY_1": "1.00pm - 4.00pm",
+    "__EMPTY_2": "4.30pm - 7.30pm"
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46025,
+    "Time Slots": "Duruthu Full Moon Poya Day"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46026,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46029
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46030
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46032
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46033,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46036
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46037,
+    "Time Slots": "Tamil Thai-Pongal Day"
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46039
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46040,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46043
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46044
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46046
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46047,
+    "Time Slots": "Video Production 2 [CJ]",
+    "__EMPTY_1": "Video Production 2 [CJ]"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46050
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46051
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46053
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46054,
+    "Time Slots": "Navam Full Moon Poya Day"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46057,
+    "Time Slots": "National Day"
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46058
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46060
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46061,
+    "Time Slots": "Interactive Design [AR]",
+    "__EMPTY_1": "Interactive Design [AR]"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46064
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46065
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46067
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46068,
+    "Time Slots": "Interactive Design [AR]",
+    "__EMPTY_1": "Interactive Design [AR]"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46071
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46072
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46074
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46075,
+    "Time Slots": "Interactive Design [AR]",
+    "__EMPTY_1": "Interactive Design [AR]"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46078
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46079
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46081
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46082
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46085
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46086
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46088
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46089
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46092
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46093
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46095
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46096
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46099
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46100
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46102,
+    "__EMPTY_2": "Interactive Design [AR] 6 - 9 pm (online)"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46103,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I",
+    "__EMPTY_2": "Interactive Design [AR] 6 - 9 pm (online)"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46106
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46107
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46109,
+    "Time Slots": "Interactive Design [AR]",
+    "__EMPTY_1": "Interactive Design [AR]"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46110,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46113,
+    "Time Slots": "Bak Full Moon Poya Day"
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46114
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46116,
+    "Time Slots": "Interactive Design [AR]",
+    "__EMPTY_1": "Interactive Design [AR]"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46117,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46120
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46121
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46123,
+    "Time Slots": "Aurudu Holidays"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46124
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46127
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46128
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46130
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46131
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46134
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46135
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46137,
+    "Time Slots": "Interactive Design [AR]",
+    "__EMPTY_1": "Interactive Design [AR]"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46138,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46141
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46142
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46144,
+    "Time Slots": "Day Following Vesak Full Moon Poya Day"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46145,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46148
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46149
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46151,
+    "Time Slots": "Interactive Design [AR]",
+    "__EMPTY_1": "Interactive Design [AR]"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46152,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46155
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46156
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46158
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46159,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46162
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46163
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46165,
+    "Time Slots": "Interactive Design [AR]",
+    "__EMPTY_1": "Interactive Design [AR]"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46166,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46169
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46170
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46172,
+    "Time Slots": "Adhi Poson Full Moon Poya Day"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46173,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46176
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46177
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46179,
+    "Time Slots": "Interactive Design [AR]",
+    "__EMPTY_1": "Interactive Design [AR]"
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46180,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46183
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46184
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46186
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46187,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46190
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46191
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46193
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46194,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46197
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46198
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46200
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46201,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46204
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46205
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46207
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46208,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46211
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46212
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46214
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46215,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46218
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46219
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46221
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46222,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46225
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46226
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46228
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46229,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46232,
+    "Time Slots": "Esala Full Moon Poya Day"
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46233
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46235
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46236,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46239
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46240
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46242
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46243,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  },
+  {
+    "__EMPTY": "Wednesday",
+    "Date": 46246
+  },
+  {
+    "__EMPTY": "Thursday",
+    "Date": 46247
+  },
+  {
+    "__EMPTY": "Saturday",
+    "Date": 46249
+  },
+  {
+    "__EMPTY": "Sunday",
+    "Date": 46250,
+    "Time Slots": "Multimedia Imaging I",
+    "__EMPTY_1": "3D Design I"
+  }
+]

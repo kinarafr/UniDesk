@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "959701495164",
+    "project_id": "nibm-unidesk",
+    "storage_bucket": "nibm-unidesk.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959701495164:android:47d79ae798c44fcbdf88f9",
+        "android_client_info": {
+          "package_name": "com.nibm.unidesk.unidesk_client"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsQCBYonhXD16UQgtrs9KrZC1bllbonag"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
