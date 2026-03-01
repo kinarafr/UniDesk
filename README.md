@@ -31,7 +31,7 @@ This repository is structured into two main applications:
 - `unidesk_admin/`: A Flutter-based admin dashboard (typically run as a web app) for administrators to manage the platform.
 - `Images/` & `NIBM logos/` & `SVG/`: Shared resources and branding assets used across the platform.
 
-## 💻 Tech Stack
+## 💻 Technical Info 
 
 - **Framework**: [Flutter](https://flutter.dev/) (Dart)
 - **Backend/Database**: Firebase (Authentication, Cloud Firestore)
