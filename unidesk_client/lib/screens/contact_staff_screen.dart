@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ContactStaffScreen extends StatefulWidget {
   final String? ticketId;
@@ -39,6 +41,25 @@ class _ContactStaffScreenState extends State<ContactStaffScreen> {
     _subjectController.dispose();
     _messageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _launchWhatsApp() async {
+    const phoneNumber = '+94700000000'; // Replace with actual WhatsApp number
+    final uri = Uri.parse('https://wa.me/$phoneNumber');
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Could not launch WhatsApp. Make sure it is installed.',
+            ),
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _submitMessage() async {
@@ -186,6 +207,31 @@ class _ContactStaffScreenState extends State<ContactStaffScreen> {
                             : 'Send Message',
                         style: const TextStyle(fontSize: 16),
                       ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: _launchWhatsApp,
+                icon: SvgPicture.asset(
+                  'assets/svgs/whatsapp-svgrepo-com.svg',
+                  height: 28,
+                  width: 28,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                ),
+                label: const Text(
+                  'Contact through WhatsApp',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.shade600,
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                ),
               ),
             ],
           ),

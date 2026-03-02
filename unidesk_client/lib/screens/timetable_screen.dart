@@ -39,7 +39,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   final List<Color> _pastelColors = const [
     Color(0xFFB3E5FC), // Light Blue
-    Color(0xFFF8BBD0), // Pastel Pink
+    Color(0xFF90CAF9), // Secondary Pastel Blue
     Color(0xFFC8E6C9), // Pastel Green
     Color(0xFFFFF9C4), // Pastel Yellow
     Color(0xFFE1BEE7), // Pastel Purple
@@ -192,25 +192,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Schedule',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          'Timetable',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, size: 20),
-          onPressed: () {
-            // Usually drops back to previous tab or stack
-          },
-        ),
         actions: [IconButton(icon: const Icon(Icons.tune), onPressed: () {})],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddEventDialog,
-        backgroundColor: const Color(0xFF3B5B8E),
-        child: const Icon(Icons.add, color: Colors.white),
       ),
       body: ListView(
         children: [
@@ -287,6 +275,29 @@ class _TimetableScreenState extends State<TimetableScreen> {
             ),
           ),
           _buildActionButtons(),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: ElevatedButton.icon(
+              onPressed: _showAddEventDialog,
+              icon: const Icon(Icons.add, color: Colors.white),
+              label: const Text(
+                'Add new event',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           _buildUpcomingEvents(isDark),
         ],
       ),
@@ -298,75 +309,133 @@ class _TimetableScreenState extends State<TimetableScreen> {
     final TextEditingController timeController = TextEditingController();
     final TextEditingController locationController = TextEditingController();
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Add New Event'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  hintText: 'Event name (e.g. Study Group)',
-                  labelText: 'Event Name*',
-                ),
-                autofocus: true,
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: timeController,
-                decoration: const InputDecoration(
-                  hintText: 'e.g. 10:00 AM - 11:00 AM',
-                  labelText: 'Time*',
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: locationController,
-                decoration: const InputDecoration(
-                  hintText: 'e.g. Library',
-                  labelText: 'Location (Optional)',
-                ),
-              ),
-            ],
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (titleController.text.isNotEmpty &&
-                    timeController.text.isNotEmpty) {
-                  setState(() {
-                    final normalizedDay = DateTime.utc(
-                      _selectedDay?.year ?? _focusedDay.year,
-                      _selectedDay?.month ?? _focusedDay.month,
-                      _selectedDay?.day ?? _focusedDay.day,
-                    );
-                    _events[normalizedDay] ??= [];
-                    _events[normalizedDay]!.add(
-                      LectureEvent(
-                        title: titleController.text.trim(),
-                        time: timeController.text.trim(),
-                        color: _pastelColors[5], // Use Orange for custom
-                        location: locationController.text.trim().isEmpty
-                            ? 'TBA'
-                            : locationController.text.trim(),
-                        lecturer: 'Self',
-                        isCustom: true,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.9,
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Add New Event',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                    );
-                  });
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Save'),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    hintText: 'Event name (e.g. Study Group)',
+                    labelText: 'Event Name*',
+                    border: OutlineInputBorder(),
+                  ),
+                  autofocus: true,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: timeController,
+                  decoration: const InputDecoration(
+                    hintText: 'e.g. 10:00 AM - 11:00 AM',
+                    labelText: 'Time*',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: locationController,
+                  decoration: const InputDecoration(
+                    hintText: 'e.g. Library',
+                    labelText: 'Location (Optional)',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        backgroundColor: const Color(
+                          0xFF3B5B8E,
+                        ), // UniDesk Blue
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: () {
+                        if (titleController.text.isNotEmpty &&
+                            timeController.text.isNotEmpty) {
+                          setState(() {
+                            final normalizedDay = DateTime.utc(
+                              _selectedDay?.year ?? _focusedDay.year,
+                              _selectedDay?.month ?? _focusedDay.month,
+                              _selectedDay?.day ?? _focusedDay.day,
+                            );
+                            _events[normalizedDay] ??= [];
+                            _events[normalizedDay]!.add(
+                              LectureEvent(
+                                title: titleController.text.trim(),
+                                time: timeController.text.trim(),
+                                color:
+                                    _pastelColors[5], // Use Orange for custom
+                                location: locationController.text.trim().isEmpty
+                                    ? 'TBA'
+                                    : locationController.text.trim(),
+                                lecturer: 'Self',
+                                isCustom: true,
+                              ),
+                            );
+                          });
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text(
+                        'Save Event',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -620,69 +689,128 @@ class _DayDetailsScreenState extends State<DayDetailsScreen> {
     final timeController = TextEditingController(text: oldEvent.time);
     final locationController = TextEditingController(text: oldEvent.location);
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Event'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Event Name*'),
-                autofocus: true,
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: timeController,
-                decoration: const InputDecoration(
-                  labelText: 'Time (e.g. 10:00 AM - 11:00 AM)*',
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: locationController,
-                decoration: const InputDecoration(
-                  labelText: 'Location (Optional)',
-                ),
-              ),
-            ],
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (titleController.text.isNotEmpty &&
-                    timeController.text.isNotEmpty) {
-                  final newEvent = LectureEvent(
-                    title: titleController.text.trim(),
-                    time: timeController.text.trim(),
-                    color: oldEvent.color,
-                    location: locationController.text.trim().isEmpty
-                        ? 'TBA'
-                        : locationController.text.trim(),
-                    lecturer: 'Self',
-                    isCustom: true,
-                  );
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.9,
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Edit Event',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Event Name*',
+                    border: OutlineInputBorder(),
+                  ),
+                  autofocus: true,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: timeController,
+                  decoration: const InputDecoration(
+                    labelText: 'Time (e.g. 10:00 AM - 11:00 AM)*',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: locationController,
+                  decoration: const InputDecoration(
+                    labelText: 'Location (Optional)',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        backgroundColor: const Color(
+                          0xFF3B5B8E,
+                        ), // UniDesk Blue
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: () {
+                        if (titleController.text.isNotEmpty &&
+                            timeController.text.isNotEmpty) {
+                          final newEvent = LectureEvent(
+                            title: titleController.text.trim(),
+                            time: timeController.text.trim(),
+                            color: oldEvent.color,
+                            location: locationController.text.trim().isEmpty
+                                ? 'TBA'
+                                : locationController.text.trim(),
+                            lecturer: 'Self',
+                            isCustom: true,
+                          );
 
-                  setState(() {
-                    final index = _currentEvents.indexOf(oldEvent);
-                    if (index != -1) {
-                      _currentEvents[index] = newEvent;
-                    }
-                  });
+                          setState(() {
+                            final index = _currentEvents.indexOf(oldEvent);
+                            if (index != -1) {
+                              _currentEvents[index] = newEvent;
+                            }
+                          });
 
-                  widget.onEdit(oldEvent, newEvent);
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Save'),
+                          widget.onEdit(oldEvent, newEvent);
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text(
+                        'Save Event',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );

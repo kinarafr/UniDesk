@@ -6,14 +6,20 @@ import 'appointment_booking_screen.dart';
 import 'contact_staff_screen.dart';
 
 class ServicesScreen extends StatelessWidget {
-  const ServicesScreen({super.key});
+  final VoidCallback? onBackPressed;
+  const ServicesScreen({super.key, this.onBackPressed});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Services & Requests'),
-        automaticallyImplyLeading: false,
+        leading: onBackPressed != null
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: onBackPressed,
+              )
+            : null,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
@@ -69,15 +75,28 @@ class ServicesScreen extends StatelessWidget {
     required IconData icon,
     required Widget destinationScreen,
   }) {
-    final theme = Theme.of(context);
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => destinationScreen),
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            builder: (context) {
+              return ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
+                ),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.9,
+                  child: destinationScreen,
+                ),
+              );
+            },
           );
         },
         borderRadius: BorderRadius.circular(16),
@@ -88,10 +107,10 @@ class ServicesScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.1),
+                  color: Colors.blue.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, size: 32, color: theme.primaryColor),
+                child: Icon(icon, size: 32, color: Colors.blue),
               ),
               const SizedBox(width: 16),
               Expanded(
