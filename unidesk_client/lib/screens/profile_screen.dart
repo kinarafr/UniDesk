@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'settings_screen.dart';
-import 'my_requests_screen.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -168,33 +168,60 @@ class ProfileScreen extends StatelessWidget {
                 ),
 
               const SizedBox(height: 16),
-
-              ListTile(
-                leading: const Icon(Icons.list_alt),
-                title: const Text('My Requests'),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MyRequestsScreen(),
-                    ),
-                  );
-                },
+              Card(
+                elevation: 0,
+                color: theme.brightness == Brightness.dark
+                    ? Colors.grey[850]
+                    : Colors.grey[100],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text(
+                    'App & Account Settings',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsScreen(),
+                      ),
+                    );
+                  },
+                ),
               ),
-              ListTile(
-                leading: const Icon(Icons.settings),
-                title: const Text('App & Account Settings'),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
+              const SizedBox(height: 16),
+              Card(
+                elevation: 0,
+                color: Colors.red.withOpacity(0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ListTile(
+                  leading: const Icon(Icons.logout, color: Colors.red),
+                  title: const Text(
+                    'Log Out',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
                     ),
-                  );
-                },
+                  ),
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                    if (!context.mounted) return;
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                ),
               ),
+              const SizedBox(height: 24),
             ],
           );
         },

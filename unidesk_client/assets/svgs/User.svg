@@ -1,9 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 311.34 359.29">
-  <g id="Layer_1-2" data-name="Layer 1">
-    <g>
-      <path d="M299.62,359.28H12.08C5.24,359.29,0,353.91,0,347.33l.04-60.46c.04-53.05,43.78-95.28,96.67-95.28h117.9c53.24,0,96.71,42.68,96.72,96.04v59.72c.01,6.05-4.72,11.94-11.71,11.94Z"/>
-      <circle cx="155.67" cy="83.83" r="83.83"/>
-    </g>
-  </g>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+  <circle cx="12" cy="7" r="4"></circle>
 </svg>

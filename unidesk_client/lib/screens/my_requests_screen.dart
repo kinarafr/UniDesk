@@ -7,8 +7,11 @@ import 'missing_item_report_screen.dart';
 import 'appointment_booking_screen.dart';
 import 'contact_staff_screen.dart';
 
+enum ViewMode { recent, byStatus }
+
 class MyRequestsScreen extends StatefulWidget {
-  const MyRequestsScreen({super.key});
+  final VoidCallback? onBackPressed;
+  const MyRequestsScreen({super.key, this.onBackPressed});
 
   @override
   State<MyRequestsScreen> createState() => _MyRequestsScreenState();
@@ -16,6 +19,7 @@ class MyRequestsScreen extends StatefulWidget {
 
 class _MyRequestsScreenState extends State<MyRequestsScreen> {
   final user = FirebaseAuth.instance.currentUser;
+  ViewMode _currentViewMode = ViewMode.recent;
 
   Future<void> _cancelRequest(String docId) async {
     try {
@@ -143,11 +147,20 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (user == null)
+    if (user == null) {
       return const Scaffold(body: Center(child: Text('Not logged in')));
+    }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Ongoing Services')),
+      appBar: AppBar(
+        title: const Text('My Ongoing Services'),
+        leading: widget.onBackPressed != null
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: widget.onBackPressed,
+              )
+            : null,
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('tickets')
@@ -187,55 +200,196 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
             return bTime.compareTo(aTime); // Descending order
           });
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemCount: docs.length,
-            itemBuilder: (context, index) {
-              final doc = docs[index];
-              final data = doc.data() as Map<String, dynamic>;
-              final status = data['status'];
-
-              IconData iconData = Icons.receipt;
-              if (data['serviceType'] == 'laptop_request')
-                iconData = Icons.laptop;
-              if (data['serviceType'] == 'broken_pc_report')
-                iconData = Icons.computer;
-              if (data['serviceType'] == 'missing_item_report')
-                iconData = Icons.search;
-              if (data['serviceType'] == 'lecturer_appointment')
-                iconData = Icons.event;
-              if (data['serviceType'] == 'contact_staff')
-                iconData = Icons.support_agent;
-
-              Color statusColor = Colors.grey;
-              if (status == 'Pending') statusColor = Colors.orange;
-              if (status == 'Cancelled' || status == 'Rejected')
-                statusColor = Colors.red;
-              if (status == 'Approved/Resolved') statusColor = Colors.green;
-
-              return Card(
-                elevation: 2,
-                margin: const EdgeInsets.only(bottom: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
                 ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: statusColor.withOpacity(0.1),
-                    child: Icon(iconData, color: statusColor),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: SegmentedButton<ViewMode>(
+                    style: SegmentedButton.styleFrom(
+                      selectedBackgroundColor: const Color(0xFFB3E5FC),
+                    ),
+                    segments: const [
+                      ButtonSegment<ViewMode>(
+                        value: ViewMode.recent,
+                        label: Text('Recent'),
+                        icon: Icon(Icons.access_time),
+                      ),
+                      ButtonSegment<ViewMode>(
+                        value: ViewMode.byStatus,
+                        label: Text('By Status'),
+                        icon: Icon(Icons.sort),
+                      ),
+                    ],
+                    selected: {_currentViewMode},
+                    onSelectionChanged: (Set<ViewMode> newSelection) {
+                      setState(() {
+                        _currentViewMode = newSelection.first;
+                      });
+                    },
                   ),
-                  title: Text(
-                    data['serviceTitle'] ?? 'Service Request',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text('Status: $status'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _showRequestDetails(data, doc.id),
                 ),
-              );
-            },
+              ),
+              Expanded(
+                child: _currentViewMode == ViewMode.recent
+                    ? _buildRecentList(docs)
+                    : _buildByStatusList(docs),
+              ),
+            ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildRecentList(List<QueryDocumentSnapshot> docs) {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      itemCount: docs.length,
+      itemBuilder: (context, index) {
+        return _buildRequestCard(docs[index]);
+      },
+    );
+  }
+
+  Widget _buildByStatusList(List<QueryDocumentSnapshot> docs) {
+    final pending = docs
+        .where((d) => (d.data() as Map<String, dynamic>)['status'] == 'Pending')
+        .toList();
+    final approved = docs
+        .where(
+          (d) =>
+              (d.data() as Map<String, dynamic>)['status'] ==
+              'Approved/Resolved',
+        )
+        .toList();
+    final rejected = docs.where((d) {
+      final status = (d.data() as Map<String, dynamic>)['status'];
+      return status == 'Cancelled' || status == 'Rejected';
+    }).toList();
+
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      children: [
+        if (pending.isNotEmpty) ...[
+          _buildSectionHeader('Pending'),
+          ...pending.map((d) => _buildRequestCard(d)),
+          const SizedBox(height: 16),
+        ],
+        if (approved.isNotEmpty) ...[
+          _buildSectionHeader('Approved/Resolved'),
+          ...approved.map((d) => _buildRequestCard(d)),
+          const SizedBox(height: 16),
+        ],
+        if (rejected.isNotEmpty) ...[
+          _buildSectionHeader('Cancelled / Rejected'),
+          ...rejected.map((d) => _buildRequestCard(d)),
+          const SizedBox(height: 16),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0, left: 4.0, top: 8.0),
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildRequestCard(QueryDocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    final status = data['status'];
+
+    IconData iconData = Icons.receipt;
+    if (data['serviceType'] == 'laptop_request') iconData = Icons.laptop;
+    if (data['serviceType'] == 'broken_pc_report') iconData = Icons.computer;
+    if (data['serviceType'] == 'missing_item_report') iconData = Icons.search;
+    if (data['serviceType'] == 'lecturer_appointment') iconData = Icons.event;
+    if (data['serviceType'] == 'contact_staff') iconData = Icons.support_agent;
+
+    Color labelColor = const Color(0xFFB3E5FC); // default Light Blue
+    if (status == 'Pending') {
+      labelColor = const Color(0xFFFFF9C4); // Pastel Yellow
+    }
+    if (status == 'Cancelled' || status == 'Rejected') {
+      labelColor = const Color(0xFF90CAF9); // Secondary Pastel Blue
+    }
+    if (status == 'Approved/Resolved') {
+      labelColor = const Color(0xFFC8E6C9); // Pastel Green
+    }
+
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Colors.grey.withOpacity(0.3)),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => _showRequestDetails(data, doc.id),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0), // Spaced out layout padding
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: labelColor.withOpacity(0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(iconData, color: Colors.black87),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data['serviceTitle'] ?? 'Service Request',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: labelColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        status,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 12.0),
+                child: Icon(Icons.chevron_right, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
