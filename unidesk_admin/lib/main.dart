@@ -16,7 +16,7 @@ class UniDeskAdminApp extends StatelessWidget {
   const UniDeskAdminApp({super.key});
 
   static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(
-    ThemeMode.system,
+    ThemeMode.light,
   );
 
   @override

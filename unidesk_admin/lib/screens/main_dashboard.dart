@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../main.dart';
 import 'admin_login_screen.dart';
+import '../core/app_theme.dart';
 
 class MainDashboard extends StatefulWidget {
   const MainDashboard({super.key});
@@ -15,46 +16,31 @@ class MainDashboard extends StatefulWidget {
 class _MainDashboardState extends State<MainDashboard> {
   int _selectedIndex = 0;
 
-  Future<void> _logout() async {
-    await FirebaseAuth.instance.signOut();
-    if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const AdminLoginScreen()),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('UniDesk Admin Dashboard'),
-        actions: [
-          ValueListenableBuilder<ThemeMode>(
-            valueListenable: UniDeskAdminApp.themeNotifier,
-            builder: (context, currentMode, _) {
-              final isDark =
-                  currentMode == ThemeMode.dark ||
-                  (currentMode == ThemeMode.system &&
-                      MediaQuery.of(context).platformBrightness ==
-                          Brightness.dark);
-              return IconButton(
-                icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-                tooltip: 'Toggle Theme',
-                onPressed: () {
-                  UniDeskAdminApp.themeNotifier.value = isDark
-                      ? ThemeMode.light
-                      : ThemeMode.dark;
-                },
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _logout,
-            tooltip: 'Logout',
-          ),
-        ],
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/nibm_logo.png', // Assuming logo path based on client app
+              height: 32,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback to text if logo not found
+                return const Text(
+                  'NIBM ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    color: Colors.blue,
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 12),
+            const Text('UniDesk Admin Dashboard'),
+          ],
+        ),
+        centerTitle: false,
       ),
       body: Row(
         children: [
@@ -82,7 +68,34 @@ class _MainDashboardState extends State<MainDashboard> {
                 selectedIcon: Icon(Icons.inventory_2),
                 label: Text('Inventory'),
               ),
+              NavigationRailDestination(
+                icon: Icon(Icons.settings_outlined),
+                selectedIcon: Icon(Icons.settings),
+                label: Text('Settings'),
+              ),
             ],
+            trailing: Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  child: IconButton(
+                    icon: const Icon(Icons.logout, color: Colors.red),
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      if (context.mounted) {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (_) => const AdminLoginScreen(),
+                          ),
+                        );
+                      }
+                    },
+                    tooltip: 'Logout',
+                  ),
+                ),
+              ),
+            ),
           ),
           const VerticalDivider(thickness: 1, width: 1),
           Expanded(
@@ -90,7 +103,9 @@ class _MainDashboardState extends State<MainDashboard> {
                 ? const TicketsView()
                 : _selectedIndex == 1
                 ? const UsersView()
-                : const InventoryView(),
+                : _selectedIndex == 2
+                ? const InventoryView()
+                : const SettingsView(),
           ),
         ],
       ),
@@ -108,6 +123,7 @@ class TicketsView extends StatefulWidget {
 
 class _TicketsViewState extends State<TicketsView> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String _selectedSort = 'Recent'; // Sorting state ('Recent' or 'By Status')
 
   Future<void> _updateTicketStatus(String docId, String newStatus) async {
     try {
@@ -124,7 +140,7 @@ class _TicketsViewState extends State<TicketsView> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error updating status: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppTheme.pastelBlue,
           ),
         );
       }
@@ -267,57 +283,85 @@ class _TicketsViewState extends State<TicketsView> {
         if (status == 'Approved/Resolved') statusColor = Colors.green;
 
         return Card(
-          elevation: 2,
+          elevation: 0,
+          color: Theme.of(context).cardColor,
           margin: const EdgeInsets.only(bottom: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
+            side: BorderSide(color: Colors.grey.withOpacity(0.2)),
           ),
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 8,
-            ),
-            leading: CircleAvatar(
-              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-              child: Icon(iconData, color: Theme.of(context).primaryColor),
-            ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    data['serviceTitle'] ?? 'Service Request',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () => _showTicketDetails(data, doc.id),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          iconData,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data['serviceTitle'] ?? 'Service Request',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Requested by: ${data['userName']}',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: statusColor.withOpacity(0.5),
+                          ),
+                        ),
+                        child: Text(
+                          status,
+                          style: TextStyle(
+                            color: statusColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: statusColor),
-                  ),
-                  child: Text(
-                    status,
-                    style: TextStyle(
-                      color: statusColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text('Requested by: ${data['userName']}'),
-            ),
-            trailing: ElevatedButton(
-              onPressed: () => _showTicketDetails(data, doc.id),
-              child: const Text('View'),
+                ],
+              ),
             ),
           ),
         );
@@ -327,67 +371,101 @@ class _TicketsViewState extends State<TicketsView> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Tickets Management',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            const TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.build), text: 'Services & Requests'),
-                Tab(icon: Icon(Icons.event), text: 'Appointments'),
-              ],
-            ),
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: _firestore
-                    .collection('tickets')
-                    .orderBy('createdAt', descending: true)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-
-                  final allDocs = snapshot.data?.docs ?? [];
-
-                  // Filter tickets into categories
-                  final serviceDocs = allDocs.where((doc) {
-                    final type =
-                        (doc.data() as Map<String, dynamic>)['serviceType']
-                            as String?;
-                    return type != 'lecturer_appointment';
-                  }).toList();
-
-                  final appointmentDocs = allDocs.where((doc) {
-                    final type =
-                        (doc.data() as Map<String, dynamic>)['serviceType']
-                            as String?;
-                    return type == 'lecturer_appointment';
-                  }).toList();
-
-                  return TabBarView(
-                    children: [
-                      _buildTicketList(serviceDocs),
-                      _buildTicketList(appointmentDocs),
-                    ],
-                  );
-                },
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Tickets Management',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedSort,
+                        icon: const Icon(Icons.sort),
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'Recent',
+                            child: Text('Sort: Recent'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'By Status',
+                            child: Text('Sort: By Status'),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _selectedSort = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore
+                  .collection('tickets')
+                  .orderBy('createdAt', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+
+                var allDocs = snapshot.data?.docs ?? [];
+
+                // Apply Sorting
+                if (_selectedSort == 'By Status') {
+                  allDocs.sort((a, b) {
+                    final statusOrder = {
+                      'Pending': 0,
+                      'Approved/Resolved': 1,
+                      'Rejected': 2,
+                      'Cancelled': 3,
+                    };
+                    final aStatus =
+                        (a.data() as Map<String, dynamic>)['status'] ??
+                        'Pending';
+                    final bStatus =
+                        (b.data() as Map<String, dynamic>)['status'] ??
+                        'Pending';
+
+                    final aWeight = statusOrder[aStatus] ?? 99;
+                    final bWeight = statusOrder[bStatus] ?? 99;
+
+                    return aWeight.compareTo(bWeight);
+                  });
+                } // else it is already sorted by 'Recent' because of the Firestore query
+
+                return _buildTicketList(allDocs);
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -463,7 +541,10 @@ class _UsersViewState extends State<UsersView> {
                           '${data['email']} • Role: ${data['role']}',
                         ),
                         trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(
+                            Icons.delete,
+                            color: AppTheme.pastelBlue,
+                          ),
                           onPressed: () {
                             // TO DO: Delete logic (requires Cloud Function or server to delete Auth user)
                             // For now, we just delete the Firestore document.
@@ -546,7 +627,10 @@ class _AddUserDialogState extends State<AddUserDialog> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: AppTheme.pastelBlue,
+          ),
         );
       }
     } finally {
@@ -894,7 +978,7 @@ class _InventoryViewState extends State<InventoryView> {
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
                           color: isLowStock
-                              ? Colors.red.withOpacity(0.5)
+                              ? AppTheme.pastelBlue.withOpacity(0.5)
                               : Colors.transparent,
                           width: 2,
                         ),
@@ -903,12 +987,12 @@ class _InventoryViewState extends State<InventoryView> {
                       child: ListTile(
                         leading: CircleAvatar(
                           backgroundColor: isLowStock
-                              ? Colors.red.withOpacity(0.1)
+                              ? AppTheme.pastelBlue.withOpacity(0.1)
                               : Theme.of(context).primaryColor.withOpacity(0.1),
                           child: Icon(
                             iconData,
                             color: isLowStock
-                                ? Colors.red
+                                ? AppTheme.pastelBlue
                                 : Theme.of(context).primaryColor,
                           ),
                         ),
@@ -921,7 +1005,7 @@ class _InventoryViewState extends State<InventoryView> {
                         subtitle: Text(
                           'Category: ${data['category']}\nAvailable: $stock',
                           style: TextStyle(
-                            color: isLowStock ? Colors.red : null,
+                            color: isLowStock ? AppTheme.pastelBlue : null,
                             fontWeight: isLowStock ? FontWeight.bold : null,
                           ),
                         ),
@@ -932,6 +1016,66 @@ class _InventoryViewState extends State<InventoryView> {
                         ),
                       ),
                     );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SettingsView extends StatelessWidget {
+  const SettingsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Settings',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 24),
+          Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ValueListenableBuilder<ThemeMode>(
+              valueListenable: UniDeskAdminApp.themeNotifier,
+              builder: (context, currentMode, _) {
+                final isDark =
+                    currentMode == ThemeMode.dark ||
+                    (currentMode == ThemeMode.system &&
+                        MediaQuery.of(context).platformBrightness ==
+                            Brightness.dark);
+
+                return SwitchListTile(
+                  title: const Text(
+                    'Dark Mode',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: const Text('Toggle between light and dark themes'),
+                  secondary: CircleAvatar(
+                    backgroundColor: Theme.of(
+                      context,
+                    ).primaryColor.withOpacity(0.1),
+                    child: Icon(
+                      isDark ? Icons.dark_mode : Icons.light_mode,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  value: isDark,
+                  onChanged: (value) {
+                    UniDeskAdminApp.themeNotifier.value = value
+                        ? ThemeMode.dark
+                        : ThemeMode.light;
                   },
                 );
               },
