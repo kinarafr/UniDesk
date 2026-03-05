@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start": "flutter run --dart-define-from-file=.env",
-    "build:web": "flutter build web --dart-define-from-file=.env"
+    "start": "flutter run -d edge",
+    "build:web": "flutter build web"
   },
   "dependencies": {
     "xlsx": "^0.18.5"

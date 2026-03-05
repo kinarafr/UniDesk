@@ -130,11 +130,14 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (user == null)
+    if (user == null) {
       return const Scaffold(body: Center(child: Text('Not logged in.')));
+    }
+
+    final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Account Settings')),
+      appBar: AppBar(title: const Text('Account Settings'), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -142,18 +145,27 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Profile Picture Section
               Center(
                 child: Stack(
                   children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Theme.of(
-                        context,
-                      ).primaryColor.withOpacity(0.1),
-                      child: Icon(
-                        Icons.person,
-                        size: 50,
-                        color: Theme.of(context).primaryColor,
+                    Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: theme.primaryColor.withOpacity(0.1),
+                          width: 4,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: theme.primaryColor.withOpacity(0.1),
+                        child: Icon(
+                          Icons.person_outline,
+                          size: 50,
+                          color: theme.primaryColor,
+                        ),
                       ),
                     ),
                     Positioned(
@@ -161,11 +173,25 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                       right: 0,
                       child: GestureDetector(
                         onTap: _updateProfilePicture,
-                        child: CircleAvatar(
-                          radius: 18,
-                          backgroundColor: Theme.of(context).primaryColor,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: theme.primaryColor,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: theme.scaffoldBackgroundColor,
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
                           child: const Icon(
-                            Icons.camera_alt,
+                            Icons.camera_alt_outlined,
                             size: 20,
                             color: Colors.white,
                           ),
@@ -175,79 +201,158 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 40),
+
+              // Personal Information Section
+              _buildFormSection(
+                title: 'Personal Information',
+                children: [
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email Address',
+                      hintText: 'Enter your new email',
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: theme.primaryColor.withOpacity(0.7),
+                      ),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) => value!.isEmpty ? 'Required' : null,
+                  ),
+                ],
+              ),
+
               const SizedBox(height: 32),
 
-              const Text(
-                'Personal Information',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email Address',
-                  prefixIcon: Icon(Icons.email),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) => value!.isEmpty ? 'Required' : null,
-              ),
-
-              const SizedBox(height: 32),
-              const Text(
-                'Security',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'To change your email or password, please enter your current password.',
-                style: TextStyle(color: Colors.grey, fontSize: 13),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _oldPasswordController,
-                decoration: const InputDecoration(
-                  labelText: 'Current Password (Required)',
-                  prefixIcon: Icon(Icons.lock_outline),
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _newPasswordController,
-                decoration: const InputDecoration(
-                  labelText: 'New Password (Optional)',
-                  prefixIcon: Icon(Icons.lock),
-                ),
-                obscureText: true,
-                validator: (value) {
-                  if (value != null && value.isNotEmpty && value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                },
+              // Security Section
+              _buildFormSection(
+                title: 'Security',
+                children: [
+                  const SizedBox(height: 4),
+                  Text(
+                    'To change your email or password, please enter your current password.',
+                    style: TextStyle(
+                      color: theme.hintColor,
+                      fontSize: 13,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _oldPasswordController,
+                    decoration: InputDecoration(
+                      labelText: 'Current Password',
+                      hintText: 'Required for changes',
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        color: theme.primaryColor.withOpacity(0.7),
+                      ),
+                    ),
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _newPasswordController,
+                    decoration: InputDecoration(
+                      labelText: 'New Password',
+                      hintText: 'Leave blank to keep current',
+                      prefixIcon: Icon(
+                        Icons.vpn_key_outlined,
+                        color: theme.primaryColor.withOpacity(0.7),
+                      ),
+                    ),
+                    obscureText: true,
+                    validator: (value) {
+                      if (value != null &&
+                          value.isNotEmpty &&
+                          value.length < 6) {
+                        return 'Password must be at least 6 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
               ),
 
               const SizedBox(height: 48),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _updateAccount,
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
+
+              // Action Button
+              SizedBox(
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _updateAccount,
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : const Text(
+                          'Save Changes',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
                         ),
-                      )
-                    : const Text(
-                        'Save Changes',
-                        style: TextStyle(fontSize: 16),
-                      ),
+                ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildFormSection({
+    required String title,
+    required List<Widget> children,
+  }) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, bottom: 12.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              letterSpacing: -0.5,
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: theme.brightness == Brightness.dark
+                ? Colors.grey[850]
+                : Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(children: children),
+        ),
+      ],
     );
   }
 }

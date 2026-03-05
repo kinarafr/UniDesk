@@ -29,6 +29,17 @@ class _MainLayoutState extends State<MainLayout> {
     ];
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Pre-cache key images for performance
+    precacheImage(const AssetImage('assets/logos/NIBM_White.png'), context);
+    precacheImage(const AssetImage('assets/logos/NIBM_Black.png'), context);
+    precacheImage(const AssetImage('assets/images/web_dev.jpg'), context);
+    precacheImage(const AssetImage('assets/images/cine.png'), context);
+    precacheImage(const AssetImage('assets/images/motion.png'), context);
+  }
+
   void _navigateToTab(int index) {
     setState(() {
       _currentIndex = index;

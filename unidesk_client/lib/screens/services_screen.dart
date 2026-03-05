@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/app_theme.dart';
 import 'laptop_request_screen.dart';
 import 'broken_pc_report_screen.dart';
 import 'missing_item_report_screen.dart';
@@ -11,130 +12,167 @@ class ServicesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Services & Requests'),
-        leading: onBackPressed != null
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: onBackPressed,
-              )
-            : null,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 20,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         children: [
-          _buildServiceCard(
-            context: context,
-            title: 'Request Laptop',
-            subtitle: 'Borrow a laptop for university use',
-            icon: Icons.laptop_mac,
-            destinationScreen: const LaptopRequestScreen(),
+          const SizedBox(height: 8),
+          Text(
+            'What do you\nneed help\nwith?',
+            style: TextStyle(
+              fontSize: 40,
+              fontWeight: FontWeight.w900,
+              height: 1.1,
+              letterSpacing: -1.5,
+              color: isDark ? Colors.white : Colors.black,
+            ),
           ),
-          const SizedBox(height: 12),
-          _buildServiceCard(
-            context: context,
-            title: 'Report Broken Computer',
-            subtitle: 'Report a broken PC or missing part in a lab',
-            icon: Icons.computer,
-            destinationScreen: const BrokenPcReportScreen(),
+          const SizedBox(height: 32),
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[850] : Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                _buildServiceItem(
+                  context,
+                  title: 'Request Laptop',
+                  subtitle: 'Borrow for university use',
+                  icon: Icons.laptop_mac_rounded,
+                  iconColor: Colors.blue,
+                  destinationScreen: const LaptopRequestScreen(),
+                ),
+                _buildDivider(),
+                _buildServiceItem(
+                  context,
+                  title: 'Report Broken Computer',
+                  subtitle: 'Lab PC or hardware issues',
+                  icon: Icons.computer_rounded,
+                  iconColor: Colors.orange,
+                  destinationScreen: const BrokenPcReportScreen(),
+                ),
+                _buildDivider(),
+                _buildServiceItem(
+                  context,
+                  title: 'Report Missing Item',
+                  subtitle: 'Lost and found registry',
+                  icon: Icons.search_rounded,
+                  iconColor: Colors.amber,
+                  destinationScreen: const MissingItemReportScreen(),
+                ),
+                _buildDivider(),
+                _buildServiceItem(
+                  context,
+                  title: 'Book Appointment',
+                  subtitle: 'Meet with your lecturer',
+                  icon: Icons.event_rounded,
+                  iconColor: Colors.green,
+                  destinationScreen: const AppointmentBookingScreen(),
+                ),
+                _buildDivider(),
+                _buildServiceItem(
+                  context,
+                  title: 'Contact Staff',
+                  subtitle: 'Message administration',
+                  icon: Icons.support_agent_rounded,
+                  iconColor: Colors.teal,
+                  destinationScreen: const ContactStaffScreen(),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-          _buildServiceCard(
-            context: context,
-            title: 'Report Missing Item',
-            subtitle: 'Lost something? Let us know',
-            icon: Icons.search,
-            destinationScreen: const MissingItemReportScreen(),
-          ),
-          const SizedBox(height: 12),
-          _buildServiceCard(
-            context: context,
-            title: 'Book Appointment',
-            subtitle: 'Schedule a meeting with a lecturer',
-            icon: Icons.event,
-            destinationScreen: const AppointmentBookingScreen(),
-          ),
-          const SizedBox(height: 12),
-          _buildServiceCard(
-            context: context,
-            title: 'Contact Staff',
-            subtitle: 'Send a message to university administration',
-            icon: Icons.support_agent,
-            destinationScreen: const ContactStaffScreen(),
-          ),
+          const SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  Widget _buildServiceCard({
-    required BuildContext context,
+  Widget _buildDivider() {
+    return Divider(
+      height: 1,
+      indent: 72,
+      endIndent: 20,
+      color: Colors.grey.withOpacity(0.1),
+    );
+  }
+
+  Widget _buildServiceItem(
+    BuildContext context, {
     required String title,
     required String subtitle,
     required IconData icon,
+    required Color iconColor,
     required Widget destinationScreen,
   }) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: InkWell(
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return InkWell(
+      onTap: () {
+        AppTheme.showAppModalBottomSheet(
+          context: context,
+          builder: destinationScreen,
+        );
+      },
+      borderRadius: BorderRadius.circular(28),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: iconColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(icon, size: 24, color: iconColor),
             ),
-            builder: (context) {
-              return ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(24),
-                ),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  child: destinationScreen,
-                ),
-              );
-            },
-          );
-        },
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 32, color: Colors.blue),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black87,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      color: isDark ? Colors.white54 : Colors.grey[600],
+                      fontSize: 13,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const Icon(Icons.chevron_right, color: Colors.grey),
-            ],
-          ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: isDark ? Colors.white24 : Colors.grey[300],
+              size: 20,
+            ),
+          ],
         ),
       ),
     );

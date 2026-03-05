@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../main.dart';
 import 'laptop_request_screen.dart';
 import 'broken_pc_report_screen.dart';
 import 'missing_item_report_screen.dart';
@@ -185,6 +186,8 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
           }
 
           final docs = snapshot.data!.docs.toList();
+          final isHighContrast = UniDeskApp.settings.isHighContrast;
+          final isDark = Theme.of(context).brightness == Brightness.dark;
 
           docs.sort((a, b) {
             final aData = a.data() as Map<String, dynamic>;
@@ -211,7 +214,14 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
                   width: double.infinity,
                   child: SegmentedButton<ViewMode>(
                     style: SegmentedButton.styleFrom(
-                      selectedBackgroundColor: const Color(0xFFB3E5FC),
+                      selectedBackgroundColor: isHighContrast
+                          ? (isDark ? Colors.white : Colors.black)
+                          : const Color(0xFFB3E5FC),
+                      selectedForegroundColor: isHighContrast
+                          ? (isDark ? Colors.black : Colors.white)
+                          : Colors.black87,
+                      backgroundColor: isDark ? Colors.black26 : Colors.white,
+                      foregroundColor: isDark ? Colors.white70 : Colors.black87,
                     ),
                     segments: const [
                       ButtonSegment<ViewMode>(
@@ -307,6 +317,8 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
   Widget _buildRequestCard(QueryDocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     final status = data['status'];
+    final isHighContrast = UniDeskApp.settings.isHighContrast;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     IconData iconData = Icons.receipt;
     if (data['serviceType'] == 'laptop_request') iconData = Icons.laptop;
@@ -327,27 +339,39 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
     }
 
     return Card(
-      elevation: 0,
+      elevation: isHighContrast ? 4 : 0,
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.3)),
+        side: BorderSide(
+          color: isHighContrast
+              ? (isDark ? Colors.white : Colors.black)
+              : Colors.grey.withOpacity(0.3),
+          width: isHighContrast ? 2 : 1,
+        ),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () => _showRequestDetails(data, doc.id),
         child: Padding(
-          padding: const EdgeInsets.all(20.0), // Spaced out layout padding
+          padding: const EdgeInsets.all(20.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: labelColor.withOpacity(0.6),
+                  color: isHighContrast
+                      ? (isDark ? const Color(0xFFE0F2FE) : Colors.black)
+                      : labelColor,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(iconData, color: Colors.black87),
+                child: Icon(
+                  iconData,
+                  color: isHighContrast
+                      ? (isDark ? Colors.black : Colors.white)
+                      : Colors.black87,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -356,8 +380,10 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
                   children: [
                     Text(
                       data['serviceTitle'] ?? 'Service Request',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                      style: TextStyle(
+                        fontWeight: isHighContrast
+                            ? FontWeight.w900
+                            : FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
@@ -368,14 +394,24 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: labelColor,
+                        color: isHighContrast
+                            ? (isDark ? Colors.white : Colors.black)
+                            : labelColor,
                         borderRadius: BorderRadius.circular(20),
+                        border: isHighContrast
+                            ? Border.all(
+                                color: isDark ? Colors.black : Colors.white,
+                                width: 1,
+                              )
+                            : null,
                       ),
                       child: Text(
                         status,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
+                        style: TextStyle(
+                          color: isHighContrast
+                              ? (isDark ? Colors.black : Colors.white)
+                              : Colors.black87,
+                          fontWeight: FontWeight.w700,
                           fontSize: 12,
                         ),
                       ),
@@ -383,9 +419,14 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 12.0),
-                child: Icon(Icons.chevron_right, color: Colors.grey),
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Icon(
+                  Icons.chevron_right,
+                  color: isHighContrast
+                      ? (isDark ? Colors.white : Colors.black)
+                      : Colors.grey,
+                ),
               ),
             ],
           ),

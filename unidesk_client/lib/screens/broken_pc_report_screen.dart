@@ -109,7 +109,17 @@ class _BrokenPcReportScreenState extends State<BrokenPcReportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Report Broken PC')),
+      appBar: AppBar(
+        title: const Text('Report Broken PC'),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.pop(context),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
