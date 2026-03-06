@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../main.dart';
+import '../core/app_theme.dart';
 import 'laptop_request_screen.dart';
 import 'broken_pc_report_screen.dart';
 import 'missing_item_report_screen.dart';
 import 'appointment_booking_screen.dart';
 import 'contact_staff_screen.dart';
+import '../widgets/lecture_detail_sheet.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -67,27 +70,27 @@ final List<QuickActionDef> _allAvailableActions = [
 // Dummy Data
 final List<Map<String, dynamic>> _upcomingLectures = [
   {
-    'title': 'Mathematics',
-    'lecturer': 'Dr. Alan Turing',
-    'time': '09:00 AM - 11:00 AM',
-    'room': '01',
-    'imagePath': 'assets/images/math_lecture_thumbnail.png',
+    'title': 'Web Development',
+    'lecturer': 'Mr Sanjaya Elvetigala',
+    'time': '09:00 AM - 12:00 PM',
+    'room': 'Lab 05',
+    'imagePath': 'assets/images/web_dev.jpg',
     'color': const Color(0xFF3B5B8E), // UniDesk Blue
   },
   {
-    'title': 'DBMS',
-    'lecturer': 'Ms. Ada Lovelace',
-    'time': '12:00 PM - 02:00 PM',
-    'room': '03',
-    'imagePath': 'assets/images/dbms_lecture_thumbnail.png',
+    'title': 'Cinematography',
+    'lecturer': 'Mr Shanaka',
+    'time': '01:00 PM - 04:00 PM',
+    'room': 'Lab 02',
+    'imagePath': 'assets/images/cine.png',
     'color': const Color(0xFF3B8E65), // Pastel Green accent
   },
   {
-    'title': 'Software Engineering',
-    'lecturer': 'Mr. Sanjaya Elvetigala',
-    'time': '03:00 PM - 05:00 PM',
-    'room': '05',
-    'imagePath': 'assets/images/math_lecture_thumbnail.png', // Reusing for now
+    'title': 'Motion Graphics',
+    'lecturer': 'Mrs. Vasana',
+    'time': '05:00 PM - 08:00 PM',
+    'room': 'Lab 05',
+    'imagePath': 'assets/images/motion.png',
     'color': const Color(0xFF8E3B65), // Pastel Purple/Red accent
   },
 ];
@@ -120,113 +123,105 @@ class _HomeScreenState extends State<HomeScreen> {
   ) {
     List<String> tempSelections = List.from(currentSelections);
 
-    showModalBottomSheet(
+    AppTheme.showAppModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return DraggableScrollableSheet(
-              initialChildSize: 0.6,
-              minChildSize: 0.4,
-              maxChildSize: 0.9,
-              expand: false,
-              builder: (context, scrollController) {
-                return Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Customize Actions',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+      builder: StatefulBuilder(
+        builder: (context, setModalState) {
+          return DraggableScrollableSheet(
+            initialChildSize: 0.6,
+            minChildSize: 0.4,
+            maxChildSize: 0.85,
+            expand: false,
+            builder: (context, scrollController) {
+              return Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Customize Actions',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
-                          TextButton(
-                            onPressed: () async {
-                              if (user != null) {
-                                await FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(user!.uid)
-                                    .set({
-                                      'quickActions': tempSelections,
-                                    }, SetOptions(merge: true));
-                              }
-                              if (context.mounted) Navigator.pop(context);
-                            },
-                            child: const Text('Save'),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Expanded(
-                        child: ListView.builder(
-                          controller: scrollController,
-                          itemCount: _allAvailableActions.length,
-                          itemBuilder: (context, index) {
-                            final action = _allAvailableActions[index];
-                            final isSelected = tempSelections.contains(
-                              action.id,
-                            );
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            if (user != null) {
+                              await FirebaseFirestore.instance
+                                  .collection('users')
+                                  .doc(user!.uid)
+                                  .set({
+                                    'quickActions': tempSelections,
+                                  }, SetOptions(merge: true));
+                            }
+                            if (context.mounted) Navigator.pop(context);
+                          },
+                          child: const Text('Save'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: ListView.builder(
+                        controller: scrollController,
+                        itemCount: _allAvailableActions.length,
+                        itemBuilder: (context, index) {
+                          final action = _allAvailableActions[index];
+                          final isSelected = tempSelections.contains(action.id);
 
-                            return Card(
-                              margin: const EdgeInsets.only(bottom: 12),
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Theme.of(
-                                    context,
-                                  ).primaryColor.withOpacity(0.1),
-                                  child: SvgPicture.asset(
-                                    action.svgPath,
-                                    height: 24,
-                                    colorFilter: ColorFilter.mode(
-                                      Theme.of(context).primaryColor,
-                                      BlendMode.srcIn,
-                                    ),
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).primaryColor.withOpacity(0.1),
+                                child: SvgPicture.asset(
+                                  action.svgPath,
+                                  height: 24,
+                                  colorFilter: ColorFilter.mode(
+                                    Theme.of(context).primaryColor,
+                                    BlendMode.srcIn,
                                   ),
-                                ),
-                                title: Text(action.title.replaceAll('\n', ' ')),
-                                trailing: IconButton(
-                                  icon: Icon(
-                                    isSelected
-                                        ? Icons.check_circle
-                                        : Icons.circle_outlined,
-                                    color: isSelected
-                                        ? Colors.green
-                                        : Colors.grey,
-                                    size: 28,
-                                  ),
-                                  onPressed: () {
-                                    setModalState(() {
-                                      if (isSelected) {
-                                        tempSelections.remove(action.id);
-                                      } else {
-                                        tempSelections.add(action.id);
-                                      }
-                                    });
-                                  },
                                 ),
                               ),
-                            );
-                          },
-                        ),
+                              title: Text(action.title.replaceAll('\n', ' ')),
+                              trailing: IconButton(
+                                icon: Icon(
+                                  isSelected
+                                      ? Icons.check_circle
+                                      : Icons.circle_outlined,
+                                  color: isSelected
+                                      ? Colors.green
+                                      : Colors.grey,
+                                  size: 28,
+                                ),
+                                onPressed: () {
+                                  setModalState(() {
+                                    if (isSelected) {
+                                      tempSelections.remove(action.id);
+                                    } else {
+                                      tempSelections.add(action.id);
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-        );
-      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -285,18 +280,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'Hello,',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w400,
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.white
+                                  : null,
                             ),
                           ),
                           Text(
                             name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.white
+                                  : null,
                             ),
                           ),
                         ],
@@ -321,21 +322,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text(
+                        Text(
                           'Upcoming Today',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white
+                                : null,
                           ),
                         ),
                         GestureDetector(
                           onTap: widget.onNavigateToTimetable,
-                          child: const Text(
+                          child: Text(
                             'View All',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFF3B5B8E), // UniDesk Blue
+                              color: theme.brightness == Brightness.dark
+                                  ? const Color(0xFF90CAF9) // Pastel Blue
+                                  : const Color(0xFF3B5B8E), // UniDesk Blue
                             ),
                           ),
                         ),
@@ -351,90 +357,102 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemCount: _upcomingLectures.length,
                         itemBuilder: (context, index) {
                           final lecture = _upcomingLectures[index];
-                          return Container(
-                            width: 300,
-                            margin: const EdgeInsets.only(right: 16),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              image: DecorationImage(
-                                image: AssetImage(
-                                  lecture['imagePath'] as String,
+                          return GestureDetector(
+                            onTap: () {
+                              AppTheme.showAppModalBottomSheet(
+                                context: context,
+                                builder: LectureDetailSheet(
+                                  lecture: lecture,
+                                  onNavigateToTimetable:
+                                      widget.onNavigateToTimetable ?? () {},
                                 ),
-                                fit: BoxFit.cover,
+                              );
+                            },
+                            child: Container(
+                              width: 300,
+                              margin: const EdgeInsets.only(right: 16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    lecture['imagePath'] as String,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(16.0),
-                                  decoration: BoxDecoration(
-                                    color: (lecture['color'] as Color)
-                                        .withOpacity(0.95),
-                                    borderRadius: const BorderRadius.only(
-                                      bottomLeft: Radius.circular(16),
-                                      bottomRight: Radius.circular(16),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(16.0),
+                                    decoration: BoxDecoration(
+                                      color: (lecture['color'] as Color)
+                                          .withOpacity(0.95),
+                                      borderRadius: const BorderRadius.only(
+                                        bottomLeft: Radius.circular(16),
+                                        bottomRight: Radius.circular(16),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              lecture['title'] as String,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              lecture['lecturer'] as String,
+                                              style: const TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            Text(
+                                              lecture['time'] as String,
+                                              style: const TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            const Text(
+                                              'ROOM',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            Text(
+                                              lecture['room'] as String,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 26,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            lecture['title'] as String,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            lecture['lecturer'] as String,
-                                            style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                          Text(
-                                            lecture['time'] as String,
-                                            style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          const Text(
-                                            'ROOM',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Text(
-                                            lecture['room'] as String,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 26,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -446,11 +464,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text(
+                        Text(
                           'Quick Actions',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white
+                                : null,
                           ),
                         ),
                         GestureDetector(
@@ -458,12 +479,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             context,
                             userActionIds,
                           ),
-                          child: const Text(
+                          child: Text(
                             'Edit',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFF3B5B8E), // UniDesk Blue
+                              color: theme.brightness == Brightness.dark
+                                  ? const Color(0xFF90CAF9) // Pastel Blue
+                                  : const Color(0xFF3B5B8E), // UniDesk Blue
                             ),
                           ),
                         ),
@@ -534,33 +557,30 @@ class _HomeScreenState extends State<HomeScreen> {
   ) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isHighContrast = UniDeskApp.settings.isHighContrast;
 
     return InkWell(
       onTap: () {
-        showModalBottomSheet(
+        AppTheme.showAppModalBottomSheet(
           context: context,
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          builder: (context) {
-            return ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(24),
-              ),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.9,
-                child: destinationScreen,
-              ),
-            );
-          },
+          builder: destinationScreen,
         );
       },
       borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: BoxDecoration(
-          color: isDark ? bgColor.withOpacity(0.8) : bgColor,
+          color: isHighContrast
+              ? bgColor
+              : (isDark
+                    ? bgColor
+                    : bgColor), // Use full color in dark mode as requested
           borderRadius: BorderRadius.circular(16),
+          border: isHighContrast
+              ? Border.all(
+                  color: isDark ? Colors.white : Colors.black,
+                  width: 2,
+                )
+              : null,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
         child: Column(
@@ -570,17 +590,24 @@ class _HomeScreenState extends State<HomeScreen> {
               svgPath,
               height: 40,
               colorFilter: ColorFilter.mode(
-                isDark ? Colors.white : Colors.black87,
+                isHighContrast
+                    ? Colors.black
+                    : (isDark
+                          ? Colors.black
+                          : Colors.black87), // Black icon in dark mode
                 BlendMode.srcIn,
               ),
             ),
             const Spacer(),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
-                fontWeight: FontWeight.w600,
+                fontWeight: isHighContrast ? FontWeight.w900 : FontWeight.w600,
                 height: 1.2,
+                color: isHighContrast
+                    ? Colors.black
+                    : (isDark ? Colors.black : null), // Black text in dark mode
               ),
             ),
           ],
@@ -740,25 +767,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 title: Text(a.title),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {
-                  showModalBottomSheet(
+                  AppTheme.showAppModalBottomSheet(
                     context: context,
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(24),
-                      ),
-                    ),
-                    builder: (context) {
-                      return ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(24),
-                        ),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.9,
-                          child: a.destination,
-                        ),
-                      );
-                    },
+                    builder: a.destination,
                   );
                 },
               ),

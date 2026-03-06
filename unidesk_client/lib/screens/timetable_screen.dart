@@ -3,6 +3,9 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import '../main.dart';
+import '../core/app_theme.dart';
+import '../widgets/app_pickers.dart';
 
 class LectureEvent {
   final String title;
@@ -174,14 +177,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Schedule',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-        ),
+        appBar: AppBar(automaticallyImplyLeading: false),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -191,257 +187,156 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Timetable',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        actions: [IconButton(icon: const Icon(Icons.tune), onPressed: () {})],
+        toolbarHeight: 20, // Reduced height as title is removed
       ),
       body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         children: [
-          TableCalendar<LectureEvent>(
-            firstDay: DateTime.utc(2020, 1, 1),
-            lastDay: DateTime.utc(2030, 12, 31),
-            focusedDay: _focusedDay,
-            calendarFormat: _calendarFormat,
-            availableCalendarFormats: const {CalendarFormat.month: 'Month'},
-            sixWeekMonthsEnforced: true,
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: _onDaySelected,
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-            eventLoader: _getEventsForDay,
-            headerStyle: HeaderStyle(
-              formatButtonVisible: false,
-              titleCentered: false,
-              leftChevronIcon: Icon(
-                Icons.chevron_left,
-                color: isDark ? Colors.white : Colors.black87,
-              ),
-              rightChevronIcon: Icon(
-                Icons.chevron_right,
-                color: isDark ? Colors.white : Colors.black87,
-              ),
-              titleTextStyle: const TextStyle(
-                color: Color(0xFF3B5B8E), // UniDesk Blue
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+          const SizedBox(height: 8),
+          // Calendar Card
+          Container(
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[850] : Colors.white,
+              borderRadius: BorderRadius.circular(32),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
-            daysOfWeekStyle: DaysOfWeekStyle(
-              weekdayStyle: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white70 : Colors.black87,
-              ),
-              weekendStyle: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white70 : Colors.black87,
-              ),
-            ),
-            calendarStyle: CalendarStyle(
-              outsideDaysVisible: false,
-              selectedDecoration: const BoxDecoration(
-                color: Color(0xFF3B5B8E), // Solid Blue Circle
-                shape: BoxShape.circle,
-              ),
-              selectedTextStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-              todayDecoration: const BoxDecoration(
-                color: Colors.transparent,
-                shape: BoxShape.circle,
-              ),
-              todayTextStyle: const TextStyle(
-                color: Color(0xFF3B5B8E),
-                fontWeight: FontWeight.bold,
-              ),
-              defaultTextStyle: const TextStyle(fontWeight: FontWeight.w500),
-              weekendTextStyle: const TextStyle(fontWeight: FontWeight.w500),
-              markerDecoration: const BoxDecoration(
-                color: Color(0xFF3B5B8E),
-                shape: BoxShape.circle,
-              ),
-              markersMaxCount: 1,
-              markerSize: 4.5,
-            ),
-          ),
-          _buildActionButtons(),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: ElevatedButton.icon(
-              onPressed: _showAddEventDialog,
-              icon: const Icon(Icons.add, color: Colors.white),
-              label: const Text(
-                'Add new event',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.normal,
+            child: TableCalendar<LectureEvent>(
+              firstDay: DateTime.utc(2020, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: _focusedDay,
+              calendarFormat: _calendarFormat,
+              availableCalendarFormats: const {CalendarFormat.month: 'Month'},
+              sixWeekMonthsEnforced: true,
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              onDaySelected: _onDaySelected,
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
+              eventLoader: _getEventsForDay,
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+                leftChevronIcon: Icon(
+                  Icons.chevron_left_rounded,
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
+                rightChevronIcon: Icon(
+                  Icons.chevron_right_rounded,
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
+                titleTextStyle: TextStyle(
+                  color: isDark ? Colors.white : Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                weekdayStyle: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white54 : Colors.grey[600],
                 ),
+                weekendStyle: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white54 : Colors.grey[600],
+                ),
+              ),
+              calendarStyle: CalendarStyle(
+                outsideDaysVisible: false,
+                selectedDecoration: BoxDecoration(
+                  color: isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E),
+                  shape: BoxShape.circle,
+                ),
+                selectedTextStyle: TextStyle(
+                  color: isDark ? Colors.black : Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+                todayDecoration: BoxDecoration(
+                  color:
+                      (isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E))
+                          .withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                todayTextStyle: TextStyle(
+                  color: isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E),
+                  fontWeight: FontWeight.bold,
+                ),
+                defaultTextStyle: const TextStyle(fontWeight: FontWeight.w500),
+                weekendTextStyle: const TextStyle(fontWeight: FontWeight.w500),
+                markerDecoration: BoxDecoration(
+                  color: isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E),
+                  shape: BoxShape.circle,
+                ),
+                markersMaxCount: 1,
+                markerSize: 4.5,
+                cellMargin: const EdgeInsets.all(4),
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
+
+          // Action Section (Today & Add Event)
+          _buildActionSection(isDark),
+
+          const SizedBox(height: 32),
+
+          // Upcoming Lectures Section
           _buildUpcomingEvents(isDark),
+          const SizedBox(height: 40),
         ],
       ),
     );
   }
 
-  void _showAddEventDialog() {
-    final TextEditingController titleController = TextEditingController();
-    final TextEditingController timeController = TextEditingController();
-    final TextEditingController locationController = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.9,
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Add New Event',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    hintText: 'Event name (e.g. Study Group)',
-                    labelText: 'Event Name*',
-                    border: OutlineInputBorder(),
-                  ),
-                  autofocus: true,
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: timeController,
-                  decoration: const InputDecoration(
-                    hintText: 'e.g. 10:00 AM - 11:00 AM',
-                    labelText: 'Time*',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: locationController,
-                  decoration: const InputDecoration(
-                    hintText: 'e.g. Library',
-                    labelText: 'Location (Optional)',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        backgroundColor: const Color(
-                          0xFF3B5B8E,
-                        ), // UniDesk Blue
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () {
-                        if (titleController.text.isNotEmpty &&
-                            timeController.text.isNotEmpty) {
-                          setState(() {
-                            final normalizedDay = DateTime.utc(
-                              _selectedDay?.year ?? _focusedDay.year,
-                              _selectedDay?.month ?? _focusedDay.month,
-                              _selectedDay?.day ?? _focusedDay.day,
-                            );
-                            _events[normalizedDay] ??= [];
-                            _events[normalizedDay]!.add(
-                              LectureEvent(
-                                title: titleController.text.trim(),
-                                time: timeController.text.trim(),
-                                color:
-                                    _pastelColors[5], // Use Orange for custom
-                                location: locationController.text.trim().isEmpty
-                                    ? 'TBA'
-                                    : locationController.text.trim(),
-                                lecturer: 'Self',
-                                isCustom: true,
-                              ),
-                            );
-                          });
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      child: const Text(
-                        'Save Event',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+  Widget _buildActionSection(bool isDark) {
+    return Row(
+      children: [
+        _buildTodayButton(isDark),
+        const SizedBox(width: 12),
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: _showAddEventDialog,
+            icon: Icon(
+              Icons.add_rounded,
+              color: isDark ? Colors.black87 : Colors.white,
+            ),
+            label: Text(
+              'Add Event',
+              style: TextStyle(
+                color: isDark ? Colors.black87 : Colors.white,
+                fontWeight: FontWeight.normal,
+                fontSize: 15,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isDark
+                  ? AppTheme.pastelBlue
+                  : const Color(0xFF384CA0),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 0,
             ),
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildTodayButton(bool isDark) {
     final today = DateTime.utc(
       DateTime.now().year,
       DateTime.now().month,
@@ -449,21 +344,179 @@ class _TimetableScreenState extends State<TimetableScreen> {
     );
     final isNotToday = !isSameDay(_selectedDay, today);
 
-    if (!isNotToday) return const SizedBox.shrink();
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 300),
+      opacity: isNotToday ? 1 : 0.5,
+      child: IgnorePointer(
+        ignoring: !isNotToday,
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppTheme.pastelBlue.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: IconButton(
+            onPressed: () {
+              setState(() {
+                _focusedDay = DateTime.now();
+                _selectedDay = _focusedDay;
+              });
+            },
+            icon: Icon(
+              Icons.today_rounded,
+              color: isDark ? Colors.white : const Color(0xFF1A237E),
+            ),
+            tooltip: 'Back to Today',
+          ),
+        ),
+      ),
+    );
+  }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 0.0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: OutlinedButton.icon(
-          onPressed: () {
-            setState(() {
-              _focusedDay = DateTime.now();
-              _selectedDay = _focusedDay;
-            });
-          },
-          icon: const Icon(Icons.today, size: 18),
-          label: const Text('Today'),
+  void _showAddEventDialog() {
+    final TextEditingController titleController = TextEditingController();
+    final TextEditingController startTimeController = TextEditingController();
+    final TextEditingController endTimeController = TextEditingController();
+    final TextEditingController locationController = TextEditingController();
+
+    AppTheme.showAppModalBottomSheet(
+      context: context,
+      builder: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Add New Event',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(
+                  hintText: 'Event name (e.g. Study Group)',
+                  labelText: 'Event Name*',
+                ),
+                autofocus: true,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: startTimeController,
+                      readOnly: true,
+                      onTap: () => AppPickers.showTimePicker(
+                        context: context,
+                        controller: startTimeController,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'Start Time*',
+                        hintText: 'Select',
+                        prefixIcon: Icon(Icons.access_time),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextField(
+                      controller: endTimeController,
+                      readOnly: true,
+                      onTap: () => AppPickers.showTimePicker(
+                        context: context,
+                        controller: endTimeController,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'End Time*',
+                        hintText: 'Select',
+                        prefixIcon: Icon(Icons.access_time),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: locationController,
+                decoration: const InputDecoration(
+                  hintText: 'e.g. Library',
+                  labelText: 'Location (Optional)',
+                ),
+              ),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel', style: TextStyle(fontSize: 16)),
+                  ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (titleController.text.isNotEmpty &&
+                          startTimeController.text.isNotEmpty &&
+                          endTimeController.text.isNotEmpty) {
+                        setState(() {
+                          final normalizedDay = DateTime.utc(
+                            _selectedDay?.year ?? _focusedDay.year,
+                            _selectedDay?.month ?? _focusedDay.month,
+                            _selectedDay?.day ?? _focusedDay.day,
+                          );
+                          _events[normalizedDay] ??= [];
+                          _events[normalizedDay]!.add(
+                            LectureEvent(
+                              title: titleController.text.trim(),
+                              time:
+                                  '${startTimeController.text} - ${endTimeController.text}',
+                              color: _pastelColors[5],
+                              location: locationController.text.trim().isEmpty
+                                  ? 'TBA'
+                                  : locationController.text.trim(),
+                              lecturer: 'Self',
+                              isCustom: true,
+                            ),
+                          );
+                        });
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text(
+                      'Save Event',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -488,168 +541,195 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
     final displayEntries = groupedEvents.entries.take(10).toList();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Upcoming Lectures',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Upcoming Lectures',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
+            color: isDark ? Colors.white : Colors.black,
           ),
-          const SizedBox(height: 16),
-          if (displayEntries.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32.0),
-              child: Center(
-                child: Text(
-                  'No lectures scheduled.',
-                  style: TextStyle(
-                    color: isDark ? Colors.white54 : Colors.black54,
-                  ),
-                ),
-              ),
-            )
-          else
-            ...displayEntries.map((entry) {
-              final date = entry.key;
-              final events = entry.value;
-
-              String dateLabel = DateFormat('EEEE, MMM d').format(date);
-              final today = DateTime.utc(
-                DateTime.now().year,
-                DateTime.now().month,
-                DateTime.now().day,
-              );
-              if (date.isAtSameMomentAs(today)) {
-                dateLabel = 'Today';
-              } else if (date.isAtSameMomentAs(
-                today.add(const Duration(days: 1)),
-              )) {
-                dateLabel = 'Tomorrow';
-              }
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+        const SizedBox(height: 16),
+        if (displayEntries.isEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 40.0),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.grey[850] : Colors.white,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Center(
+              child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 12.0),
-                    child: Text(
-                      dateLabel,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                  Icon(
+                    Icons.event_note_outlined,
+                    size: 40,
+                    color: Colors.grey.withOpacity(0.3),
                   ),
-                  ...events.map(
-                    (event) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: _buildCourseCard(event, isDark),
+                  const SizedBox(height: 12),
+                  Text(
+                    'No lectures scheduled',
+                    style: TextStyle(
+                      color: isDark ? Colors.white54 : Colors.grey[500],
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
-              );
-            }),
-        ],
-      ),
+              ),
+            ),
+          )
+        else
+          ...displayEntries.map((entry) {
+            final date = entry.key;
+            final events = entry.value;
+
+            String dateLabel = DateFormat('EEEE, MMM d').format(date);
+            final today = DateTime.utc(
+              DateTime.now().year,
+              DateTime.now().month,
+              DateTime.now().day,
+            );
+            if (date.isAtSameMomentAs(today)) {
+              dateLabel = 'Today';
+            } else if (date.isAtSameMomentAs(
+              today.add(const Duration(days: 1)),
+            )) {
+              dateLabel = 'Tomorrow';
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 4, top: 12, bottom: 12),
+                  child: Text(
+                    dateLabel,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? AppTheme.pastelBlue : Colors.grey[700],
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.grey[850] : Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.02),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: events.asMap().entries.map((eventEntry) {
+                      final idx = eventEntry.key;
+                      final event = eventEntry.value;
+                      return Column(
+                        children: [
+                          _buildCourseCard(event, isDark),
+                          if (idx < events.length - 1)
+                            Divider(
+                              height: 1,
+                              indent: 20,
+                              endIndent: 20,
+                              color: Colors.grey.withOpacity(0.1),
+                            ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
+            );
+          }),
+      ],
     );
   }
 
   Widget _buildCourseCard(LectureEvent event, bool isDark) {
-    // Determine card background based on design
-    final bgColor = isDark ? const Color(0xFF1A1A1A) : const Color(0xFFF8F9FE);
-
-    // Extract a shorter time string, e.g. "14:00" from "10:00 AM - 12:00 PM"
+    final isHighContrast = UniDeskApp.settings.isHighContrast;
     String splitTime = event.time.split(' - ').first;
     if (splitTime == 'TBA') splitTime = 'TBA';
 
-    return Container(
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            // Colored vertical indicator
-            Container(
-              width: 5,
-              decoration: BoxDecoration(
-                color: event.color,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  bottomLeft: Radius.circular(16),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 36,
+            decoration: BoxDecoration(
+              color: isHighContrast
+                  ? (isDark ? const Color(0xFFE0F2FE) : Colors.black)
+                  : event.color,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  event.title,
+                  style: TextStyle(
+                    fontWeight: isHighContrast
+                        ? FontWeight.w900
+                        : FontWeight.w600,
+                    fontSize: 15,
+                    color: isHighContrast
+                        ? (isDark ? Colors.white : Colors.black)
+                        : (isDark
+                              ? Colors.white.withOpacity(0.9)
+                              : Colors.black87),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Room ${event.location}',
+                  style: TextStyle(
+                    color: isHighContrast
+                        ? (isDark ? Colors.white : Colors.black)
+                        : (isDark ? Colors.white54 : Colors.grey[600]),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                splitTime,
+                style: TextStyle(
+                  color: isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 20.0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize
-                            .min, // Prevents layout overflows in IntrinsicHeight
-                        children: [
-                          Text(
-                            event.title,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              height: 1.2,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            '2 hours • Room ${event.location}', // Mockup format
-                            style: TextStyle(
-                              color: isDark
-                                  ? Colors.grey[400]
-                                  : Colors.grey[600],
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          size: 18,
-                          color: isDark
-                              ? Colors.grey[300]
-                              : const Color(0xFF3B5B8E),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          splitTime,
-                          style: TextStyle(
-                            color: isDark
-                                ? Colors.grey[300]
-                                : const Color(0xFF3B5B8E),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              const SizedBox(height: 4),
+              Icon(
+                Icons.access_time_rounded,
+                size: 14,
+                color: isDark ? Colors.white24 : Colors.grey[400],
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -686,133 +766,158 @@ class _DayDetailsScreenState extends State<DayDetailsScreen> {
     if (!oldEvent.isCustom) return;
 
     final titleController = TextEditingController(text: oldEvent.title);
-    final timeController = TextEditingController(text: oldEvent.time);
+
+    // Parse existing time string "Start - End"
+    String startStr = '';
+    String endStr = '';
+    if (oldEvent.time.contains(' - ')) {
+      final parts = oldEvent.time.split(' - ');
+      startStr = parts[0];
+      endStr = parts[1];
+    } else {
+      startStr = oldEvent.time;
+    }
+
+    final startTimeController = TextEditingController(text: startStr);
+    final endTimeController = TextEditingController(text: endStr);
     final locationController = TextEditingController(text: oldEvent.location);
 
-    showModalBottomSheet(
+    AppTheme.showAppModalBottomSheet(
       context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.9,
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Edit Event',
+      builder: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Edit Event',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Event Name*'),
+                autofocus: true,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: startTimeController,
+                      readOnly: true,
+                      onTap: () => AppPickers.showTimePicker(
+                        context: context,
+                        controller: startTimeController,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'Start Time*',
+                        hintText: 'Select',
+                        prefixIcon: Icon(Icons.access_time),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TextField(
+                      controller: endTimeController,
+                      readOnly: true,
+                      onTap: () => AppPickers.showTimePicker(
+                        context: context,
+                        controller: endTimeController,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: 'End Time*',
+                        hintText: 'Select',
+                        prefixIcon: Icon(Icons.access_time),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: locationController,
+                decoration: const InputDecoration(
+                  labelText: 'Location (Optional)',
+                ),
+              ),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel', style: TextStyle(fontSize: 16)),
+                  ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (titleController.text.isNotEmpty &&
+                          startTimeController.text.isNotEmpty &&
+                          endTimeController.text.isNotEmpty) {
+                        final newEvent = LectureEvent(
+                          title: titleController.text.trim(),
+                          time:
+                              '${startTimeController.text} - ${endTimeController.text}',
+                          color: oldEvent.color,
+                          location: locationController.text.trim().isEmpty
+                              ? 'TBA'
+                              : locationController.text.trim(),
+                          lecturer: 'Self',
+                          isCustom: true,
+                        );
+
+                        setState(() {
+                          final index = _currentEvents.indexOf(oldEvent);
+                          if (index != -1) {
+                            _currentEvents[index] = newEvent;
+                          }
+                        });
+
+                        widget.onEdit(oldEvent, newEvent);
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text(
+                      'Save Event',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Event Name*',
-                    border: OutlineInputBorder(),
                   ),
-                  autofocus: true,
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: timeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Time (e.g. 10:00 AM - 11:00 AM)*',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: locationController,
-                  decoration: const InputDecoration(
-                    labelText: 'Location (Optional)',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const Spacer(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        backgroundColor: const Color(
-                          0xFF3B5B8E,
-                        ), // UniDesk Blue
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () {
-                        if (titleController.text.isNotEmpty &&
-                            timeController.text.isNotEmpty) {
-                          final newEvent = LectureEvent(
-                            title: titleController.text.trim(),
-                            time: timeController.text.trim(),
-                            color: oldEvent.color,
-                            location: locationController.text.trim().isEmpty
-                                ? 'TBA'
-                                : locationController.text.trim(),
-                            lecturer: 'Self',
-                            isCustom: true,
-                          );
-
-                          setState(() {
-                            final index = _currentEvents.indexOf(oldEvent);
-                            if (index != -1) {
-                              _currentEvents[index] = newEvent;
-                            }
-                          });
-
-                          widget.onEdit(oldEvent, newEvent);
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      child: const Text(
-                        'Save Event',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -828,6 +933,8 @@ class _DayDetailsScreenState extends State<DayDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final dateString = DateFormat.yMMMMd().format(widget.date);
 
     return Scaffold(
@@ -843,9 +950,12 @@ class _DayDetailsScreenState extends State<DayDetailsScreen> {
                     color: Colors.grey.withOpacity(0.5),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     'No events on this day!',
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: isDark ? Colors.white70 : Colors.grey,
+                    ),
                   ),
                 ],
               ),

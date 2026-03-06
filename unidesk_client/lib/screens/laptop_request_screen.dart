@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../widgets/app_pickers.dart';
 
 class LaptopRequestScreen extends StatefulWidget {
   final String? ticketId;
@@ -113,7 +114,17 @@ class _LaptopRequestScreenState extends State<LaptopRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Request Laptop')),
+      appBar: AppBar(
+        title: const Text('Request Laptop'),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.pop(context),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -151,9 +162,14 @@ class _LaptopRequestScreenState extends State<LaptopRequestScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _dateController,
+                      readOnly: true,
+                      onTap: () => AppPickers.showAppDatePicker(
+                        context: context,
+                        controller: _dateController,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'When needed? (Date)',
-                        hintText: 'e.g. 2026-03-01',
+                        hintText: 'Select Date',
                         prefixIcon: Icon(Icons.calendar_today),
                       ),
                       validator: (value) => value!.isEmpty ? 'Required' : null,
@@ -163,9 +179,14 @@ class _LaptopRequestScreenState extends State<LaptopRequestScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _timeController,
+                      readOnly: true,
+                      onTap: () => AppPickers.showTimePicker(
+                        context: context,
+                        controller: _timeController,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'What time?',
-                        hintText: 'e.g. 10:00 AM',
+                        hintText: 'Select Time',
                         prefixIcon: Icon(Icons.access_time),
                       ),
                       validator: (value) => value!.isEmpty ? 'Required' : null,

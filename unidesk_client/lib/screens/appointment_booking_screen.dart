@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../widgets/app_pickers.dart';
 
 class AppointmentBookingScreen extends StatefulWidget {
   final String? ticketId;
@@ -114,7 +115,17 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Book Appointment')),
+      appBar: AppBar(
+        title: const Text('Book Appointment'),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.pop(context),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -162,6 +173,11 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _dateController,
+                      readOnly: true,
+                      onTap: () => AppPickers.showAppDatePicker(
+                        context: context,
+                        controller: _dateController,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Preferred Date',
                         prefixIcon: Icon(Icons.calendar_month),
@@ -173,6 +189,11 @@ class _AppointmentBookingScreenState extends State<AppointmentBookingScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _timeController,
+                      readOnly: true,
+                      onTap: () => AppPickers.showTimePicker(
+                        context: context,
+                        controller: _timeController,
+                      ),
                       decoration: const InputDecoration(
                         labelText: 'Preferred Time',
                         prefixIcon: Icon(Icons.access_time),

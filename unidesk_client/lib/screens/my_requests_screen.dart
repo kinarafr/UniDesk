@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../main.dart';
 import 'laptop_request_screen.dart';
 import 'broken_pc_report_screen.dart';
 import 'missing_item_report_screen.dart';
 import 'appointment_booking_screen.dart';
 import 'contact_staff_screen.dart';
+import '../widgets/ticket_detail_sheet.dart';
+import '../core/app_theme.dart';
 
 enum ViewMode { recent, byStatus }
 
@@ -74,74 +77,14 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
   }
 
   void _showRequestDetails(Map<String, dynamic> data, String docId) {
-    showDialog(
+    AppTheme.showAppModalBottomSheet(
       context: context,
-      builder: (context) {
-        final details = data['details'] as Map<String, dynamic>? ?? {};
-        final status = data['status'];
-        final isPending = status == 'Pending';
-
-        return AlertDialog(
-          title: Text(data['serviceTitle'] ?? 'Request Details'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Status: $status',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: status == 'Pending'
-                        ? Colors.orange
-                        : (status == 'Cancelled' || status == 'Rejected'
-                              ? Colors.red
-                              : Colors.green),
-                  ),
-                ),
-                const Divider(),
-                const Text(
-                  'Details:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                ...details.entries.map(
-                  (e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4.0),
-                    child: Text('${e.key}: ${e.value}'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            if (isPending) ...[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _cancelRequest(docId);
-                },
-                child: const Text(
-                  'Cancel Request',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _editRequest(data, docId);
-                },
-                child: const Text('Edit Request'),
-              ),
-            ] else ...[
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Close'),
-              ),
-            ],
-          ],
-        );
-      },
+      builder: TicketDetailSheet(
+        data: data,
+        docId: docId,
+        onEdit: () => _editRequest(data, docId),
+        onCancel: _cancelRequest,
+      ),
     );
   }
 
@@ -153,13 +96,10 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Ongoing Services'),
-        leading: widget.onBackPressed != null
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: widget.onBackPressed,
-              )
-            : null,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 20,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -185,6 +125,8 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
           }
 
           final docs = snapshot.data!.docs.toList();
+          final isHighContrast = UniDeskApp.settings.isHighContrast;
+          final isDark = Theme.of(context).brightness == Brightness.dark;
 
           docs.sort((a, b) {
             final aData = a.data() as Map<String, dynamic>;
@@ -201,7 +143,22 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
           });
 
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Text(
+                  'Ongoing\nServices',
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w900,
+                    height: 1.1,
+                    letterSpacing: -1.5,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -211,7 +168,14 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
                   width: double.infinity,
                   child: SegmentedButton<ViewMode>(
                     style: SegmentedButton.styleFrom(
-                      selectedBackgroundColor: const Color(0xFFB3E5FC),
+                      selectedBackgroundColor: isHighContrast
+                          ? (isDark ? Colors.white : Colors.black)
+                          : const Color(0xFFB3E5FC),
+                      selectedForegroundColor: isHighContrast
+                          ? (isDark ? Colors.black : Colors.white)
+                          : Colors.black87,
+                      backgroundColor: isDark ? Colors.black26 : Colors.white,
+                      foregroundColor: isDark ? Colors.white70 : Colors.black87,
                     ),
                     segments: const [
                       ButtonSegment<ViewMode>(
@@ -307,6 +271,8 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
   Widget _buildRequestCard(QueryDocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     final status = data['status'];
+    final isHighContrast = UniDeskApp.settings.isHighContrast;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     IconData iconData = Icons.receipt;
     if (data['serviceType'] == 'laptop_request') iconData = Icons.laptop;
@@ -327,27 +293,39 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
     }
 
     return Card(
-      elevation: 0,
+      elevation: isHighContrast ? 4 : 0,
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.withOpacity(0.3)),
+        side: BorderSide(
+          color: isHighContrast
+              ? (isDark ? Colors.white : Colors.black)
+              : Colors.grey.withOpacity(0.3),
+          width: isHighContrast ? 2 : 1,
+        ),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () => _showRequestDetails(data, doc.id),
         child: Padding(
-          padding: const EdgeInsets.all(20.0), // Spaced out layout padding
+          padding: const EdgeInsets.all(20.0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: labelColor.withOpacity(0.6),
+                  color: isHighContrast
+                      ? (isDark ? const Color(0xFFE0F2FE) : Colors.black)
+                      : labelColor,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(iconData, color: Colors.black87),
+                child: Icon(
+                  iconData,
+                  color: isHighContrast
+                      ? (isDark ? Colors.black : Colors.white)
+                      : Colors.black87,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -356,8 +334,10 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
                   children: [
                     Text(
                       data['serviceTitle'] ?? 'Service Request',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                      style: TextStyle(
+                        fontWeight: isHighContrast
+                            ? FontWeight.w900
+                            : FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
@@ -368,14 +348,24 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: labelColor,
+                        color: isHighContrast
+                            ? (isDark ? Colors.white : Colors.black)
+                            : labelColor,
                         borderRadius: BorderRadius.circular(20),
+                        border: isHighContrast
+                            ? Border.all(
+                                color: isDark ? Colors.black : Colors.white,
+                                width: 1,
+                              )
+                            : null,
                       ),
                       child: Text(
                         status,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
+                        style: TextStyle(
+                          color: isHighContrast
+                              ? (isDark ? Colors.black : Colors.white)
+                              : Colors.black87,
+                          fontWeight: FontWeight.w700,
                           fontSize: 12,
                         ),
                       ),
@@ -383,9 +373,14 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 12.0),
-                child: Icon(Icons.chevron_right, color: Colors.grey),
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Icon(
+                  Icons.chevron_right,
+                  color: isHighContrast
+                      ? (isDark ? Colors.white : Colors.black)
+                      : Colors.grey,
+                ),
               ),
             ],
           ),

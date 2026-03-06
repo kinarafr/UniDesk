@@ -3,32 +3,47 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'core/app_theme.dart';
+import 'core/settings_controller.dart';
 import 'screens/login_screen.dart';
 import 'screens/main_layout.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const UniDeskApp());
+
+  final settingsController = SettingsController();
+  await settingsController.loadSettings();
+
+  runApp(UniDeskApp(settingsController: settingsController));
 }
 
 class UniDeskApp extends StatelessWidget {
-  const UniDeskApp({super.key});
+  final SettingsController settingsController;
 
-  static final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(
-    ThemeMode.light,
-  );
+  const UniDeskApp({super.key, required this.settingsController});
+
+  static late SettingsController settings;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeNotifier,
-      builder: (_, ThemeMode currentMode, __) {
+    settings = settingsController;
+
+    return ListenableBuilder(
+      listenable: settingsController,
+      builder: (context, _) {
+        final isDarkMode =
+            settingsController.themeMode == ThemeMode.dark ||
+            (settingsController.themeMode == ThemeMode.system &&
+                MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+
         return MaterialApp(
           title: 'UniDesk',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: currentMode,
+          theme: AppTheme.getTheme(
+            isDark: isDarkMode,
+            isHighContrast: settingsController.isHighContrast,
+            reduceMotion: settingsController.isReduceMotion,
+          ),
+          themeMode: settingsController.themeMode,
           home: StreamBuilder<User?>(
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
