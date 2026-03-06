@@ -148,7 +148,9 @@ class ProfileScreen extends StatelessWidget {
               if (role == 'student')
                 Container(
                   decoration: BoxDecoration(
-                    color: AppTheme.pastelBlue,
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.grey[900]
+                        : AppTheme.pastelBlue,
                     borderRadius: BorderRadius.circular(28),
                   ),
                   child: Padding(
@@ -159,24 +161,33 @@ class ProfileScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               'Pending Payment',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.black87,
+                                color: theme.brightness == Brightness.dark
+                                    ? Colors.white70
+                                    : Colors.black87,
                               ),
                             ),
-                            Icon(Icons.payment, color: theme.primaryColor),
+                            Icon(
+                              Icons.payment,
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.white54
+                                  : theme.primaryColor,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'LKR ${pendingPaymentMock.toStringAsFixed(2)}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white
+                                : Colors.black,
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -185,8 +196,14 @@ class ProfileScreen extends StatelessWidget {
                             Expanded(
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.black,
-                                  foregroundColor: Colors.white,
+                                  backgroundColor:
+                                      theme.brightness == Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black,
+                                  foregroundColor:
+                                      theme.brightness == Brightness.dark
+                                      ? Colors.black
+                                      : Colors.white,
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 16,
                                   ),
@@ -210,25 +227,34 @@ class ProfileScreen extends StatelessWidget {
                             Expanded(
                               child: OutlinedButton(
                                 style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Colors.black12),
+                                  side: BorderSide(
+                                    color: theme.brightness == Brightness.dark
+                                        ? Colors.white24
+                                        : Colors.black12,
+                                  ),
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 16,
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),
-                                  backgroundColor: Colors.white.withOpacity(
-                                    0.5,
-                                  ),
+                                  backgroundColor:
+                                      theme.brightness == Brightness.dark
+                                      ? Colors.white.withOpacity(0.05)
+                                      : Colors.white.withOpacity(0.5),
                                 ),
                                 onPressed: () => _showPastPayments(
                                   context,
                                   pastPayments,
                                   pendingPaymentMock,
                                 ),
-                                child: const Text(
+                                child: Text(
                                   'View',
-                                  style: TextStyle(color: Colors.black87),
+                                  style: TextStyle(
+                                    color: theme.brightness == Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black87,
+                                  ),
                                 ),
                               ),
                             ),
@@ -316,6 +342,15 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       subtitle: const Text('Sign out of your account'),
                       onTap: () async {
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user != null) {
+                          try {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user.uid)
+                                .update({'status': 'offline'});
+                          } catch (_) {}
+                        }
                         await FirebaseAuth.instance.signOut();
                         if (!context.mounted) return;
                         Navigator.of(context).pushAndRemoveUntil(

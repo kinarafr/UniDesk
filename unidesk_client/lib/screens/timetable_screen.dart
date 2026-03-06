@@ -316,12 +316,14 @@ class _TimetableScreenState extends State<TimetableScreen> {
               'Add Event',
               style: TextStyle(
                 color: isDark ? Colors.black87 : Colors.white,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.normal,
                 fontSize: 15,
               ),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: isDark ? AppTheme.pastelBlue : Colors.black,
+              backgroundColor: isDark
+                  ? AppTheme.pastelBlue
+                  : const Color(0xFF384CA0),
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),

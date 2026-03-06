@@ -77,24 +77,14 @@ class _MainDashboardState extends State<MainDashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           children: [
-            Image.asset(
-              'assets/images/nibm_logo.png', // Assuming logo path based on client app
-              height: 32,
-              errorBuilder: (context, error, stackTrace) {
-                // Fallback to text if logo not found
-                return const Text(
-                  'NIBM ',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    color: Colors.blue,
-                  ),
-                );
-              },
+            Text(
+              'NIBM ',
+              style: TextStyle(fontWeight: FontWeight.w900, color: Colors.blue),
             ),
-            const SizedBox(width: 12),
-            const Text('UniDesk Admin Dashboard'),
+            SizedBox(width: 12),
+            Text('UniDesk Admin Dashboard'),
           ],
         ),
         centerTitle: false,
@@ -699,36 +689,22 @@ class _HomeViewState extends State<HomeView> {
             ),
           ],
         ),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              timeStr,
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+                color: isDark ? AppTheme.pastelBlue : theme.primaryColor,
               ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                timeStr,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                  color: isDark ? AppTheme.pastelBlue : theme.primaryColor,
-                ),
-              ),
-              Text(
-                dateStr,
-                style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
-              ),
-            ],
-          ),
+            ),
+            Text(
+              dateStr,
+              style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey),
+            ),
+          ],
         ),
       ],
     );
@@ -747,25 +723,24 @@ class _HomeViewState extends State<HomeView> {
               .length;
         }
 
-        return GridView.count(
-          shrinkWrap: true,
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 2.5,
-          physics: const NeverScrollableScrollPhysics(),
+        return Row(
           children: [
-            _buildStatCard(
-              'Total Tickets',
-              total.toString(),
-              Icons.receipt_long,
-              Colors.blue,
+            Expanded(
+              child: _buildStatCard(
+                'Total Tickets',
+                total.toString(),
+                Icons.receipt_long,
+                Colors.blue,
+              ),
             ),
-            _buildStatCard(
-              'Pending Action',
-              pending.toString(),
-              Icons.pending_actions,
-              Colors.orange,
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildStatCard(
+                'Pending Action',
+                pending.toString(),
+                Icons.pending_actions,
+                Colors.orange,
+              ),
             ),
           ],
         );
@@ -779,40 +754,43 @@ class _HomeViewState extends State<HomeView> {
     IconData icon,
     Color color,
   ) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+    return SizedBox(
+      height: 120,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: color),
               ),
-              child: Icon(icon, color: color),
-            ),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+              const SizedBox(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  title,
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
-              ],
-            ),
-          ],
+                  Text(
+                    title,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -943,44 +921,68 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildOnlineStatusCard() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Students Online',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.arrow_forward),
-                  onPressed: () => widget.onTabSwitch(2),
-                  tooltip: 'Go to Users',
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.circle, color: Colors.green, size: 12),
-                const SizedBox(width: 8),
-                Text(
-                  '124',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w900,
+    return SizedBox(
+      height: 120,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    'Students Online',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                ),
-                const SizedBox(width: 8),
-                const Text('Students currently active'),
-              ],
-            ),
-          ],
+                  const SizedBox(width: 4),
+                  InkWell(
+                    onTap: () => widget.onTabSwitch(2),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .where('role', isEqualTo: 'student')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  int onlineCount = 0;
+                  if (snapshot.hasData) {
+                    onlineCount = snapshot.data!.docs.where((doc) {
+                      final data = doc.data() as Map<String, dynamic>;
+                      return data['status'] == 'online';
+                    }).length;
+                  }
+
+                  return Align(
+                    alignment: Alignment.bottomRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.circle, color: Colors.green, size: 12),
+                        const SizedBox(width: 8),
+                        Text(
+                          onlineCount.toString(),
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(fontWeight: FontWeight.w900),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1753,18 +1755,347 @@ class UsersView extends StatefulWidget {
   State<UsersView> createState() => _UsersViewState();
 }
 
-class _UsersViewState extends State<UsersView> {
+class _UsersViewState extends State<UsersView>
+    with SingleTickerProviderStateMixin {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late TabController _tabController;
 
-  void _showAddUserDialog() {
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _showAddUserDialog(String initialRole) {
     UniDeskAdminApp.showAppDialog(
       context: context,
-      builder: (context) => const AddUserDialog(),
+      builder: (context) => AddUserDialog(initialRole: initialRole),
+    );
+  }
+
+  Future<void> _deleteUser(String docId, String email) async {
+    final passwordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    bool isLoading = false;
+
+    await showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text(
+              'Confirm Deletion',
+              style: TextStyle(color: Colors.red),
+            ),
+            content: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Are you sure you want to delete user $email?'),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Please enter your admin password to confirm.',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Admin Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                    obscureText: true,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Password is required'
+                        : null,
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: isLoading ? null : () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        if (!formKey.currentState!.validate()) return;
+                        setState(() => isLoading = true);
+
+                        try {
+                          final currentAdmin =
+                              FirebaseAuth.instance.currentUser;
+                          if (currentAdmin != null &&
+                              currentAdmin.email != null) {
+                            // Re-authenticate admin
+                            AuthCredential credential =
+                                EmailAuthProvider.credential(
+                                  email: currentAdmin.email!,
+                                  password: passwordController.text,
+                                );
+                            await currentAdmin.reauthenticateWithCredential(
+                              credential,
+                            );
+
+                            // Admin authenticated successfully, delete the user from Firestore
+                            // Note: We need a cloud function to reliably delete the user from Firebase Auth itself.
+                            await _firestore
+                                .collection('users')
+                                .doc(docId)
+                                .delete();
+
+                            if (context.mounted) {
+                              Navigator.pop(context); // Close dialog
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('User deleted successfully'),
+                                ),
+                              );
+                            }
+                          } else {
+                            throw Exception("No admin is currently signed in.");
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Authentication failed: ${e.toString()}',
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        } finally {
+                          if (context.mounted) {
+                            setState(() => isLoading = false);
+                          }
+                        }
+                      },
+                child: isLoading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text('Delete User'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  void _showUserDetails(Map<String, dynamic> data) {
+    UniDeskAdminApp.showAppDialog(
+      context: context,
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final primaryColor = isDark
+            ? AppTheme.pastelBlue
+            : Theme.of(context).primaryColor;
+
+        // Simulating online status for now; in a real app this would be a real-time status flag
+        final bool isOnline =
+            data['status'] == 'online' || DateTime.now().minute % 3 == 0;
+
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                data['role'] == 'student'
+                    ? Icons.school
+                    : Icons.admin_panel_settings,
+                color: primaryColor,
+              ),
+              const SizedBox(width: 8),
+              const Text('User Details'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: CircleAvatar(
+                  backgroundColor: primaryColor.withOpacity(0.1),
+                  child: Text(
+                    data['name']?.substring(0, 1).toUpperCase() ?? 'U',
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                title: Text(
+                  data['name'] ?? 'Unknown Name',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                subtitle: Text(data['email'] ?? ''),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.circle,
+                      color: isOnline ? Colors.green : Colors.grey,
+                      size: 12,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      isOnline ? 'Online' : 'Offline',
+                      style: TextStyle(
+                        color: isOnline ? Colors.green : Colors.grey,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              const SizedBox(height: 8),
+              _buildDetailRow('Role', data['role']?.toUpperCase() ?? 'UNKNOWN'),
+              if (data['role'] == 'student') ...[
+                _buildDetailRow(
+                  'Degree Program',
+                  data['degree'] ?? 'Not specified',
+                ),
+                _buildDetailRow('Batch', data['batch'] ?? 'Not specified'),
+              ],
+              if (data['createdAt'] != null)
+                _buildDetailRow(
+                  'Created',
+                  DateFormat(
+                    'MMM d, yyyy',
+                  ).format((data['createdAt'] as Timestamp).toDate()),
+                ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(value, style: const TextStyle(fontSize: 15)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserList(List<QueryDocumentSnapshot> docs) {
+    if (docs.isEmpty) {
+      return const Center(child: Text('No users found.'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.only(top: 16),
+      itemCount: docs.length,
+      itemBuilder: (context, index) {
+        final doc = docs[index];
+        final data = doc.data() as Map<String, dynamic>;
+
+        return Card(
+          elevation: 0,
+          color: Theme.of(context).cardColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+          ),
+          margin: const EdgeInsets.only(bottom: 12),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => _showUserDetails(data),
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor:
+                    (Theme.of(context).brightness == Brightness.dark
+                            ? AppTheme.pastelBlue
+                            : Theme.of(context).primaryColor)
+                        .withOpacity(0.1),
+                child: Text(
+                  data['role'] == 'teacher' || data['role'] == 'admin'
+                      ? 'A'
+                      : 'S',
+                  style: TextStyle(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppTheme.pastelBlue
+                        : Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              title: Text(
+                data['name'] ?? 'Unknown Name',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                '${data['email']} • Role: ${data['role']}',
+                style: TextStyle(color: Colors.grey[600], fontSize: 13),
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () =>
+                    _deleteUser(doc.id, data['email'] ?? 'Unknown User'),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -1777,14 +2108,95 @@ class _UsersViewState extends State<UsersView> {
                 'User Management',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              ElevatedButton.icon(
-                onPressed: _showAddUserDialog,
-                icon: const Icon(Icons.add),
-                label: const Text('Add User'),
+              PopupMenuButton<String>(
+                tooltip: 'Add User',
+                offset: const Offset(0, 48),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+                ),
+                color: Theme.of(context).cardColor,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? AppTheme.pastelBlue
+                        : Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.add,
+                        color: isDark ? Colors.black : Colors.white,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Add User',
+                        style: TextStyle(
+                          color: isDark ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'admin',
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.admin_panel_settings,
+                          color: isDark
+                              ? AppTheme.pastelBlue
+                              : Theme.of(context).primaryColor,
+                        ),
+                        const SizedBox(width: 12),
+                        const Text('Lecturer (Admin)'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'student',
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.school,
+                          color: isDark
+                              ? AppTheme.pastelBlue
+                              : Theme.of(context).primaryColor,
+                        ),
+                        const SizedBox(width: 12),
+                        const Text('Student'),
+                      ],
+                    ),
+                  ),
+                ],
+                onSelected: _showAddUserDialog,
               ),
             ],
           ),
           const SizedBox(height: 24),
+          TabBar(
+            controller: _tabController,
+            labelColor: isDark
+                ? AppTheme.pastelBlue
+                : Theme.of(context).primaryColor,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: isDark
+                ? AppTheme.pastelBlue
+                : Theme.of(context).primaryColor,
+            tabs: const [
+              Tab(text: 'Admins'),
+              Tab(text: 'Students'),
+            ],
+          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: _firestore.collection('users').snapshots(),
@@ -1797,40 +2209,24 @@ class _UsersViewState extends State<UsersView> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
 
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return const Center(child: Text('No users found.'));
-                }
+                final allDocs = snapshot.data?.docs ?? [];
 
-                return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    final doc = snapshot.data!.docs[index];
-                    final data = doc.data() as Map<String, dynamic>;
+                final adminDocs = allDocs.where((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  return data['role'] == 'admin' || data['role'] == 'teacher';
+                }).toList();
 
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          child: Text(data['role'] == 'teacher' ? 'T' : 'S'),
-                        ),
-                        title: Text(data['name'] ?? 'Unknown Name'),
-                        subtitle: Text(
-                          '${data['email']} • Role: ${data['role']}',
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(
-                            Icons.delete,
-                            color: AppTheme.pastelBlue,
-                          ),
-                          onPressed: () {
-                            // TO DO: Delete logic (requires Cloud Function or server to delete Auth user)
-                            // For now, we just delete the Firestore document.
-                            _firestore.collection('users').doc(doc.id).delete();
-                          },
-                        ),
-                      ),
-                    );
-                  },
+                final studentDocs = allDocs.where((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  return data['role'] == 'student';
+                }).toList();
+
+                return TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildUserList(adminDocs),
+                    _buildUserList(studentDocs),
+                  ],
                 );
               },
             ),
@@ -1842,7 +2238,8 @@ class _UsersViewState extends State<UsersView> {
 }
 
 class AddUserDialog extends StatefulWidget {
-  const AddUserDialog({super.key});
+  final String initialRole;
+  const AddUserDialog({super.key, required this.initialRole});
 
   @override
   State<AddUserDialog> createState() => _AddUserDialogState();
@@ -1853,8 +2250,53 @@ class _AddUserDialogState extends State<AddUserDialog> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
-  String _role = 'student';
+  late String _role;
   bool _isLoading = false;
+
+  String? _selectedDegree = 'BSc (Hons) Computing (COMP)';
+  String? _selectedBatch = '22.1';
+
+  final List<String> _degreePrograms = [
+    'BSc (Hons) Computing (COMP)',
+    'BSc (Hons) Software Engineering (SE)',
+    'BSc (Hons) Ethical Hacking and Network Security (EHNS)',
+    'BSc (Hons) Computer Science (CS)',
+    'BSc (Hons) Information Technology for Business (ITB)',
+    'BSc (Hons) Data Science (DS)',
+    'BA (Hons) Creative Multimedia (CM)',
+    'Bachelor of Business Analytics (BBA)',
+    'BA (Hons) Human Resource Management (HRM)',
+    'BA (Hons) Professional Accounting (ACC)',
+    'BSc (Hons) Digital Banking and Finance (DBF)',
+    'BSc (Hons) Business Management (BM)',
+    'BSc (Hons) Marketing Management (MM)',
+    'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)',
+    'BEng (Hons) Electrical and Electronic Engineering (EEE)',
+    'BEng (Hons) Manufacturing Engineering (ME)',
+    'BSc (Hons) Quantity Surveying & Commercial Management (QS)',
+    'BA (Hons) Interior Architecture (IA)',
+    'BA (Hons) Fashion Design (FD)',
+    'BSc (Hons) Psychology and Counselling (PSYCH)',
+    'BA (Hons) English Studies (ES)',
+    'BA (Hons) English and TESOL (TESOL)',
+  ];
+
+  final List<String> _batches = [
+    '22.1',
+    '22.2',
+    '23.1',
+    '23.2',
+    '24.1',
+    '24.2',
+    '25.1',
+    '25.2',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _role = widget.initialRole;
+  }
 
   Future<void> _createUser() async {
     if (!_formKey.currentState!.validate()) return;
@@ -1884,15 +2326,22 @@ class _AddUserDialogState extends State<AddUserDialog> {
 
       // 2. Save User Details in Firestore
       if (userCredential.user != null) {
+        final Map<String, dynamic> userData = {
+          'name': _nameController.text.trim(),
+          'email': _emailController.text.trim(),
+          'role': _role,
+          'createdAt': FieldValue.serverTimestamp(),
+        };
+
+        if (_role == 'student') {
+          userData['degree'] = _selectedDegree;
+          userData['batch'] = _selectedBatch;
+        }
+
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user!.uid)
-            .set({
-              'name': _nameController.text.trim(),
-              'email': _emailController.text.trim(),
-              'role': _role,
-              'createdAt': FieldValue.serverTimestamp(),
-            });
+            .set(userData);
       }
 
       if (mounted) {
@@ -1921,55 +2370,110 @@ class _AddUserDialogState extends State<AddUserDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).primaryColor;
+
+    final unfocusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(
+        color: isDark ? Colors.grey[600]! : Colors.grey[400]!,
+        width: 1,
+      ),
+    );
+    final focusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(
+        color: isDark ? AppTheme.pastelBlue : primaryColor,
+        width: 2,
+      ),
+    );
+
+    InputDecoration getDecoration(String label) {
+      return InputDecoration(
+        labelText: label,
+        enabledBorder: unfocusedBorder,
+        focusedBorder: focusedBorder,
+        border: unfocusedBorder,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+      );
+    }
+
     return AlertDialog(
-      title: const Text('Add New User'),
+      title: Text(
+        'Add New ${_role == 'admin' ? 'Lecturer (Admin)' : 'Student'}',
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Full Name'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter a name' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email Address'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter an email' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
-                validator: (value) => value!.length < 6
-                    ? 'Password must be at least 6 characters'
-                    : null,
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                initialValue: _role,
-                decoration: const InputDecoration(labelText: 'Role'),
-                items: const [
-                  DropdownMenuItem(value: 'student', child: Text('Student')),
-                  DropdownMenuItem(value: 'teacher', child: Text('Teacher')),
-                  DropdownMenuItem(value: 'admin', child: Text('Admin')),
+          child: SizedBox(
+            width: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: getDecoration('Full Name'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter a name' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: getDecoration('Email Address'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter an email' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: getDecoration('Password'),
+                  obscureText: true,
+                  validator: (value) => value!.length < 6
+                      ? 'Password must be at least 6 characters'
+                      : null,
+                ),
+                if (_role == 'student') ...[
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: _selectedDegree,
+                    decoration: getDecoration('Degree Program'),
+                    isExpanded: true,
+                    items: _degreePrograms.map((String degree) {
+                      return DropdownMenuItem<String>(
+                        value: degree,
+                        child: Text(degree, overflow: TextOverflow.ellipsis),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedDegree = newValue;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: _selectedBatch,
+                    decoration: getDecoration('Batch'),
+                    items: _batches.map((String batch) {
+                      return DropdownMenuItem<String>(
+                        value: batch,
+                        child: Text(batch),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedBatch = newValue;
+                      });
+                    },
+                  ),
                 ],
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      _role = value;
-                    });
-                  }
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1979,12 +2483,20 @@ class _AddUserDialogState extends State<AddUserDialog> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isDark ? AppTheme.pastelBlue : primaryColor,
+            foregroundColor: isDark ? Colors.black : Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
           onPressed: _isLoading ? null : _createUser,
           child: _isLoading
               ? const SizedBox(
                   height: 16,
                   width: 16,
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(strokeWidth: 2),
                 )
               : const Text('Create User'),
         ),

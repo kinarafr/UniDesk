@@ -7,6 +7,8 @@ import 'broken_pc_report_screen.dart';
 import 'missing_item_report_screen.dart';
 import 'appointment_booking_screen.dart';
 import 'contact_staff_screen.dart';
+import '../widgets/ticket_detail_sheet.dart';
+import '../core/app_theme.dart';
 
 enum ViewMode { recent, byStatus }
 
@@ -75,74 +77,14 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
   }
 
   void _showRequestDetails(Map<String, dynamic> data, String docId) {
-    showDialog(
+    AppTheme.showAppModalBottomSheet(
       context: context,
-      builder: (context) {
-        final details = data['details'] as Map<String, dynamic>? ?? {};
-        final status = data['status'];
-        final isPending = status == 'Pending';
-
-        return AlertDialog(
-          title: Text(data['serviceTitle'] ?? 'Request Details'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Status: $status',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: status == 'Pending'
-                        ? Colors.orange
-                        : (status == 'Cancelled' || status == 'Rejected'
-                              ? Colors.red
-                              : Colors.green),
-                  ),
-                ),
-                const Divider(),
-                const Text(
-                  'Details:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                ...details.entries.map(
-                  (e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4.0),
-                    child: Text('${e.key}: ${e.value}'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            if (isPending) ...[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _cancelRequest(docId);
-                },
-                child: const Text(
-                  'Cancel Request',
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _editRequest(data, docId);
-                },
-                child: const Text('Edit Request'),
-              ),
-            ] else ...[
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Close'),
-              ),
-            ],
-          ],
-        );
-      },
+      builder: TicketDetailSheet(
+        data: data,
+        docId: docId,
+        onEdit: () => _editRequest(data, docId),
+        onCancel: _cancelRequest,
+      ),
     );
   }
 
@@ -154,13 +96,10 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Ongoing Services'),
-        leading: widget.onBackPressed != null
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: widget.onBackPressed,
-              )
-            : null,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 20,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -204,7 +143,22 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
           });
 
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Text(
+                  'Ongoing\nServices',
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w900,
+                    height: 1.1,
+                    letterSpacing: -1.5,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,
