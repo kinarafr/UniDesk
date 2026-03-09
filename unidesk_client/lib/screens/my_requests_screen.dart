@@ -9,6 +9,7 @@ import 'appointment_booking_screen.dart';
 import 'contact_staff_screen.dart';
 import '../widgets/ticket_detail_sheet.dart';
 import '../core/app_theme.dart';
+import '../widgets/skeleton_loader.dart';
 
 enum ViewMode { recent, byStatus }
 
@@ -108,7 +109,7 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const ListSkeleton();
           }
 
           if (snapshot.hasError) {

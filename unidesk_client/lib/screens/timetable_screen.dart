@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../main.dart';
 import '../core/app_theme.dart';
 import '../widgets/app_pickers.dart';
+import '../widgets/skeleton_loader.dart';
 
 class LectureEvent {
   final String title;
@@ -178,7 +179,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(automaticallyImplyLeading: false),
-        body: const Center(child: CircularProgressIndicator()),
+        body: const ListSkeleton(),
       );
     }
 
