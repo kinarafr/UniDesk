@@ -8,6 +8,7 @@ import '../core/app_theme.dart';
 import '../widgets/ticket_notification_overlay.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import '../widgets/skeleton_loader.dart';
 
 class MainDashboard extends StatefulWidget {
   const MainDashboard({super.key});
@@ -207,19 +208,77 @@ class _MainDashboardState extends State<MainDashboard> {
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 24.0),
-                  child: IconButton(
+                  child: PopupMenuButton<String>(
+                    offset: const Offset(40, -40),
                     icon: const Icon(Icons.logout, color: Colors.red),
-                    onPressed: () async {
-                      await FirebaseAuth.instance.signOut();
-                      if (context.mounted) {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => const AdminLoginScreen(),
-                          ),
-                        );
-                      }
-                    },
                     tooltip: 'Logout',
+                    itemBuilder: (context) => [
+                      PopupMenuItem<String>(
+                        enabled: false,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'Are you sure?',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.black,
+                                    side: const BorderSide(color: Colors.black),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('No'),
+                                ),
+                                const SizedBox(width: 12),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    Navigator.pop(context); // Close popup
+                                    await FirebaseAuth.instance.signOut();
+                                    if (context.mounted) {
+                                      Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) => const AdminLoginScreen(),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Text('Yes, Log out'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    onSelected: (_) {}, // Handled by buttons
                   ),
                 ),
               ),
@@ -827,7 +886,10 @@ class _HomeViewState extends State<HomeView> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: SkeletonLoader(width: double.infinity, height: 300, borderRadius: 12),
+                  );
                 }
                 final docs = snapshot.data!.docs;
                 if (docs.isEmpty) {
@@ -1682,7 +1744,7 @@ class _TicketsViewState extends State<TicketsView> {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const TableSkeleton();
                 }
 
                 if (snapshot.hasError) {
@@ -2202,7 +2264,7 @@ class _UsersViewState extends State<UsersView>
               stream: _firestore.collection('users').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const TableSkeleton();
                 }
 
                 if (snapshot.hasError) {

@@ -10,6 +10,7 @@ import 'missing_item_report_screen.dart';
 import 'appointment_booking_screen.dart';
 import 'contact_staff_screen.dart';
 import '../widgets/lecture_detail_sheet.dart';
+import '../widgets/skeleton_loader.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -239,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
               .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const HomeSkeleton();
             }
 
             Map<String, dynamic> userData = {};

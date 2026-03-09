@@ -49,12 +49,12 @@ This repository is structured into two main applications:
 
 ### 1. Environment Setup
 
-Both applications require Firebase configuration. Create a `.env` file in the root of the respective application directories (`unidesk_admin/` and potentially `unidesk_client/`) to store your secure Firebase configuration variables. 
+Both applications require Firebase configuration. You must create a `.env` file in the root of the respective application directories (`unidesk_admin/` and `unidesk_client/`).
 
-Example `.env` structure:
-```env
-# Add your Firebase API keys and secrets here
-```
+**To set up your environment:**
+1. Copy the contents of `.env.example` (found in `unidesk_admin/`) into a new file named `.env` in both the `unidesk_admin/` and `unidesk_client/` directories.
+2. Fill in the required Firebase secrets (API keys, project IDs, etc.) in each `.env` file.
+
 *(Make sure `.env` is added to your `.gitignore` to prevent secret leaks).*
 
 ### 2. Running the Client App
@@ -64,12 +64,22 @@ Navigate to the client directory, get dependencies, and run:
 ```bash
 cd unidesk_client
 flutter pub get
+
+# To run using npm scripts (Web/Edge):
+npm start
+
+# Or using flutter directly:
 flutter run
+```
+
+To build for web:
+```bash
+npm run build:web
 ```
 
 ### 3. Running the Admin Dashboard
 
-Navigate to the admin directory, get dependencies, and run. Note that the admin dashboard relies on the `.env` file (as defined in its `package.json`):
+Navigate to the admin directory, get dependencies, and run. Note that the admin dashboard relies on the `.env` file:
 
 ```bash
 cd unidesk_admin
@@ -80,6 +90,11 @@ npm start
 
 # Or using flutter directly:
 flutter run --dart-define-from-file=.env
+```
+
+To build for web:
+```bash
+npm run build:web
 ```
 
 ## 📄 License & Publishing
