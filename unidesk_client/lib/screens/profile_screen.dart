@@ -118,7 +118,27 @@ class ProfileScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        if (userData['degree'] != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            userData['degree'],
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: theme.hintColor.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                        if (userData['batch'] != null) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            'Batch: ${userData['batch']}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: theme.hintColor.withOpacity(0.8),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 12),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
