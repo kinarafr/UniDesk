@@ -2,6 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -15,7 +16,7 @@ class NotificationService {
   bool _initialized = false;
 
   Future<void> initialize() async {
-    if (_initialized) return;
+    if (_initialized || kIsWeb) return;
 
     // Request permissions for Android 13+ and iOS
     await _flutterLocalNotificationsPlugin
@@ -47,6 +48,7 @@ class NotificationService {
   }
 
   void _startListening() {
+    if (kIsWeb) return;
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'home_screen.dart';
@@ -17,13 +18,32 @@ class MainLayout extends StatefulWidget {
 
 class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
   int _currentIndex = 0;
+  Stream<DocumentSnapshot>? _userStream;
+  Stream<QuerySnapshot>? _notificationStream;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _updateUserStatus('online');
-    NotificationService().initialize();
+    
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      _userStream = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .snapshots();
+          
+      _notificationStream = FirebaseFirestore.instance
+          .collection('notifications')
+          .where('userId', isEqualTo: user.uid)
+          .where('isSeen', isEqualTo: false)
+          .snapshots();
+    }
+
+    if (!kIsWeb) {
+      NotificationService().initialize();
+    }
   }
 
   @override
@@ -38,6 +58,7 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
   }
 
   void _navigateToTab(int index) {
+    if (_currentIndex == index) return;
     setState(() {
       _currentIndex = index;
     });
@@ -47,7 +68,9 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _updateUserStatus('offline');
-    NotificationService().stopListening();
+    if (!kIsWeb) {
+      NotificationService().stopListening();
+    }
     super.dispose();
   }
 
@@ -63,6 +86,7 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
   }
 
   Future<void> _updateUserStatus(String status) async {
+    if (kIsWeb) return;
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
@@ -83,16 +107,8 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
     final navBgColor = isDark ? const Color(0xFF1E1E1E) : Colors.black;
     const navIconColor = Colors.white;
 
-    final user = FirebaseAuth.instance.currentUser;
-
     return StreamBuilder<DocumentSnapshot>(
-      stream:
-          user != null
-              ? FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(user.uid)
-                  .snapshots()
-              : null,
+      stream: _userStream,
       builder: (context, snapshot) {
         String? batch;
         if (snapshot.hasData && snapshot.data!.exists) {
@@ -164,11 +180,22 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
                         ),
                       ),
 
-                      _buildNavItem(
-                        Icons.confirmation_number_outlined,
-                        Icons.confirmation_number,
-                        3,
-                        navIconColor,
+                      StreamBuilder<QuerySnapshot>(
+                        stream: _notificationStream,
+                        builder: (context, snapshot) {
+                          bool hasUnread = false;
+                          if (snapshot.hasData &&
+                              snapshot.data!.docs.isNotEmpty) {
+                            hasUnread = true;
+                          }
+                          return _buildNavItem(
+                            Icons.confirmation_number_outlined,
+                            Icons.confirmation_number,
+                            3,
+                            navIconColor,
+                            hasUnread: hasUnread,
+                          );
+                        },
                       ),
                       _buildNavItem(
                         Icons.person_outline,
@@ -191,12 +218,14 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
     IconData unselectedIcon,
     IconData selectedIcon,
     int index,
-    Color color,
-  ) {
+    Color color, {
+    bool hasUnread = false,
+  }) {
     final isSelected = _currentIndex == index;
     return IconButton(
       icon: Stack(
         alignment: Alignment.center,
+        clipBehavior: Clip.none,
         children: [
           Icon(
             isSelected ? selectedIcon : unselectedIcon,
@@ -210,6 +239,19 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
                 width: 4,
                 height: 4,
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
+            ),
+          if (hasUnread)
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: const BoxDecoration(
+                  color: Colors.redAccent,
+                  shape: BoxShape.circle,
+                ),
               ),
             ),
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 import 'package:flutter/scheduler.dart';
 import 'core/app_theme.dart';
@@ -10,6 +11,13 @@ import 'screens/main_dashboard.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Enable offline persistence for Firestore
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+  );
+
   runApp(const UniDeskAdminApp());
 }
 
@@ -89,7 +97,7 @@ class UniDeskAdminApp extends StatelessWidget {
             timeDilation = reduceMotion ? 0.1 : 1.0;
 
             return MaterialApp(
-              title: 'UniDesk Admin',
+              title: 'UniDesk Dashboard',
               theme: currentLightTheme,
               darkTheme: currentDarkTheme,
               builder: (context, child) {

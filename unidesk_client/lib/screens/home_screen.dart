@@ -85,6 +85,18 @@ class _HomeScreenState extends State<HomeScreen> {
   String _searchQuery = '';
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocus = FocusNode();
+  Stream<DocumentSnapshot>? _userStream;
+
+  @override
+  void initState() {
+    super.initState();
+    if (user != null) {
+      _userStream = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .snapshots();
+    }
+  }
 
   @override
   void dispose() {
@@ -209,10 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection('users')
-              .doc(user!.uid)
-              .snapshots(),
+          stream: _userStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const HomeSkeleton();
@@ -245,9 +254,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 .toList();
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 16.0,
+              padding: const EdgeInsets.only(
+                left: 20.0,
+                right: 20.0,
+                top: 16.0,
+                bottom: 120.0,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -702,6 +713,8 @@ class UpcomingLecturesCarousel extends StatefulWidget {
 }
 
 class _UpcomingLecturesCarouselState extends State<UpcomingLecturesCarousel> {
+  Stream<QuerySnapshot<Map<String, dynamic>>>? _scheduleStream;
+
   final List<String> _coverImages = [
     'assets/images/Covers/Cover 1.png',
     'assets/images/Covers/Cover 2.png',
@@ -725,6 +738,34 @@ class _UpcomingLecturesCarouselState extends State<UpcomingLecturesCarousel> {
   void initState() {
     super.initState();
     _shuffledImages = List.from(_coverImages)..shuffle(Random());
+    _initScheduleStream();
+  }
+
+  void _initScheduleStream() {
+    String? batch = widget.batch ?? '24.1';
+    final String trimmedBatch = batch.trim();
+    final String? trimmedBatchToken = widget.batchToken?.trim();
+
+    Query<Map<String, dynamic>> query =
+        FirebaseFirestore.instance.collection('class_schedules');
+    if (trimmedBatchToken != null && trimmedBatchToken.isNotEmpty) {
+      query = query.where('batchToken', isEqualTo: trimmedBatchToken);
+    } else {
+      query = query.where('batch', isEqualTo: trimmedBatch);
+    }
+    _scheduleStream = query.snapshots();
+  }
+
+  @override
+  void didUpdateWidget(UpcomingLecturesCarousel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.batch != widget.batch ||
+        oldWidget.batchToken != widget.batchToken ||
+        oldWidget.degree != widget.degree) {
+      setState(() {
+        _initScheduleStream();
+      });
+    }
   }
 
   DateTime? _parseTargetDate(dynamic dateData, String timeString) {
@@ -768,20 +809,12 @@ class _UpcomingLecturesCarouselState extends State<UpcomingLecturesCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    String? batch = widget.batch ?? '24.1';
-    final String trimmedBatch = batch.trim();
     final String? trimmedDegree = widget.degree?.trim();
     final String? trimmedBatchToken = widget.batchToken?.trim();
 
-    Query<Map<String, dynamic>> query = FirebaseFirestore.instance.collection('class_schedules');
-    if (trimmedBatchToken != null && trimmedBatchToken.isNotEmpty) {
-      query = query.where('batchToken', isEqualTo: trimmedBatchToken);
-    } else {
-      query = query.where('batch', isEqualTo: trimmedBatch);
-    }
-
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: query.snapshots(),
+      stream: _scheduleStream,
+
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SizedBox(
@@ -922,8 +955,8 @@ class _UpcomingLecturesCarouselState extends State<UpcomingLecturesCarousel> {
                       ),
                       child: Container(
                         width: double.infinity,
-                        height: 110.0,
-                        padding: const EdgeInsets.all(16.0),
+                        height: 85.0,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                         decoration: BoxDecoration(
                           color: Theme.of(context).brightness == Brightness.dark
                               ? Colors.black.withOpacity(0.9)
