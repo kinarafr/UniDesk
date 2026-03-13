@@ -10,6 +10,14 @@ import 'screens/main_dashboard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Diagnostic check for environment variables
+  const apiKey = String.fromEnvironment('FIREBASE_API_KEY');
+  debugPrint('Firebase API Key length: ${apiKey.length}');
+  if (apiKey.isEmpty) {
+    debugPrint('WARNING: Firebase API Key is empty! Environment variables might not be injected.');
+  }
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Enable offline persistence for Firestore
