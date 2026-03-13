@@ -75,231 +75,188 @@ class _MainDashboardState extends State<MainDashboard> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Row(
-          children: [
-            Text(
-              'NIBM ',
-              style: TextStyle(fontWeight: FontWeight.w900, color: Colors.blue),
-            ),
-            SizedBox(width: 12),
-            Text('UniDesk Admin Dashboard'),
-          ],
-        ),
-        centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: PopupMenuButton<String>(
-              offset: const Offset(0, 50),
-              tooltip: 'Profile',
-              icon: CircleAvatar(
-                backgroundColor: Theme.of(context).primaryColor,
-                child: const Icon(Icons.person, color: Colors.white),
-              ),
-              itemBuilder: (context) {
-                final user = FirebaseAuth.instance.currentUser;
-                return [
-                  PopupMenuItem<String>(
-                    enabled: false,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          user?.displayName ?? 'Admin User',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          user?.email ?? 'No email available',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuDivider(),
-                  PopupMenuItem<String>(
-                    value: 'help',
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.help_outline,
-                          size: 20,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          'Help & Support',
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ];
-              },
-              onSelected: (value) {
-                if (value == 'help') {
-                  UniDeskAdminApp.showAppDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Help & Support'),
-                      content: const Text(
-                        'For assistance, please contact the system administrator or check the documentation.',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Close'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              },
-            ),
+  Widget _buildTopBar(ThemeData theme, bool isDark) {
+    return Container(
+      height: 70,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        border: Border(
+          bottom: BorderSide(
+            color: theme.dividerColor.withOpacity(0.1),
+            width: 1,
           ),
-        ],
+        ),
       ),
-      body: Row(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          NavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (int index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            labelType: NavigationRailLabelType.all,
-            destinations: const [
-              NavigationRailDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: Text('Home'),
+          Row(
+            children: [
+              Image.asset(
+                'assets/logos/unidesk_logo.png',
+                height: 40,
+                filterQuality: FilterQuality.high,
               ),
-              NavigationRailDestination(
-                icon: Icon(Icons.confirmation_number_outlined),
-                selectedIcon: Icon(Icons.confirmation_number),
-                label: Text('Tickets'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.people_outline),
-                selectedIcon: Icon(Icons.people),
-                label: Text('Users'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.settings_outlined),
-                selectedIcon: Icon(Icons.settings),
-                label: Text('Settings'),
-              ),
-            ],
-            trailing: Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 24.0),
-                  child: PopupMenuButton<String>(
-                    offset: const Offset(40, -40),
-                    icon: const Icon(Icons.logout, color: Colors.red),
-                    tooltip: 'Logout',
-                    itemBuilder: (context) => [
-                      PopupMenuItem<String>(
-                        enabled: false,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Are you sure?',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    side: const BorderSide(color: Colors.black),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 8,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('No'),
-                                ),
-                                const SizedBox(width: 12),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 8,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  onPressed: () async {
-                                    Navigator.pop(context); // Close popup
-                                    await FirebaseAuth.instance.signOut();
-                                    if (context.mounted) {
-                                      Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                          builder:
-                                              (_) => const AdminLoginScreen(),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: const Text('Yes, Log out'),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    onSelected: (_) {}, // Handled by buttons
-                  ),
+              const SizedBox(width: 12),
+              Text(
+                'UniDesk',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 22,
+                  color: isDark ? AppTheme.pastelBlue : theme.primaryColor,
+                  letterSpacing: -0.5,
                 ),
               ),
-            ),
+            ],
           ),
-          const VerticalDivider(thickness: 1, width: 1),
+          const AdminProfileButton(),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Scaffold(
+      body: Column(
+        children: [
+          _buildTopBar(theme, isDark),
           Expanded(
-            child: _selectedIndex == 0
-                ? HomeView(
-                    onTabSwitch: (index) {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                  )
-                : _selectedIndex == 1
-                ? const TicketsView()
-                : _selectedIndex == 2
-                ? const UsersView()
-                : const SettingsView(),
+            child: Row(
+              children: [
+                NavigationRail(
+                  groupAlignment: -1.0,
+                  selectedIndex: _selectedIndex,
+                  onDestinationSelected: (int index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                  labelType: NavigationRailLabelType.all,
+                  destinations: const [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home_outlined),
+                      selectedIcon: Icon(Icons.home),
+                      label: Text('Home'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.confirmation_number_outlined),
+                      selectedIcon: Icon(Icons.confirmation_number),
+                      label: Text('Tickets'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.people_outline),
+                      selectedIcon: Icon(Icons.people),
+                      label: Text('Users'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.settings_outlined),
+                      selectedIcon: Icon(Icons.settings),
+                      label: Text('Settings'),
+                    ),
+                  ],
+                  trailing: Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: PopupMenuButton<String>(
+                          offset: const Offset(40, -40),
+                          icon: const Icon(Icons.logout, color: Colors.red),
+                          tooltip: 'Logout',
+                          itemBuilder: (context) => [
+                            PopupMenuItem<String>(
+                              enabled: false,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'Are you sure?',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: isDark ? Colors.white : Colors.black,
+                                          side: BorderSide(color: isDark ? Colors.white24 : Colors.black),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('No'),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red,
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        onPressed: () async {
+                                          Navigator.pop(context); // Close popup
+                                          await FirebaseAuth.instance.signOut();
+                                          if (context.mounted) {
+                                            Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                                builder: (_) => const AdminLoginScreen(),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: const Text('Yes, Log out'),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                          onSelected: (_) {}, // Handled by buttons
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const VerticalDivider(thickness: 1, width: 1),
+                Expanded(
+                  child: _selectedIndex == 0
+                      ? HomeView(
+                          onTabSwitch: (index) {
+                            setState(() {
+                              _selectedIndex = index;
+                          });
+                        },
+                      )
+                      : _selectedIndex == 1
+                          ? const TicketsView()
+                          : _selectedIndex == 2
+                              ? const UsersView()
+                              : const SettingsView(),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -383,13 +340,42 @@ class _MainDashboardState extends State<MainDashboard> {
                 backgroundColor: actionColor,
                 foregroundColor: Colors.white,
               ),
-              onPressed: () {
-                FirebaseFirestore.instance
+              onPressed: () async {
+                await FirebaseFirestore.instance
                     .collection('tickets')
                     .doc(docId)
                     .update({'status': newStatus});
-                Navigator.pop(confirmContext); // Close confirm
-                Navigator.pop(context); // Close details
+
+                // Create a notification for the user
+                final userId = data['userId'];
+                if (userId != null) {
+                  final title = newStatus == 'Approved/Resolved'
+                      ? 'Ticket Resolved'
+                      : 'Ticket Rejected';
+                  
+                  final action = newStatus == 'Approved/Resolved'
+                      ? ' resolved'
+                      : ' rejected';
+                  
+                  final serviceName = data['serviceTitle'] ?? 'Your request';
+                      
+                  await FirebaseFirestore.instance.collection('notifications').add({
+                    'userId': userId,
+                    'ticketId': docId,
+                    'title': title,
+                    'body': '$serviceName has been$action.',
+                    'status': newStatus,
+                    'isSeen': false,
+                    'createdAt': FieldValue.serverTimestamp(),
+                  });
+                }
+
+                if (confirmContext.mounted) {
+                  Navigator.pop(confirmContext); // Close confirm
+                }
+                if (context.mounted) {
+                  Navigator.pop(context); // Close details
+                }
 
                 // Show notification snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -683,13 +669,72 @@ class _HomeViewState extends State<HomeView> {
     super.dispose();
   }
 
+  Widget _buildHeader(ThemeData theme, bool isDark) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Dashboard Overview',
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Welcome back, Admin',
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+            ),
+          ],
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.02),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                DateFormat('HH:mm').format(_currentTime),
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  color: isDark ? AppTheme.pastelBlue : theme.primaryColor,
+                  letterSpacing: -1,
+                ),
+              ),
+              Text(
+                DateFormat('EEEE, d MMMM yyyy').format(_currentTime),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -722,51 +767,6 @@ class _HomeViewState extends State<HomeView> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildHeader(ThemeData theme, bool isDark) {
-    final dateStr = DateFormat('EEEE, MMMM d, y').format(_currentTime);
-    final timeStr = DateFormat('hh:mm:ss a').format(_currentTime);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Dashboard Overview',
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Welcome back, Admin',
-              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-            ),
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              timeStr,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
-                color: isDark ? AppTheme.pastelBlue : theme.primaryColor,
-              ),
-            ),
-            Text(
-              dateStr,
-              style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey),
-            ),
-          ],
-        ),
-      ],
     );
   }
 
@@ -1129,7 +1129,6 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
-
 // Tickets Management View
 class TicketsView extends StatefulWidget {
   const TicketsView({super.key});
@@ -1683,7 +1682,7 @@ class _TicketsViewState extends State<TicketsView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1732,6 +1731,8 @@ class _TicketsViewState extends State<TicketsView> {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 16),
+                  const AdminProfileButton(),
                 ],
               ),
             ],
@@ -2164,8 +2165,8 @@ class _UsersViewState extends State<UsersView>
               ),
               subtitle: Text(
                 data['role'] == 'student'
-                    ? '${data['studentId'] ?? 'No ID'} • ${data['email']}'
-                    : '${data['email']} • Role: ${data['role']}',
+                    ? '${data['studentId'] ?? 'No ID'} Ã¢â‚¬Â¢ ${data['email']}'
+                    : '${data['email']} Ã¢â‚¬Â¢ Role: ${data['role']}',
                 style: TextStyle(color: Colors.grey[600], fontSize: 13),
               ),
               trailing: IconButton(
@@ -2185,7 +2186,7 @@ class _UsersViewState extends State<UsersView>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -2196,77 +2197,83 @@ class _UsersViewState extends State<UsersView>
                 'User Management',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              PopupMenuButton<String>(
-                tooltip: 'Add User',
-                offset: const Offset(0, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.grey.withOpacity(0.2)),
-                ),
-                color: Theme.of(context).cardColor,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppTheme.pastelBlue
-                        : Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.add,
-                        color: isDark ? Colors.black : Colors.white,
-                        size: 20,
+              Row(
+                children: [
+                  PopupMenuButton<String>(
+                    tooltip: 'Add User',
+                    offset: const Offset(0, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+                    ),
+                    color: Theme.of(context).cardColor,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Add User',
-                        style: TextStyle(
-                          color: isDark ? Colors.black : Colors.white,
-                          fontWeight: FontWeight.bold,
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? AppTheme.pastelBlue
+                            : Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: isDark ? Colors.black : Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Add User',
+                            style: TextStyle(
+                              color: isDark ? Colors.black : Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 'admin',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.admin_panel_settings,
+                              color: isDark
+                                  ? AppTheme.pastelBlue
+                                  : Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text('Lecturer (Admin)'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'student',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.school,
+                              color: isDark
+                                  ? AppTheme.pastelBlue
+                                  : Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text('Student'),
+                          ],
                         ),
                       ),
                     ],
+                    onSelected: _showAddUserDialog,
                   ),
-                ),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'admin',
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.admin_panel_settings,
-                          color: isDark
-                              ? AppTheme.pastelBlue
-                              : Theme.of(context).primaryColor,
-                        ),
-                        const SizedBox(width: 12),
-                        const Text('Lecturer (Admin)'),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'student',
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.school,
-                          color: isDark
-                              ? AppTheme.pastelBlue
-                              : Theme.of(context).primaryColor,
-                        ),
-                        const SizedBox(width: 12),
-                        const Text('Student'),
-                      ],
-                    ),
-                  ),
+                  const SizedBox(width: 16),
+                  const AdminProfileButton(),
                 ],
-                onSelected: _showAddUserDialog,
               ),
             ],
           ),
@@ -3027,6 +3034,8 @@ class _EditUserDialogState extends State<EditUserDialog> {
     super.dispose();
   }
 }
+
+
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
@@ -3034,13 +3043,18 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Settings',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Settings',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             const SizedBox(height: 24),
             
@@ -3481,7 +3495,7 @@ class SettingsView extends StatelessWidget {
                           batchCounts.forEach((b, count) {
                             int empty = batchEmptyDates[b] ?? 0;
                             report +=
-                                "• $b: $count students ${empty > 0 ? '($empty MISSING SCHEDULE DATES)' : '(OK)'}\n";
+                                "Ã¢â‚¬Â¢ $b: $count students ${empty > 0 ? '($empty MISSING SCHEDULE DATES)' : '(OK)'}\n";
                           });
 
                           if (idUpdateCount > 0) {
@@ -3524,7 +3538,7 @@ class SettingsView extends StatelessWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange[100],
+                      backgroundColor: Colors.orange.withOpacity(0.1),
                       foregroundColor: Colors.orange[900],
                     ),
                     child: const Text('Run Health Check'),
@@ -3768,6 +3782,109 @@ class _DataImportCardState extends State<DataImportCard> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class AdminProfileButton extends StatelessWidget {
+  const AdminProfileButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return PopupMenuButton<String>(
+      offset: const Offset(0, 50),
+      tooltip: 'Profile',
+      icon: CircleAvatar(
+        backgroundColor: isDark
+            ? AppTheme.pastelBlue.withOpacity(0.1)
+            : Theme.of(context).primaryColor.withOpacity(0.1),
+        child: Icon(
+          Icons.person_outline,
+          color: isDark ? AppTheme.pastelBlue : Theme.of(context).primaryColor,
+        ),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+      ),
+      color: Theme.of(context).cardColor,
+      itemBuilder: (context) => [
+        PopupMenuItem<String>(
+          enabled: false,
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: isDark
+                    ? AppTheme.pastelBlue.withOpacity(0.1)
+                    : Theme.of(context).primaryColor.withOpacity(0.1),
+                child: Icon(
+                  Icons.admin_panel_settings_outlined,
+                  color: isDark
+                      ? AppTheme.pastelBlue
+                      : Theme.of(context).primaryColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      user?.displayName ?? 'Administrator',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                    ),
+                    Text(
+                      user?.email ?? 'admin@unidesk.com',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem<String>(
+          value: 'help',
+          child: Row(
+            children: [
+              const Icon(Icons.help_outline, size: 20),
+              const SizedBox(width: 12),
+              const Text('Help & Documentation'),
+            ],
+          ),
+        ),
+      ],
+      onSelected: (value) {
+        if (value == 'help') {
+           UniDeskAdminApp.showAppDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Help & Documentation'),
+              content: const Text(
+                'For assistance, please contact the system administrator or check the documentation.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }

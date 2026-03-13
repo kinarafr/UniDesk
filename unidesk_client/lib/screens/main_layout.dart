@@ -6,6 +6,7 @@ import 'timetable_screen.dart';
 import 'services_screen.dart';
 import 'profile_screen.dart';
 import 'my_requests_screen.dart';
+import '../core/notification_service.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -22,6 +23,7 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _updateUserStatus('online');
+    NotificationService().initialize();
   }
 
   @override
@@ -45,6 +47,7 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _updateUserStatus('offline');
+    NotificationService().stopListening();
     super.dispose();
   }
 

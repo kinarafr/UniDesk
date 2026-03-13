@@ -10,6 +10,7 @@ import 'contact_staff_screen.dart';
 import '../widgets/ticket_detail_sheet.dart';
 import '../core/app_theme.dart';
 import '../widgets/skeleton_loader.dart';
+import 'notifications_screen.dart';
 
 enum ViewMode { recent, byStatus }
 
@@ -148,15 +149,73 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Text(
-                  'Ongoing\nServices',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w900,
-                    height: 1.1,
-                    letterSpacing: -1.5,
-                    color: isDark ? Colors.white : Colors.black,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Ongoing\nServices',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w900,
+                        height: 1.1,
+                        letterSpacing: -1.5,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('notifications')
+                          .where('userId', isEqualTo: user!.uid)
+                          .where('isSeen', isEqualTo: false)
+                          .snapshots(),
+                      builder: (context, notificationSnapshot) {
+                        final unreadCount =
+                            notificationSnapshot.data?.docs.length ?? 0;
+
+                        return Stack(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.notifications_outlined, size: 32),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const NotificationsScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                            if (unreadCount > 0)
+                              Positioned(
+                                right: 8,
+                                top: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 16,
+                                    minHeight: 16,
+                                  ),
+                                  child: Text(
+                                    unreadCount > 9 ? '9+' : '$unreadCount',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 32),
