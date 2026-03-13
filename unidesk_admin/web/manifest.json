@@ -1,11 +1,11 @@
 {
-    "name": "unidesk_admin",
-    "short_name": "unidesk_admin",
+    "name": "UniDesk Dashboard",
+    "short_name": "UniDesk",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "An intuitive admin dashboard designed to streamline campus support and ticket management.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
