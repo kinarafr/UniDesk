@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:math';
+import 'package:intl/intl.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../main.dart';
@@ -66,34 +69,6 @@ final List<QuickActionDef> _allAvailableActions = [
     color: Color(0xFFE1BEE7), // Pastel Purple
     destination: AppointmentBookingScreen(),
   ),
-];
-
-// Dummy Data
-final List<Map<String, dynamic>> _upcomingLectures = [
-  {
-    'title': 'Web Development',
-    'lecturer': 'Mr Sanjaya Elvetigala',
-    'time': '09:00 AM - 12:00 PM',
-    'room': 'Lab 05',
-    'imagePath': 'assets/images/web_dev.jpg',
-    'color': const Color(0xFF3B5B8E), // UniDesk Blue
-  },
-  {
-    'title': 'Cinematography',
-    'lecturer': 'Mr Shanaka',
-    'time': '01:00 PM - 04:00 PM',
-    'room': 'Lab 02',
-    'imagePath': 'assets/images/cine.png',
-    'color': const Color(0xFF3B8E65), // Pastel Green accent
-  },
-  {
-    'title': 'Motion Graphics',
-    'lecturer': 'Mrs. Vasana',
-    'time': '05:00 PM - 08:00 PM',
-    'room': 'Lab 05',
-    'imagePath': 'assets/images/motion.png',
-    'color': const Color(0xFF8E3B65), // Pastel Purple/Red accent
-  },
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -249,6 +224,9 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             final name = userData['name'] ?? 'Student';
+            final batch = userData['batch'];
+            final batchToken = userData['batchToken'];
+            final degree = userData['degree'];
 
             List<String> userActionIds = [];
             if (userData.containsKey('quickActions')) {
@@ -351,113 +329,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     const SizedBox(height: 16),
 
                     // Image Carousel
-                    SizedBox(
-                      height: 180,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _upcomingLectures.length,
-                        itemBuilder: (context, index) {
-                          final lecture = _upcomingLectures[index];
-                          return GestureDetector(
-                            onTap: () {
-                              AppTheme.showAppModalBottomSheet(
-                                context: context,
-                                builder: LectureDetailSheet(
-                                  lecture: lecture,
-                                  onNavigateToTimetable:
-                                      widget.onNavigateToTimetable ?? () {},
-                                ),
-                              );
-                            },
-                            child: Container(
-                              width: 300,
-                              margin: const EdgeInsets.only(right: 16),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                    lecture['imagePath'] as String,
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all(16.0),
-                                    decoration: BoxDecoration(
-                                      color: (lecture['color'] as Color)
-                                          .withOpacity(0.95),
-                                      borderRadius: const BorderRadius.only(
-                                        bottomLeft: Radius.circular(16),
-                                        bottomRight: Radius.circular(16),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              lecture['title'] as String,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              lecture['lecturer'] as String,
-                                              style: const TextStyle(
-                                                color: Colors.white70,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                            Text(
-                                              lecture['time'] as String,
-                                              style: const TextStyle(
-                                                color: Colors.white70,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            const Text(
-                                              'ROOM',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            Text(
-                                              lecture['room'] as String,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 26,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                    UpcomingLecturesCarousel(
+                      batch: batch,
+                      batchToken: batchToken,
+                      degree: degree,
+                      onNavigateToTimetable: widget.onNavigateToTimetable,
                     ),
 
                     const SizedBox(height: 32),
@@ -803,6 +679,325 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ],
+    );
+  }
+}
+
+class UpcomingLecturesCarousel extends StatefulWidget {
+  final String? batch;
+  final String? batchToken;
+  final String? degree;
+  final VoidCallback? onNavigateToTimetable;
+
+  const UpcomingLecturesCarousel({
+    super.key,
+    this.batch,
+    this.batchToken,
+    this.degree,
+    this.onNavigateToTimetable,
+  });
+
+  @override
+  State<UpcomingLecturesCarousel> createState() => _UpcomingLecturesCarouselState();
+}
+
+class _UpcomingLecturesCarouselState extends State<UpcomingLecturesCarousel> {
+  final List<String> _coverImages = [
+    'assets/images/Covers/Cover 1.png',
+    'assets/images/Covers/Cover 2.png',
+    'assets/images/Covers/Cover 3.png',
+    'assets/images/Covers/Cover 4.png',
+    'assets/images/Covers/Cover 5.png',
+  ];
+
+  late List<String> _shuffledImages;
+  
+  final List<Color> _pastelColors = const [
+    Color(0xFFB3E5FC), // Light Blue
+    Color(0xFF90CAF9), // Secondary Pastel Blue
+    Color(0xFFC8E6C9), // Pastel Green
+    Color(0xFFFFF9C4), // Pastel Yellow
+    Color(0xFFE1BEE7), // Pastel Purple
+    Color(0xFFFFCC80), // Pastel Orange
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _shuffledImages = List.from(_coverImages)..shuffle(Random());
+  }
+
+  DateTime? _parseTargetDate(dynamic dateData, String timeString) {
+    DateTime? targetDate;
+    if (dateData is Timestamp) {
+      targetDate = dateData.toDate();
+    } else if (dateData is String) {
+      String dateStr = dateData.trim();
+      try {
+        targetDate = DateTime.parse(dateStr);
+      } catch (_) {
+        try {
+          targetDate = DateFormat('d/M/yyyy').parse(dateStr);
+        } catch (_) {
+          try {
+            targetDate = DateFormat('d-M-yyyy').parse(dateStr);
+          } catch (_) {}
+        }
+      }
+    }
+
+    if (targetDate == null) return null;
+
+    try {
+      final timeParts = timeString.split('-');
+      if (timeParts.isNotEmpty) {
+        final startTimeStr = timeParts[0].trim();
+        final startTimeInDate = DateFormat('hh:mm a').parse(startTimeStr);
+        targetDate = DateTime(
+          targetDate.year,
+          targetDate.month,
+          targetDate.day,
+          startTimeInDate.hour,
+          startTimeInDate.minute,
+        );
+      }
+    } catch (_) {}
+
+    return targetDate;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String? batch = widget.batch ?? '24.1';
+    final String trimmedBatch = batch.trim();
+    final String? trimmedDegree = widget.degree?.trim();
+    final String? trimmedBatchToken = widget.batchToken?.trim();
+
+    Query<Map<String, dynamic>> query = FirebaseFirestore.instance.collection('class_schedules');
+    if (trimmedBatchToken != null && trimmedBatchToken.isNotEmpty) {
+      query = query.where('batchToken', isEqualTo: trimmedBatchToken);
+    } else {
+      query = query.where('batch', isEqualTo: trimmedBatch);
+    }
+
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: query.snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox(
+            height: 180,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const SizedBox(
+            height: 180,
+            child: Center(child: Text('No upcoming lectures.', style: TextStyle(color: Colors.grey))),
+          );
+        }
+
+        final now = DateTime.now();
+        final threshold = now.subtract(const Duration(hours: 4));
+
+        List<Map<String, dynamic>> upcomingLectures = [];
+        int colorIndex = 0;
+        
+        for (var doc in snapshot.data!.docs) {
+          final data = doc.data();
+          final String? docDegree = data['degree']?.toString().trim();
+
+          if (trimmedBatchToken == null || trimmedBatchToken.isEmpty) {
+            if (docDegree != null && trimmedDegree != null && docDegree != trimmedDegree) {
+              continue; // Exclude non-matching degree if fallback batching is used
+            }
+          }
+
+          final dateData = data['date'];
+          final time = data['time']?.toString() ?? 'TBA';
+          
+          final parsedDate = _parseTargetDate(dateData, time);
+          if (parsedDate == null) continue;
+
+          // Check for structural placeholders
+          final title = data['title']?.toString() ?? 'Untitled Lecture';
+          final lowerTitle = title.toLowerCase().trim();
+          final dayName = DateFormat('EEEE').format(parsedDate).toLowerCase();
+          final structuralPlaceholders = [dayName, 'weekend', 'weekdays'];
+          final dayNames = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+          final holidayKeywords = [
+            'poya day', 'holiday', 'vacation', 'independence day', 'may day',
+            'aurudu', 'avurudu', 'tamil thai pongal day', 'vesak', 'christmas',
+          ];
+
+          final parts = lowerTitle.split(',').map((e) => e.trim()).toList();
+          bool isStructural = parts.every((p) => structuralPlaceholders.contains(p) || dayNames.contains(p));
+          
+          if (isStructural) continue;
+
+          bool isHoliday = false;
+          for (var keyword in holidayKeywords) {
+            if (lowerTitle.contains(keyword)) {
+              isHoliday = true;
+              break;
+            }
+          }
+          
+          final auruduStart = DateTime(2026, 4, 11);
+          final auruduEnd = DateTime(2026, 4, 19, 23, 59, 59);
+          if (parsedDate.isAfter(auruduStart.subtract(const Duration(days: 1))) && 
+              parsedDate.isBefore(auruduEnd.add(const Duration(days: 1)))) {
+             isHoliday = true;
+          }
+
+          if (isHoliday) {
+            if (!(parsedDate.year == 2026 && parsedDate.month == 4 && parsedDate.day == 1)) {
+              continue;
+            }
+          }
+
+          if (parsedDate.isAfter(threshold)) {
+             upcomingLectures.add({
+               'id': doc.id,
+               'title': title,
+               'lecturer': data['lecturer']?.toString() ?? 'TBA',
+               'time': time,
+               'room': 'Lab 05', // requested: default Lab 05
+               'parsedDate': parsedDate,
+               'color': _pastelColors[colorIndex % _pastelColors.length],
+             });
+             colorIndex++;
+          }
+        }
+
+        upcomingLectures.sort((a, b) => (a['parsedDate'] as DateTime).compareTo(b['parsedDate'] as DateTime));
+        
+        final nextLectures = upcomingLectures.take(3).toList();
+
+        if (nextLectures.isEmpty) {
+          return const SizedBox(
+            height: 180,
+            child: Center(child: Text('No upcoming lectures.', style: TextStyle(color: Colors.grey))),
+          );
+        }
+
+        return SizedBox(
+          height: 180,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: nextLectures.length,
+            itemBuilder: (context, index) {
+              final lecture = nextLectures[index];
+              final imagePath = _shuffledImages[index % _shuffledImages.length];
+
+              return GestureDetector(
+                onTap: () {
+                  AppTheme.showAppModalBottomSheet(
+                    context: context,
+                    builder: LectureDetailSheet(
+                      lecture: {
+                        ...lecture,
+                        'imagePath': imagePath,
+                      },
+                      onNavigateToTimetable: widget.onNavigateToTimetable ?? () {},
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 300,
+                  margin: const EdgeInsets.only(right: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    image: DecorationImage(
+                      image: AssetImage(imagePath),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
+                      ),
+                      child: Container(
+                        width: double.infinity,
+                        height: 110.0,
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.black.withOpacity(0.9)
+                              : const Color(0xFF384CA0).withOpacity(0.95),
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  AutoSizeText(
+                                    lecture['title'] as String,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                    maxLines: 2,
+                                    minFontSize: 10,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  // Lecturer name omitted
+                                  Text(
+                                    lecture['time'] as String,
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  const Text(
+                                    'ROOM',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  Text(
+                                    lecture['room'] as String,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 26,
+                                    ),
+                                  ),
+                                ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

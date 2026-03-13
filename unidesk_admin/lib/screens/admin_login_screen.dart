@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'main_dashboard.dart';
 import '../core/app_theme.dart';
 
@@ -27,18 +29,10 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     final inputEmail = _emailController.text.trim();
     final inputPassword = _passwordController.text.trim();
 
-    String actualEmail = inputEmail;
-    String actualPassword = inputPassword;
-
-    if (inputEmail == 'admin' && inputPassword == 'admin') {
-      actualEmail = 'admin@unidesk.edu';
-      actualPassword = 'admin123';
-    }
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: actualEmail,
-        password: actualPassword,
+        email: inputEmail,
+        password: inputPassword,
       );
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -46,35 +40,6 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         );
       }
     } on FirebaseAuthException catch (e) {
-      if (inputEmail == 'admin') {
-        try {
-          final cred = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-                email: actualEmail,
-                password: actualPassword,
-              );
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(cred.user!.uid)
-              .set({
-                'name': 'Demo Admin',
-                'email': actualEmail,
-                'role': 'admin',
-                'createdAt': FieldValue.serverTimestamp(),
-              });
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const MainDashboard()),
-            );
-          }
-        } catch (creationError) {
-          setState(() {
-            _errorMessage = creationError.toString();
-          });
-        }
-        return; // Skip normal final block if we intercepted
-      }
-
       setState(() {
         _errorMessage = e.message ?? 'An error occurred during login.';
       });
@@ -198,46 +163,78 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                                   });
 
                                   try {
+                                    // Normally you would use FirebaseAuth.instance.sendPasswordResetEmail(email: resetEmail);
+                                    // Send via EmailJS
+                                    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+                                    final response = await http.post(
+                                      url,
+                                      headers: {
+                                        'Content-Type': 'application/json',
+                                      },
+                                      body: json.encode({
+                                        'service_id': 'service_jr8le7c',
+                                        'template_id': 'template_xj2f02b',
+                                        'user_id': 'AL_u8EiAxaurwckgg',
+                                        'template_params': {
+                                          'to_email': 'thaweenilukshan@gmail.com',
+                                          'reset_link': 'http://localhost:3000/password_reset_web/index.html', // Local link for now
+                                        }
+                                      }),
+                                    );
+                                    
+                                    if (response.statusCode != 200) {
+                                      throw Exception('Failed to send email: ${response.body}');
+                                    }
+
+                                    // Also log to Firestore for record-keeping
                                     await FirebaseFirestore.instance
                                         .collection('passwordResets')
                                         .add({
                                           'email': resetEmail,
-                                          'status': 'pending',
+                                          'status': 'email_sent',
                                           'requestedAt':
                                               FieldValue.serverTimestamp(),
                                         });
 
                                     if (context.mounted) {
-                                      Navigator.of(context).pop();
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: const Row(
+                                      Navigator.of(context).pop(); // Close bottom sheet
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(16),
+                                          ),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Icon(
-                                                Icons.check_circle,
-                                                color: Colors.white,
+                                              const Icon(Icons.check_circle, color: Colors.green, size: 64),
+                                              const SizedBox(height: 16),
+                                              const Text(
+                                                'Password link sent successfully!',
+                                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                                textAlign: TextAlign.center,
                                               ),
-                                              SizedBox(width: 12),
-                                              Expanded(
-                                                child: Text(
-                                                  'Password reset instructions sent to your email!',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
+                                              const SizedBox(height: 8),
+                                              const Text(
+                                                'Please check your email to reset the admin password.',
+                                                style: TextStyle(fontSize: 14, color: Colors.grey),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              const SizedBox(height: 24),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  minimumSize: const Size(double.infinity, 45),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(30),
                                                   ),
+                                                  backgroundColor: const Color(0xFF90CAF9),
+                                                  foregroundColor: Colors.black87,
                                                 ),
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: const Text('Close', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                                               ),
                                             ],
                                           ),
-                                          backgroundColor: Colors.green[700],
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                          duration: const Duration(seconds: 4),
                                         ),
                                       );
                                     }
@@ -336,7 +333,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(
                         _errorMessage,
-                        style: const TextStyle(color: AppTheme.pastelBlue),
+                        style: const TextStyle(color: Colors.red),
                         textAlign: TextAlign.center,
                       ),
                     ),

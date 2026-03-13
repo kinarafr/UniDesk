@@ -7,6 +7,7 @@ import 'admin_login_screen.dart';
 import '../core/app_theme.dart';
 import '../widgets/ticket_notification_overlay.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'package:intl/intl.dart';
 import '../widgets/skeleton_loader.dart';
 
@@ -74,231 +75,188 @@ class _MainDashboardState extends State<MainDashboard> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Row(
-          children: [
-            Text(
-              'NIBM ',
-              style: TextStyle(fontWeight: FontWeight.w900, color: Colors.blue),
-            ),
-            SizedBox(width: 12),
-            Text('UniDesk Admin Dashboard'),
-          ],
-        ),
-        centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: PopupMenuButton<String>(
-              offset: const Offset(0, 50),
-              tooltip: 'Profile',
-              icon: CircleAvatar(
-                backgroundColor: Theme.of(context).primaryColor,
-                child: const Icon(Icons.person, color: Colors.white),
-              ),
-              itemBuilder: (context) {
-                final user = FirebaseAuth.instance.currentUser;
-                return [
-                  PopupMenuItem<String>(
-                    enabled: false,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          user?.displayName ?? 'Admin User',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          user?.email ?? 'No email available',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuDivider(),
-                  PopupMenuItem<String>(
-                    value: 'help',
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.help_outline,
-                          size: 20,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          'Help & Support',
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ];
-              },
-              onSelected: (value) {
-                if (value == 'help') {
-                  UniDeskAdminApp.showAppDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Help & Support'),
-                      content: const Text(
-                        'For assistance, please contact the system administrator or check the documentation.',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Close'),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              },
-            ),
+  Widget _buildTopBar(ThemeData theme, bool isDark) {
+    return Container(
+      height: 70,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        border: Border(
+          bottom: BorderSide(
+            color: theme.dividerColor.withOpacity(0.1),
+            width: 1,
           ),
-        ],
+        ),
       ),
-      body: Row(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          NavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (int index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            labelType: NavigationRailLabelType.all,
-            destinations: const [
-              NavigationRailDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home),
-                label: Text('Home'),
+          Row(
+            children: [
+              Image.asset(
+                'assets/logos/unidesk_logo.png',
+                height: 40,
+                filterQuality: FilterQuality.high,
               ),
-              NavigationRailDestination(
-                icon: Icon(Icons.confirmation_number_outlined),
-                selectedIcon: Icon(Icons.confirmation_number),
-                label: Text('Tickets'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.people_outline),
-                selectedIcon: Icon(Icons.people),
-                label: Text('Users'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.settings_outlined),
-                selectedIcon: Icon(Icons.settings),
-                label: Text('Settings'),
-              ),
-            ],
-            trailing: Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 24.0),
-                  child: PopupMenuButton<String>(
-                    offset: const Offset(40, -40),
-                    icon: const Icon(Icons.logout, color: Colors.red),
-                    tooltip: 'Logout',
-                    itemBuilder: (context) => [
-                      PopupMenuItem<String>(
-                        enabled: false,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Are you sure?',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: Colors.black,
-                                    side: const BorderSide(color: Colors.black),
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 8,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('No'),
-                                ),
-                                const SizedBox(width: 12),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 16,
-                                      vertical: 8,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  onPressed: () async {
-                                    Navigator.pop(context); // Close popup
-                                    await FirebaseAuth.instance.signOut();
-                                    if (context.mounted) {
-                                      Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                          builder:
-                                              (_) => const AdminLoginScreen(),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: const Text('Yes, Log out'),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    onSelected: (_) {}, // Handled by buttons
-                  ),
+              const SizedBox(width: 12),
+              Text(
+                'UniDesk',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 22,
+                  color: isDark ? AppTheme.pastelBlue : theme.primaryColor,
+                  letterSpacing: -0.5,
                 ),
               ),
-            ),
+            ],
           ),
-          const VerticalDivider(thickness: 1, width: 1),
+          const AdminProfileButton(),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Scaffold(
+      body: Column(
+        children: [
+          _buildTopBar(theme, isDark),
           Expanded(
-            child: _selectedIndex == 0
-                ? HomeView(
-                    onTabSwitch: (index) {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                  )
-                : _selectedIndex == 1
-                ? const TicketsView()
-                : _selectedIndex == 2
-                ? const UsersView()
-                : const SettingsView(),
+            child: Row(
+              children: [
+                NavigationRail(
+                  groupAlignment: -1.0,
+                  selectedIndex: _selectedIndex,
+                  onDestinationSelected: (int index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                  labelType: NavigationRailLabelType.all,
+                  destinations: const [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home_outlined),
+                      selectedIcon: Icon(Icons.home),
+                      label: Text('Home'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.confirmation_number_outlined),
+                      selectedIcon: Icon(Icons.confirmation_number),
+                      label: Text('Tickets'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.people_outline),
+                      selectedIcon: Icon(Icons.people),
+                      label: Text('Users'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.settings_outlined),
+                      selectedIcon: Icon(Icons.settings),
+                      label: Text('Settings'),
+                    ),
+                  ],
+                  trailing: Expanded(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: PopupMenuButton<String>(
+                          offset: const Offset(40, -40),
+                          icon: const Icon(Icons.logout, color: Colors.red),
+                          tooltip: 'Logout',
+                          itemBuilder: (context) => [
+                            PopupMenuItem<String>(
+                              enabled: false,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text(
+                                    'Are you sure?',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      OutlinedButton(
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: isDark ? Colors.white : Colors.black,
+                                          side: BorderSide(color: isDark ? Colors.white24 : Colors.black),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('No'),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.red,
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 8,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        onPressed: () async {
+                                          Navigator.pop(context); // Close popup
+                                          await FirebaseAuth.instance.signOut();
+                                          if (context.mounted) {
+                                            Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(
+                                                builder: (_) => const AdminLoginScreen(),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        child: const Text('Yes, Log out'),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                          onSelected: (_) {}, // Handled by buttons
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const VerticalDivider(thickness: 1, width: 1),
+                Expanded(
+                  child: _selectedIndex == 0
+                      ? HomeView(
+                          onTabSwitch: (index) {
+                            setState(() {
+                              _selectedIndex = index;
+                          });
+                        },
+                      )
+                      : _selectedIndex == 1
+                          ? const TicketsView()
+                          : _selectedIndex == 2
+                              ? const UsersView()
+                              : const SettingsView(),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -382,13 +340,42 @@ class _MainDashboardState extends State<MainDashboard> {
                 backgroundColor: actionColor,
                 foregroundColor: Colors.white,
               ),
-              onPressed: () {
-                FirebaseFirestore.instance
+              onPressed: () async {
+                await FirebaseFirestore.instance
                     .collection('tickets')
                     .doc(docId)
                     .update({'status': newStatus});
-                Navigator.pop(confirmContext); // Close confirm
-                Navigator.pop(context); // Close details
+
+                // Create a notification for the user
+                final userId = data['userId'];
+                if (userId != null) {
+                  final title = newStatus == 'Approved/Resolved'
+                      ? 'Ticket Resolved'
+                      : 'Ticket Rejected';
+                  
+                  final action = newStatus == 'Approved/Resolved'
+                      ? ' resolved'
+                      : ' rejected';
+                  
+                  final serviceName = data['serviceTitle'] ?? 'Your request';
+                      
+                  await FirebaseFirestore.instance.collection('notifications').add({
+                    'userId': userId,
+                    'ticketId': docId,
+                    'title': title,
+                    'body': '$serviceName has been$action.',
+                    'status': newStatus,
+                    'isSeen': false,
+                    'createdAt': FieldValue.serverTimestamp(),
+                  });
+                }
+
+                if (confirmContext.mounted) {
+                  Navigator.pop(confirmContext); // Close confirm
+                }
+                if (context.mounted) {
+                  Navigator.pop(context); // Close details
+                }
 
                 // Show notification snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -682,13 +669,72 @@ class _HomeViewState extends State<HomeView> {
     super.dispose();
   }
 
+  Widget _buildHeader(ThemeData theme, bool isDark) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Dashboard Overview',
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Welcome back, Admin',
+              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+            ),
+          ],
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.02),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.05),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                DateFormat('HH:mm').format(_currentTime),
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  color: isDark ? AppTheme.pastelBlue : theme.primaryColor,
+                  letterSpacing: -1,
+                ),
+              ),
+              Text(
+                DateFormat('EEEE, d MMMM yyyy').format(_currentTime),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey.shade500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -721,51 +767,6 @@ class _HomeViewState extends State<HomeView> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildHeader(ThemeData theme, bool isDark) {
-    final dateStr = DateFormat('EEEE, MMMM d, y').format(_currentTime);
-    final timeStr = DateFormat('hh:mm:ss a').format(_currentTime);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Dashboard Overview',
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Welcome back, Admin',
-              style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-            ),
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              timeStr,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
-                color: isDark ? AppTheme.pastelBlue : theme.primaryColor,
-              ),
-            ),
-            Text(
-              dateStr,
-              style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey),
-            ),
-          ],
-        ),
-      ],
     );
   }
 
@@ -1128,7 +1129,6 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
-
 // Tickets Management View
 class TicketsView extends StatefulWidget {
   const TicketsView({super.key});
@@ -1682,7 +1682,7 @@ class _TicketsViewState extends State<TicketsView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1731,6 +1731,8 @@ class _TicketsViewState extends State<TicketsView> {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 16),
+                  const AdminProfileButton(),
                 ],
               ),
             ],
@@ -1972,7 +1974,7 @@ class _UsersViewState extends State<UsersView>
     );
   }
 
-  void _showUserDetails(Map<String, dynamic> data) {
+  void _showUserDetails(Map<String, dynamic> data, String userId) {
     UniDeskAdminApp.showAppDialog(
       context: context,
       builder: (context) {
@@ -2046,7 +2048,11 @@ class _UsersViewState extends State<UsersView>
               _buildDetailRow('Role', data['role']?.toUpperCase() ?? 'UNKNOWN'),
               if (data['role'] == 'student') ...[
                 _buildDetailRow(
-                  'Degree Program',
+                  'Student ID',
+                  data['studentId'] ?? 'Not assigned',
+                ),
+                _buildDetailRow(
+                  'Course',
                   data['degree'] ?? 'Not specified',
                 ),
                 _buildDetailRow('Batch', data['batch'] ?? 'Not specified'),
@@ -2061,6 +2067,25 @@ class _UsersViewState extends State<UsersView>
             ],
           ),
           actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                UniDeskAdminApp.showAppDialog(
+                  context: context,
+                  builder: (context) => EditUserDialog(
+                    userData: data,
+                    userId: userId,
+                  ),
+                );
+              },
+              child: Text(
+                'Edit',
+                style: TextStyle(
+                  color: primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text('Close'),
@@ -2114,7 +2139,7 @@ class _UsersViewState extends State<UsersView>
           margin: const EdgeInsets.only(bottom: 12),
           child: InkWell(
             borderRadius: BorderRadius.circular(12),
-            onTap: () => _showUserDetails(data),
+            onTap: () => _showUserDetails(data, doc.id),
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor:
@@ -2139,7 +2164,9 @@ class _UsersViewState extends State<UsersView>
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
-                '${data['email']} • Role: ${data['role']}',
+                data['role'] == 'student'
+                    ? '${data['studentId'] ?? 'No ID'} Ã¢â‚¬Â¢ ${data['email']}'
+                    : '${data['email']} Ã¢â‚¬Â¢ Role: ${data['role']}',
                 style: TextStyle(color: Colors.grey[600], fontSize: 13),
               ),
               trailing: IconButton(
@@ -2159,7 +2186,7 @@ class _UsersViewState extends State<UsersView>
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -2170,77 +2197,83 @@ class _UsersViewState extends State<UsersView>
                 'User Management',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              PopupMenuButton<String>(
-                tooltip: 'Add User',
-                offset: const Offset(0, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: BorderSide(color: Colors.grey.withOpacity(0.2)),
-                ),
-                color: Theme.of(context).cardColor,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppTheme.pastelBlue
-                        : Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.add,
-                        color: isDark ? Colors.black : Colors.white,
-                        size: 20,
+              Row(
+                children: [
+                  PopupMenuButton<String>(
+                    tooltip: 'Add User',
+                    offset: const Offset(0, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+                    ),
+                    color: Theme.of(context).cardColor,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Add User',
-                        style: TextStyle(
-                          color: isDark ? Colors.black : Colors.white,
-                          fontWeight: FontWeight.bold,
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? AppTheme.pastelBlue
+                            : Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: isDark ? Colors.black : Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Add User',
+                            style: TextStyle(
+                              color: isDark ? Colors.black : Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 'admin',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.admin_panel_settings,
+                              color: isDark
+                                  ? AppTheme.pastelBlue
+                                  : Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text('Lecturer (Admin)'),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'student',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.school,
+                              color: isDark
+                                  ? AppTheme.pastelBlue
+                                  : Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(width: 12),
+                            const Text('Student'),
+                          ],
                         ),
                       ),
                     ],
+                    onSelected: _showAddUserDialog,
                   ),
-                ),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'admin',
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.admin_panel_settings,
-                          color: isDark
-                              ? AppTheme.pastelBlue
-                              : Theme.of(context).primaryColor,
-                        ),
-                        const SizedBox(width: 12),
-                        const Text('Lecturer (Admin)'),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'student',
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.school,
-                          color: isDark
-                              ? AppTheme.pastelBlue
-                              : Theme.of(context).primaryColor,
-                        ),
-                        const SizedBox(width: 12),
-                        const Text('Student'),
-                      ],
-                    ),
-                  ),
+                  const SizedBox(width: 16),
+                  const AdminProfileButton(),
                 ],
-                onSelected: _showAddUserDialog,
               ),
             ],
           ),
@@ -2312,6 +2345,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
+  final _studentIdController = TextEditingController();
   late String _role;
   bool _isLoading = false;
 
@@ -2358,6 +2392,44 @@ class _AddUserDialogState extends State<AddUserDialog> {
   void initState() {
     super.initState();
     _role = widget.initialRole;
+    if (_role == 'student') {
+      _generateStudentId();
+    }
+  }
+
+  void _generateStudentId() {
+    if (_role != 'student') return;
+
+    final Map<String, String> abbr = {
+      'BSc (Hons) Computing (COMP)': 'COMP',
+      'BSc (Hons) Software Engineering (SE)': 'SE',
+      'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+      'BSc (Hons) Computer Science (CS)': 'CS',
+      'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+      'BSc (Hons) Data Science (DS)': 'DS',
+      'BA (Hons) Creative Multimedia (CM)': 'BACM',
+      'Bachelor of Business Analytics (BBA)': 'BBA',
+      'BA (Hons) Human Resource Management (HRM)': 'HRM',
+      'BA (Hons) Professional Accounting (ACC)': 'ACC',
+      'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+      'BSc (Hons) Business Management (BM)': 'BM',
+      'BSc (Hons) Marketing Management (MM)': 'MM',
+      'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+      'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+      'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+      'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+      'BA (Hons) Interior Architecture (IA)': 'IA',
+      'BA (Hons) Fashion Design (FD)': 'FD',
+      'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+      'BA (Hons) English Studies (ES)': 'ES',
+      'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+    };
+
+    final degreePart = abbr[_selectedDegree] ?? 'STU';
+    final batchPart = _selectedBatch ?? 'XX';
+    final randomPart = (DateTime.now().millisecondsSinceEpoch % 1000).toString().padLeft(2, '0');
+
+    _studentIdController.text = '$degreePart$batchPart-$randomPart';
   }
 
   Future<void> _createUser() async {
@@ -2368,11 +2440,6 @@ class _AddUserDialogState extends State<AddUserDialog> {
     });
 
     try {
-      // 1. Create User in Firebase Auth
-      // Note: This signs out the current admin. To prevent this, we use a secondary Firebase app
-      // or Cloud Functions in production. For simplicity here, we'll re-authenticate or allow it.
-      // A better approach for Admin SDK is Cloud Functions, but let's do this for now.
-
       FirebaseApp secondaryApp = await Firebase.initializeApp(
         name: 'SecondaryApp',
         options: Firebase.app().options,
@@ -2386,7 +2453,6 @@ class _AddUserDialogState extends State<AddUserDialog> {
 
       await secondaryApp.delete();
 
-      // 2. Save User Details in Firestore
       if (userCredential.user != null) {
         final Map<String, dynamic> userData = {
           'name': _nameController.text.trim(),
@@ -2398,6 +2464,35 @@ class _AddUserDialogState extends State<AddUserDialog> {
         if (_role == 'student') {
           userData['degree'] = _selectedDegree;
           userData['batch'] = _selectedBatch;
+          userData['studentId'] = _studentIdController.text.trim();
+          
+          // Generate batchToken: [batch]_[degree_abbreviation]
+          final Map<String, String> abbrMap = {
+            'BSc (Hons) Computing (COMP)': 'COMP',
+            'BSc (Hons) Software Engineering (SE)': 'SE',
+            'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+            'BSc (Hons) Computer Science (CS)': 'CS',
+            'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+            'BSc (Hons) Data Science (DS)': 'DS',
+            'BA (Hons) Creative Multimedia (CM)': 'BACM',
+            'Bachelor of Business Analytics (BBA)': 'BBA',
+            'BA (Hons) Human Resource Management (HRM)': 'HRM',
+            'BA (Hons) Professional Accounting (ACC)': 'ACC',
+            'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+            'BSc (Hons) Business Management (BM)': 'BM',
+            'BSc (Hons) Marketing Management (MM)': 'MM',
+            'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+            'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+            'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+            'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+            'BA (Hons) Interior Architecture (IA)': 'IA',
+            'BA (Hons) Fashion Design (FD)': 'FD',
+            'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+            'BA (Hons) English Studies (ES)': 'ES',
+            'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+          };
+          final degreeAbbr = abbrMap[_selectedDegree] ?? 'STU';
+          userData['batchToken'] = '${_selectedBatch}_$degreeAbbr';
         }
 
         await FirebaseFirestore.instance
@@ -2501,9 +2596,21 @@ class _AddUserDialogState extends State<AddUserDialog> {
                 ),
                 if (_role == 'student') ...[
                   const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _studentIdController,
+                    decoration: getDecoration('Student ID').copyWith(
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.refresh),
+                        onPressed: _generateStudentId,
+                      ),
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please enter a Student ID' : null,
+                  ),
+                  const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     value: _selectedDegree,
-                    decoration: getDecoration('Degree Program'),
+                    decoration: getDecoration('Course'),
                     isExpanded: true,
                     items: _degreePrograms.map((String degree) {
                       return DropdownMenuItem<String>(
@@ -2514,6 +2621,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                     onChanged: (String? newValue) {
                       setState(() {
                         _selectedDegree = newValue;
+                        _generateStudentId();
                       });
                     },
                   ),
@@ -2530,6 +2638,7 @@ class _AddUserDialogState extends State<AddUserDialog> {
                     onChanged: (String? newValue) {
                       setState(() {
                         _selectedBatch = newValue;
+                        _generateStudentId();
                       });
                     },
                   ),
@@ -2568,228 +2677,1214 @@ class _AddUserDialogState extends State<AddUserDialog> {
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _nameController.dispose();
+    _studentIdController.dispose();
     super.dispose();
   }
 }
+
+class EditUserDialog extends StatefulWidget {
+  final Map<String, dynamic> userData;
+  final String userId;
+  const EditUserDialog({super.key, required this.userData, required this.userId});
+
+  @override
+  State<EditUserDialog> createState() => _EditUserDialogState();
+}
+
+class _EditUserDialogState extends State<EditUserDialog> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _nameController;
+  late TextEditingController _emailController;
+  late TextEditingController _studentIdController;
+  late String _role;
+  bool _isLoading = false;
+
+  String? _selectedDegree;
+  String? _selectedBatch;
+
+  final List<String> _degreePrograms = [
+    'BSc (Hons) Computing (COMP)',
+    'BSc (Hons) Software Engineering (SE)',
+    'BSc (Hons) Ethical Hacking and Network Security (EHNS)',
+    'BSc (Hons) Computer Science (CS)',
+    'BSc (Hons) Information Technology for Business (ITB)',
+    'BSc (Hons) Data Science (DS)',
+    'BA (Hons) Creative Multimedia (CM)',
+    'Bachelor of Business Analytics (BBA)',
+    'BA (Hons) Human Resource Management (HRM)',
+    'BA (Hons) Professional Accounting (ACC)',
+    'BSc (Hons) Digital Banking and Finance (DBF)',
+    'BSc (Hons) Business Management (BM)',
+    'BSc (Hons) Marketing Management (MM)',
+    'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)',
+    'BEng (Hons) Electrical and Electronic Engineering (EEE)',
+    'BEng (Hons) Manufacturing Engineering (ME)',
+    'BSc (Hons) Quantity Surveying & Commercial Management (QS)',
+    'BA (Hons) Interior Architecture (IA)',
+    'BA (Hons) Fashion Design (FD)',
+    'BSc (Hons) Psychology and Counselling (PSYCH)',
+    'BA (Hons) English Studies (ES)',
+    'BA (Hons) English and TESOL (TESOL)',
+  ];
+
+  final List<String> _batches = [
+    '22.1',
+    '22.2',
+    '23.1',
+    '23.2',
+    '24.1',
+    '24.2',
+    '25.1',
+    '25.2',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.userData['name']);
+    _emailController = TextEditingController(text: widget.userData['email']);
+    _studentIdController = TextEditingController(text: widget.userData['studentId'] ?? '');
+    _role = widget.userData['role'] ?? 'student';
+    _selectedDegree = widget.userData['degree'];
+    _selectedBatch = widget.userData['batch'];
+
+    if (_selectedDegree != null && !_degreePrograms.contains(_selectedDegree)) {
+      _degreePrograms.add(_selectedDegree!);
+    }
+    if (_selectedBatch != null && !_batches.contains(_selectedBatch)) {
+      _batches.add(_selectedBatch!);
+    }
+  }
+
+  Future<void> _updateUser() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final Map<String, dynamic> updateData = {
+        'name': _nameController.text.trim(),
+        'role': _role,
+      };
+
+      if (_role == 'student') {
+        updateData['degree'] = _selectedDegree;
+        updateData['batch'] = _selectedBatch;
+        updateData['studentId'] = _studentIdController.text.trim();
+        
+        // Generate batchToken: [batch]_[degree_abbreviation]
+        final Map<String, String> abbrMap = {
+          'BSc (Hons) Computing (COMP)': 'COMP',
+          'BSc (Hons) Software Engineering (SE)': 'SE',
+          'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+          'BSc (Hons) Computer Science (CS)': 'CS',
+          'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+          'BSc (Hons) Data Science (DS)': 'DS',
+          'BA (Hons) Creative Multimedia (CM)': 'BACM',
+          'Bachelor of Business Analytics (BBA)': 'BBA',
+          'BA (Hons) Human Resource Management (HRM)': 'HRM',
+          'BA (Hons) Professional Accounting (ACC)': 'ACC',
+          'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+          'BSc (Hons) Business Management (BM)': 'BM',
+          'BSc (Hons) Marketing Management (MM)': 'MM',
+          'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+          'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+          'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+          'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+          'BA (Hons) Interior Architecture (IA)': 'IA',
+          'BA (Hons) Fashion Design (FD)': 'FD',
+          'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+          'BA (Hons) English Studies (ES)': 'ES',
+          'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+        };
+        final degreeAbbr = abbrMap[_selectedDegree] ?? 'STU';
+        updateData['batchToken'] = '${_selectedBatch}_$degreeAbbr';
+      } else {
+        updateData['degree'] = FieldValue.delete();
+        updateData['batch'] = FieldValue.delete();
+        updateData['studentId'] = FieldValue.delete();
+        updateData['batchToken'] = FieldValue.delete();
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.userId)
+          .update(updateData);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error updating user: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  void _generateStudentId() {
+    if (_selectedDegree == null) return;
+    
+    final Map<String, String> abbr = {
+      'BSc (Hons) Computing (COMP)': 'COMP',
+      'BSc (Hons) Software Engineering (SE)': 'SE',
+      'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+      'BSc (Hons) Computer Science (CS)': 'CS',
+      'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+      'BSc (Hons) Data Science (DS)': 'DS',
+      'BA (Hons) Creative Multimedia (CM)': 'BACM',
+      'Bachelor of Business Analytics (BBA)': 'BBA',
+      'BA (Hons) Human Resource Management (HRM)': 'HRM',
+      'BA (Hons) Professional Accounting (ACC)': 'ACC',
+      'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+      'BSc (Hons) Business Management (BM)': 'BM',
+      'BSc (Hons) Marketing Management (MM)': 'MM',
+      'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+      'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+      'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+      'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+      'BA (Hons) Interior Architecture (IA)': 'IA',
+      'BA (Hons) Fashion Design (FD)': 'FD',
+      'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+      'BA (Hons) English Studies (ES)': 'ES',
+      'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+    };
+
+    final degreePart = abbr[_selectedDegree] ?? 'STU';
+    final batchPart = _selectedBatch ?? 'XX';
+    final randomPart = (DateTime.now().millisecondsSinceEpoch % 100).toString().padLeft(2, '0');
+
+    _studentIdController.text = '$degreePart$batchPart-$randomPart';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).primaryColor;
+
+    final unfocusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(
+        color: isDark ? Colors.grey[600]! : Colors.grey[400]!,
+        width: 1,
+      ),
+    );
+    final focusedBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(
+        color: isDark ? AppTheme.pastelBlue : primaryColor,
+        width: 2,
+      ),
+    );
+
+    InputDecoration getDecoration(String label) {
+      return InputDecoration(
+        labelText: label,
+        enabledBorder: unfocusedBorder,
+        focusedBorder: focusedBorder,
+        border: unfocusedBorder,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 16,
+        ),
+      );
+    }
+
+    return AlertDialog(
+      title: const Text('Edit User details'),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: SizedBox(
+            width: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: _nameController,
+                  decoration: getDecoration('Full Name'),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter a name' : null,
+                ),
+                if (_role == 'student') ...[
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _studentIdController,
+                    decoration: getDecoration('Student ID').copyWith(
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.refresh),
+                        onPressed: _generateStudentId,
+                      ),
+                    ),
+                    validator: (value) =>
+                        _role == 'student' && value!.isEmpty ? 'Please enter a Student ID' : null,
+                  ),
+                ],
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: getDecoration('Email Address').copyWith(
+                    helperText: 'Email cannot be changed from dashboard',
+                  ),
+                  readOnly: true,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: _role,
+                  decoration: getDecoration('Role'),
+                  items: const [
+                    DropdownMenuItem(value: 'admin', child: Text('Admin')),
+                    DropdownMenuItem(value: 'teacher', child: Text('Teacher')),
+                    DropdownMenuItem(value: 'student', child: Text('Student')),
+                  ],
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        _role = newValue;
+                      });
+                    }
+                  },
+                ),
+                if (_role == 'student') ...[
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: _selectedDegree,
+                    decoration: getDecoration('Course'),
+                    isExpanded: true,
+                    items: _degreePrograms.map((String degree) {
+                      return DropdownMenuItem<String>(
+                        value: degree,
+                        child: Text(degree, overflow: TextOverflow.ellipsis),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedDegree = newValue;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<String>(
+                    value: _selectedBatch,
+                    decoration: getDecoration('Batch'),
+                    items: _batches.map((String batch) {
+                      return DropdownMenuItem<String>(
+                        value: batch,
+                        child: Text(batch),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedBatch = newValue;
+                        _generateStudentId();
+                      });
+                    },
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isDark ? AppTheme.pastelBlue : primaryColor,
+            foregroundColor: isDark ? Colors.black : Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+          onPressed: _isLoading ? null : _updateUser,
+          child: _isLoading
+              ? const SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text('Save Changes'),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _studentIdController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+}
+
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Settings',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 24),
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Settings',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            child: ValueListenableBuilder<ThemeMode>(
-              valueListenable: UniDeskAdminApp.themeNotifier,
-              builder: (context, currentMode, _) {
-                final isDark =
-                    currentMode == ThemeMode.dark ||
-                    (currentMode == ThemeMode.system &&
-                        MediaQuery.of(context).platformBrightness ==
-                            Brightness.dark);
+            const SizedBox(height: 24),
+            
+            // Display Settings
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ValueListenableBuilder<ThemeMode>(
+                valueListenable: UniDeskAdminApp.themeNotifier,
+                builder: (context, currentMode, _) {
+                  final isDark =
+                      currentMode == ThemeMode.dark ||
+                      (currentMode == ThemeMode.system &&
+                          MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark);
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Text(
-                        'Display',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: Text(
+                          'Display',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
-                    ),
-                    ListTile(
-                      title: const Text(
-                        'Theme',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ListTile(
+                        title: const Text(
+                          'Theme',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: const Text(
+                          'Choose light, dark, or system theme',
+                        ),
+                        leading: CircleAvatar(
+                          backgroundColor:
+                              (isDark
+                                      ? AppTheme.pastelBlue
+                                      : Theme.of(context).primaryColor)
+                                  .withOpacity(0.1),
+                          child: Icon(
+                            currentMode == ThemeMode.system
+                                ? Icons.brightness_auto
+                                : (isDark ? Icons.dark_mode : Icons.light_mode),
+                            color: isDark
+                                ? AppTheme.pastelBlue
+                                : Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        trailing: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).cardColor,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.grey.withOpacity(0.3),
+                            ),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<ThemeMode>(
+                              value: currentMode,
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: isDark ? AppTheme.pastelBlue : null,
+                              ),
+                              onChanged: (ThemeMode? newMode) {
+                                if (newMode != null) {
+                                  UniDeskAdminApp.themeNotifier.value = newMode;
+                                }
+                              },
+                              items: const [
+                                DropdownMenuItem(
+                                  value: ThemeMode.light,
+                                  child: Text('Light'),
+                                ),
+                                DropdownMenuItem(
+                                  value: ThemeMode.dark,
+                                  child: Text('Dark'),
+                                ),
+                                DropdownMenuItem(
+                                  value: ThemeMode.system,
+                                  child: Text('System Theme'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                      subtitle: const Text(
-                        'Choose light, dark, or system theme',
+                    ],
+                  );
+                },
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+
+            // Accessibility Settings
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ValueListenableBuilder<ThemeMode>(
+                valueListenable: UniDeskAdminApp.themeNotifier,
+                builder: (context, currentMode, _) {
+                  final isDark =
+                      currentMode == ThemeMode.dark ||
+                      (currentMode == ThemeMode.system &&
+                          MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark);
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: Text(
+                          'Accessibility',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ),
-                      leading: CircleAvatar(
-                        backgroundColor:
-                            (isDark
+                      ValueListenableBuilder<bool>(
+                        valueListenable: UniDeskAdminApp.highContrastNotifier,
+                        builder: (context, highContrast, _) {
+                          return SwitchListTile(
+                            title: const Text(
+                              'High Contrast Mode',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: const Text(
+                              'Increase visual contrast for better readability',
+                            ),
+                            secondary: CircleAvatar(
+                              backgroundColor: (isDark
+                                      ? AppTheme.pastelBlue
+                                      : Theme.of(context).primaryColor)
+                                  .withOpacity(0.1),
+                              child: Icon(
+                                Icons.contrast,
+                                color: isDark
                                     ? AppTheme.pastelBlue
-                                    : Theme.of(context).primaryColor)
-                                .withOpacity(0.1),
-                        child: Icon(
-                          currentMode == ThemeMode.system
-                              ? Icons.brightness_auto
-                              : (isDark ? Icons.dark_mode : Icons.light_mode),
-                          color: isDark
-                              ? AppTheme.pastelBlue
-                              : Theme.of(context).primaryColor,
-                        ),
-                      ),
-                      trailing: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: Colors.grey.withOpacity(0.3),
-                          ),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<ThemeMode>(
-                            value: currentMode,
-                            icon: Icon(
-                              Icons.arrow_drop_down,
-                              color: isDark ? AppTheme.pastelBlue : null,
+                                    : Theme.of(context).primaryColor,
+                              ),
                             ),
-                            onChanged: (ThemeMode? newMode) {
-                              if (newMode != null) {
-                                UniDeskAdminApp.themeNotifier.value = newMode;
-                              }
+                            activeColor: isDark
+                                ? AppTheme.pastelBlue
+                                : Theme.of(context).primaryColor,
+                            value: highContrast,
+                            onChanged: (bool value) {
+                              UniDeskAdminApp.highContrastNotifier.value = value;
                             },
-                            items: const [
-                              DropdownMenuItem(
-                                value: ThemeMode.light,
-                                child: Text('Light'),
-                              ),
-                              DropdownMenuItem(
-                                value: ThemeMode.dark,
-                                child: Text('Dark'),
-                              ),
-                              DropdownMenuItem(
-                                value: ThemeMode.system,
-                                child: Text('System Theme'),
-                              ),
-                            ],
-                          ),
-                        ),
+                          );
+                        },
                       ),
-                    ),
-                  ],
-                );
-              },
+                      const Divider(height: 1),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: UniDeskAdminApp.reduceMotionNotifier,
+                        builder: (context, reduceMotion, _) {
+                          return SwitchListTile(
+                            title: const Text(
+                              'Reduce Motion',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: const Text(
+                              'Disable animations and switch to fast fades',
+                            ),
+                            secondary: CircleAvatar(
+                              backgroundColor: (isDark
+                                      ? AppTheme.pastelBlue
+                                      : Theme.of(context).primaryColor)
+                                  .withOpacity(0.1),
+                              child: Icon(
+                                Icons.animation,
+                                color: isDark
+                                    ? AppTheme.pastelBlue
+                                    : Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            activeColor: isDark
+                                ? AppTheme.pastelBlue
+                                : Theme.of(context).primaryColor,
+                            value: reduceMotion,
+                            onChanged: (bool value) {
+                              UniDeskAdminApp.reduceMotionNotifier.value = value;
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ValueListenableBuilder<ThemeMode>(
-              valueListenable: UniDeskAdminApp.themeNotifier,
-              builder: (context, currentMode, _) {
-                final isDark =
-                    currentMode == ThemeMode.dark ||
-                    (currentMode == ThemeMode.system &&
-                        MediaQuery.of(context).platformBrightness ==
-                            Brightness.dark);
+            
+            const SizedBox(height: 16),
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Text(
-                        'Accessibility',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
+            // System Maintenance
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Text(
+                      'System Maintenance',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
                       ),
                     ),
-                    ValueListenableBuilder<bool>(
-                      valueListenable: UniDeskAdminApp.highContrastNotifier,
-                      builder: (context, highContrast, _) {
-                        return SwitchListTile(
-                          title: const Text(
-                            'High Contrast Mode',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: const Text(
-                            'Increase visual contrast for better readability',
-                          ),
-                          secondary: CircleAvatar(
-                            backgroundColor:
-                                (isDark
-                                        ? AppTheme.pastelBlue
-                                        : Theme.of(context).primaryColor)
-                                    .withOpacity(0.1),
-                            child: Icon(
-                              Icons.contrast,
-                              color: isDark
-                                  ? AppTheme.pastelBlue
-                                  : Theme.of(context).primaryColor,
-                            ),
-                          ),
-                          activeColor: isDark
-                              ? AppTheme.pastelBlue
-                              : Theme.of(context).primaryColor,
-                          value: highContrast,
-                          onChanged: (bool value) {
-                            UniDeskAdminApp.highContrastNotifier.value = value;
-                          },
-                        );
-                      },
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Data Health Check',
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Divider(height: 1),
-                    ValueListenableBuilder<bool>(
-                      valueListenable: UniDeskAdminApp.reduceMotionNotifier,
-                      builder: (context, reduceMotion, _) {
-                        return SwitchListTile(
-                          title: const Text(
-                            'Reduce Motion',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: const Text(
-                            'Disable animations and switch to fast fades',
-                          ),
-                          secondary: CircleAvatar(
-                            backgroundColor:
-                                (isDark
-                                        ? AppTheme.pastelBlue
-                                        : Theme.of(context).primaryColor)
-                                    .withOpacity(0.1),
-                            child: Icon(
-                              Icons.animation,
-                              color: isDark
-                                  ? AppTheme.pastelBlue
-                                  : Theme.of(context).primaryColor,
+                    subtitle: const Text(
+                      'Verify data integrity, generate missing IDs, and fix degree names',
+                    ),
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.orange.withOpacity(0.1),
+                      child: const Icon(Icons.build_circle_outlined, color: Colors.orange),
+                    ),
+                  trailing: ElevatedButton(
+                    onPressed: () async {
+                      try {
+                        final users = await FirebaseFirestore.instance
+                            .collection('users')
+                            .get();
+                        final batch = FirebaseFirestore.instance.batch();
+                        int degreeUpdateCount = 0;
+                        int idUpdateCount = 0;
+                        Map<String, int> batchCounts = {};
+                        Map<String, int> batchEmptyDates = {};
+
+                        final Map<String, int> batchCounters = {};
+                        final Set<String> existingIds = {};
+                        for (var doc in users.docs) {
+                            final sid = doc.data()['studentId'];
+                            if (sid != null) existingIds.add(sid.toString());
+                        }
+
+                        final Map<String, String> abbrMap = {
+                          'BSc (Hons) Computing (COMP)': 'COMP',
+                          'BSc (Hons) Software Engineering (SE)': 'SE',
+                          'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+                          'BSc (Hons) Computer Science (CS)': 'CS',
+                          'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+                          'BSc (Hons) Data Science (DS)': 'DS',
+                          'BA (Hons) Creative Multimedia (CM)': 'BACM',
+                          'Bachelor of Business Analytics (BBA)': 'BBA',
+                          'BA (Hons) Human Resource Management (HRM)': 'HRM',
+                          'BA (Hons) Professional Accounting (ACC)': 'ACC',
+                          'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+                          'BSc (Hons) Business Management (BM)': 'BM',
+                          'BSc (Hons) Marketing Management (MM)': 'MM',
+                          'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+                          'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+                          'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+                          'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+                          'BA (Hons) Interior Architecture (IA)': 'IA',
+                          'BA (Hons) Fashion Design (FD)': 'FD',
+                          'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+                          'BA (Hons) English Studies (ES)': 'ES',
+                          'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+                        };
+
+                        for (var doc in users.docs) {
+                          final data = doc.data();
+                          if (data['role'] != 'student') continue;
+
+                          final b = data['batch'] ?? 'Unknown';
+                          batchCounts[b] = (batchCounts[b] ?? 0) + 1;
+
+                          bool needsUpdate = false;
+                          Map<String, dynamic> updates = {};
+
+                          if (data['degree'] == null || data['degree'] == 'Not specified') {
+                            updates['degree'] =
+                                'BA (Hons) Creative Multimedia (CM)';
+                            degreeUpdateCount++;
+                            needsUpdate = true;
+                          }
+
+                          // Generate studentId if missing
+                          if (data['studentId'] == null) {
+                            final String degree = updates['degree'] ??
+                                data['degree'] ??
+                                'BA (Hons) Creative Multimedia (CM)';
+                            final String batchStr =
+                                data['batch'] ?? '24.1';
+
+                            final degreeAbbr = abbrMap[degree] ?? 'STU';
+                            final prefix = '$degreeAbbr$batchStr';
+                            
+                            int count = batchCounters[prefix] ?? 1;
+                            String newId = '$prefix-${count.toString().padLeft(2, '0')}';
+                            
+                            while (existingIds.contains(newId)) {
+                                count++;
+                                newId = '$prefix-${count.toString().padLeft(2, '0')}';
+                            }
+                            
+                            updates['studentId'] = newId;
+                            existingIds.add(newId);
+                            batchCounters[prefix] = count + 1;
+                            
+                            idUpdateCount++;
+                            needsUpdate = true;
+                          }
+
+                          if (needsUpdate) {
+                            batch.update(doc.reference, updates);
+                          }
+
+                          // 3. Batch Token update if missing
+                          if (data['role'] == 'student' &&
+                              data['batch'] != null &&
+                              data['degree'] != null &&
+                              data['batchToken'] == null) {
+                            final Map<String, String> abbrMap = {
+                              'BSc (Hons) Computing (COMP)': 'COMP',
+                              'BSc (Hons) Software Engineering (SE)': 'SE',
+                              'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+                              'BSc (Hons) Computer Science (CS)': 'CS',
+                              'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+                              'BSc (Hons) Data Science (DS)': 'DS',
+                              'BA (Hons) Creative Multimedia (CM)': 'BACM',
+                              'Bachelor of Business Analytics (BBA)': 'BBA',
+                              'BA (Hons) Human Resource Management (HRM)': 'HRM',
+                              'BA (Hons) Professional Accounting (ACC)': 'ACC',
+                              'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+                              'BSc (Hons) Business Management (BM)': 'BM',
+                              'BSc (Hons) Marketing Management (MM)': 'MM',
+                              'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+                              'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+                              'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+                              'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+                              'BA (Hons) Interior Architecture (IA)': 'IA',
+                              'BA (Hons) Fashion Design (FD)': 'FD',
+                              'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+                              'BA (Hons) English Studies (ES)': 'ES',
+                              'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+                            };
+                            final bValue = data['batch'].toString();
+                            final dValue = data['degree'].toString();
+                            final dAbbr = abbrMap[dValue] ?? 'STU';
+                            batch.update(doc.reference, {'batchToken': '${bValue}_$dAbbr'});
+                          }
+                        }
+
+                        // Also check class schedules for health
+                        final schedules = await FirebaseFirestore.instance
+                            .collection('class_schedules')
+                            .get();
+                        int scheduleUpdateCount = 0;
+                        for (var doc in schedules.docs) {
+                            final data = doc.data();
+                            final b = data['batch'] ?? 'Unknown';
+                            final dateValue = data['date'];
+                            
+                            Map<String, dynamic> scheduleUpdates = {};
+                            bool scheduleNeedsUpdate = false;
+
+                            // 1. Check for missing dates
+                            if (dateValue == null ||
+                                (dateValue is String &&
+                                    dateValue.trim().isEmpty)) {
+                                batchEmptyDates[b] =
+                                    (batchEmptyDates[b] ?? 0) + 1;
+                            }
+
+                            // 2. Fix missing or incorrect degree
+                            if (data['degree'] == null || data['degree'] == 'Not specified') {
+                                scheduleUpdates['degree'] = 'BA (Hons) Creative Multimedia (CM)';
+                                scheduleNeedsUpdate = true;
+                                scheduleUpdateCount++;
+                            }
+
+                            if (scheduleNeedsUpdate) {
+                                batch.update(doc.reference, scheduleUpdates);
+                            }
+
+                            // 3. Add/Update batchToken for schedule
+                            final finalBatch = scheduleUpdates['batch'] ?? data['batch'];
+                            final finalDegree = scheduleUpdates['degree'] ?? data['degree'];
+                            if (finalBatch != null && finalDegree != null) {
+                                final Map<String, String> abbrMap = {
+                                  'BSc (Hons) Computing (COMP)': 'COMP',
+                                  'BSc (Hons) Software Engineering (SE)': 'SE',
+                                  'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+                                  'BSc (Hons) Computer Science (CS)': 'CS',
+                                  'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+                                  'BSc (Hons) Data Science (DS)': 'DS',
+                                  'BA (Hons) Creative Multimedia (CM)': 'BACM',
+                                  'Bachelor of Business Analytics (BBA)': 'BBA',
+                                  'BA (Hons) Human Resource Management (HRM)': 'HRM',
+                                  'BA (Hons) Professional Accounting (ACC)': 'ACC',
+                                  'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+                                  'BSc (Hons) Business Management (BM)': 'BM',
+                                  'BSc (Hons) Marketing Management (MM)': 'MM',
+                                  'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+                                  'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+                                  'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+                                  'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+                                  'BA (Hons) Interior Architecture (IA)': 'IA',
+                                  'BA (Hons) Fashion Design (FD)': 'FD',
+                                  'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+                                  'BA (Hons) English Studies (ES)': 'ES',
+                                  'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+                                };
+                                final dAbbr = abbrMap[finalDegree.toString()] ?? 'STU';
+                                batch.update(doc.reference, {'batchToken': '${finalBatch}_$dAbbr'});
+                            }
+                        }
+
+                        if (degreeUpdateCount > 0 || idUpdateCount > 0 || scheduleUpdateCount > 0) {
+                          await batch.commit();
+                        }
+
+                        if (context.mounted) {
+                          String report = "Database Health Report:\n";
+                          batchCounts.forEach((b, count) {
+                            int empty = batchEmptyDates[b] ?? 0;
+                            report +=
+                                "Ã¢â‚¬Â¢ $b: $count students ${empty > 0 ? '($empty MISSING SCHEDULE DATES)' : '(OK)'}\n";
+                          });
+
+                          if (idUpdateCount > 0) {
+                            report +=
+                                "\nGenerated $idUpdateCount Student IDs.";
+                          }
+                          if (degreeUpdateCount > 0) {
+                            report +=
+                                "\nUpdated $degreeUpdateCount missing user degrees.";
+                          }
+                          if (scheduleUpdateCount > 0) {
+                            report +=
+                                "\nFixed $scheduleUpdateCount class schedule degrees.";
+                          }
+
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Data Health Check'),
+                              content:
+                                  SingleChildScrollView(child: Text(report)),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Close'),
+                                ),
+                              ],
                             ),
-                          ),
-                          activeColor: isDark
-                              ? AppTheme.pastelBlue
-                              : Theme.of(context).primaryColor,
-                          value: reduceMotion,
-                          onChanged: (bool value) {
-                            UniDeskAdminApp.reduceMotionNotifier.value = value;
-                          },
-                        );
-                      },
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Health check error: $e'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange.withOpacity(0.1),
+                      foregroundColor: Colors.orange[900],
+                    ),
+                    child: const Text('Run Health Check'),
+                  ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            const DataImportCard(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DataImportCard extends StatefulWidget {
+  const DataImportCard({super.key});
+
+  @override
+  State<DataImportCard> createState() => _DataImportCardState();
+}
+
+class _DataImportCardState extends State<DataImportCard> {
+  final TextEditingController _jsonController = TextEditingController();
+  final TextEditingController _batchController = TextEditingController();
+  bool _isLoading = false;
+  String _status = '';
+
+  Future<void> _runImport() async {
+    if (_jsonController.text.isEmpty || _batchController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please provide both JSON and Batch Name.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _status = 'Parsing JSON...';
+    });
+
+    try {
+      final List<dynamic> data = jsonDecode(_jsonController.text);
+      final batchName = _batchController.text.trim();
+      
+      setState(() => _status = 'Cleaning existing entries for $batchName...');
+      
+      // 1. Delete existing for this batch
+      final existingDocs = await FirebaseFirestore.instance
+          .collection('class_schedules')
+          .where('batch', isEqualTo: batchName)
+          .get();
+      
+      final deleteBatch = FirebaseFirestore.instance.batch();
+      for (var doc in existingDocs.docs) {
+        deleteBatch.delete(doc.reference);
+      }
+      await deleteBatch.commit();
+
+      setState(() => _status = 'Importing ${data.length} records...');
+      
+      // 2. Process and Import
+      WriteBatch importBatch = FirebaseFirestore.instance.batch();
+      int count = 0;
+      int opCount = 0;
+
+      for (var entry in data) {
+        if (entry is! Map<String, dynamic>) continue;
+        
+        // 1. Robust Date Detection (Look for Excel Serial or ISO)
+        String? dateStr;
+        for (var key in entry.keys) {
+          final val = entry[key];
+          if (val is int && val > 40000 && val < 60000) {
+            final date = DateTime(1899, 12, 30).add(Duration(days: val));
+            dateStr = DateFormat('yyyy-MM-dd').format(date);
+            break;
+          } else if (val is String && val.length >= 10 && DateTime.tryParse(val) != null) {
+            dateStr = DateFormat('yyyy-MM-dd').format(DateTime.parse(val));
+            break;
+          }
+        }
+
+        if (dateStr == null) continue;
+
+        // 2. Map all other fields as potential titles/slots
+        entry.forEach((key, value) {
+          if (value == null || value.toString().trim().isEmpty) return;
+          final text = value.toString().trim();
+          
+          // Skip header-like keywords or date numbers
+          if (text.toLowerCase().contains('date') || text.toLowerCase().contains('time slots')) return;
+          if (int.tryParse(text) != null && int.parse(text) > 40000) return;
+          if (text == 'Weekdays' || text == 'Weekend') return;
+
+          // Determine Time Slot based on key name or content
+          String timeStr = '8.30am - 11.30am'; // Default
+          if (key.contains('EMPTY_1')) timeStr = '12.30pm - 3.30pm';
+          if (key.contains('EMPTY_2')) timeStr = '5.00pm - 8.00pm';
+          if (text.toLowerCase().contains('5.30pm') || text.toLowerCase().contains('6pm')) {
+            timeStr = '5.30pm - 8.30pm';
+          }
+
+          final Map<String, String> abbrMap = {
+            'BSc (Hons) Computing (COMP)': 'COMP',
+            'BSc (Hons) Software Engineering (SE)': 'SE',
+            'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+            'BSc (Hons) Computer Science (CS)': 'CS',
+            'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+            'BSc (Hons) Data Science (DS)': 'DS',
+            'BA (Hons) Creative Multimedia (CM)': 'BACM',
+            'Bachelor of Business Analytics (BBA)': 'BBA',
+            'BA (Hons) Human Resource Management (HRM)': 'HRM',
+            'BA (Hons) Professional Accounting (ACC)': 'ACC',
+            'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+            'BSc (Hons) Business Management (BM)': 'BM',
+            'BSc (Hons) Marketing Management (MM)': 'MM',
+            'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+            'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+            'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+            'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+            'BA (Hons) Interior Architecture (IA)': 'IA',
+            'BA (Hons) Fashion Design (FD)': 'FD',
+            'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+            'BA (Hons) English Studies (ES)': 'ES',
+            'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+          };
+          final dAbbr = abbrMap['BA (Hons) Creative Multimedia (CM)'] ?? 'STU';
+
+          importBatch.set(FirebaseFirestore.instance.collection('class_schedules').doc(), {
+            'batch': batchName,
+            'degree': 'BA (Hons) Creative Multimedia (CM)',
+            'batchToken': '${batchName}_$dAbbr',
+            'date': dateStr!,
+            'time': timeStr,
+            'title': text,
+            'location': 'N/A',
+            'lecturer': 'N/A',
+          });
+          count++;
+          opCount++;
+
+          if (opCount >= 450) {
+            final currentBatch = importBatch;
+            importBatch = FirebaseFirestore.instance.batch();
+            opCount = 0;
+            currentBatch.commit();
+          }
+        });
+      }
+
+      if (opCount > 0) {
+        await importBatch.commit();
+      }
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Success! Imported $count entries for $batchName.')),
+        );
+        setState(() {
+          _jsonController.clear();
+          _status = '';
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Import error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Advance Data Recovery',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Paste timetable JSON content from local assets to re-import with correct dates.',
+              style: TextStyle(fontSize: 12),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _batchController,
+              decoration: const InputDecoration(
+                labelText: 'Target Batch (e.g. 24.2)',
+                border: OutlineInputBorder(),
+                isDense: true,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _jsonController,
+              maxLines: 8,
+              decoration: const InputDecoration(
+                labelText: 'JSON Content',
+                hintText: '[{"Date": 45621, ...}, ...]',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (_isLoading)
+              Center(
+                child: Column(
+                  children: [
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 8),
+                    Text(_status, style: const TextStyle(fontSize: 12)),
+                  ],
+                ),
+              )
+            else
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _runImport,
+                  icon: const Icon(Icons.cloud_upload_outlined),
+                  label: const Text('Start Re-import (Wipe & Load)'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.withOpacity(0.1),
+                    foregroundColor: Colors.blue[900],
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AdminProfileButton extends StatelessWidget {
+  const AdminProfileButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return PopupMenuButton<String>(
+      offset: const Offset(0, 50),
+      tooltip: 'Profile',
+      icon: CircleAvatar(
+        backgroundColor: isDark
+            ? AppTheme.pastelBlue.withOpacity(0.1)
+            : Theme.of(context).primaryColor.withOpacity(0.1),
+        child: Icon(
+          Icons.person_outline,
+          color: isDark ? AppTheme.pastelBlue : Theme.of(context).primaryColor,
+        ),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+      ),
+      color: Theme.of(context).cardColor,
+      itemBuilder: (context) => [
+        PopupMenuItem<String>(
+          enabled: false,
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: isDark
+                    ? AppTheme.pastelBlue.withOpacity(0.1)
+                    : Theme.of(context).primaryColor.withOpacity(0.1),
+                child: Icon(
+                  Icons.admin_panel_settings_outlined,
+                  color: isDark
+                      ? AppTheme.pastelBlue
+                      : Theme.of(context).primaryColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      user?.displayName ?? 'Administrator',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
+                    ),
+                    Text(
+                      user?.email ?? 'admin@unidesk.com',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                );
-              },
-            ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        const PopupMenuDivider(),
+        PopupMenuItem<String>(
+          value: 'help',
+          child: Row(
+            children: [
+              const Icon(Icons.help_outline, size: 20),
+              const SizedBox(width: 12),
+              const Text('Help & Documentation'),
+            ],
+          ),
+        ),
+      ],
+      onSelected: (value) {
+        if (value == 'help') {
+           UniDeskAdminApp.showAppDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Help & Documentation'),
+              content: const Text(
+                'For assistance, please contact the system administrator or check the documentation.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Close'),
+                ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }

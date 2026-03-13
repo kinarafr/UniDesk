@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../core/app_theme.dart';
 import 'main_layout.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,18 +25,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final inputEmail = _emailController.text.trim();
     final inputPassword = _passwordController.text.trim();
 
-    String actualEmail = inputEmail;
-    String actualPassword = inputPassword;
-
-    if (inputEmail == 'user' && inputPassword == 'user') {
-      actualEmail = 'user@unidesk.edu';
-      actualPassword = 'user123';
-    }
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: actualEmail,
-        password: actualPassword,
+        email: inputEmail,
+        password: inputPassword,
       );
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -46,38 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } on FirebaseAuthException catch (e) {
-      if (inputEmail == 'user' &&
-          (e.code == 'user-not-found' ||
-              e.code == 'invalid-credential' ||
-              e.code == 'wrong-password')) {
-        try {
-          final cred = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-                email: actualEmail,
-                password: actualPassword,
-              );
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(cred.user!.uid)
-              .set({
-                'name': 'Demo Student',
-                'email': actualEmail,
-                'role': 'student',
-                'createdAt': FieldValue.serverTimestamp(),
-              });
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const MainLayout()),
-            );
-          }
-        } catch (creationError) {
-          setState(() {
-            _errorMessage = creationError.toString();
-          });
-        }
-        return; // Skip normal final block if we intercepted
-      }
-
       setState(() {
         _errorMessage = e.message ?? 'An error occurred during login.';
       });
@@ -91,193 +49,38 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showForgotPasswordDialog() {
-    final TextEditingController resetEmailController = TextEditingController();
-    bool isSubmitting = false;
-
-    AppTheme.showAppModalBottomSheet(
+    showDialog(
       context: context,
-      builder: StatefulBuilder(
-        builder: (context, setModalState) {
-          final Brightness brightness = Theme.of(context).brightness;
-          final bool isDarkMode = brightness == Brightness.dark;
+      builder: (context) {
+        final Brightness brightness = Theme.of(context).brightness;
+        final bool isDarkMode = brightness == Brightness.dark;
 
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.85,
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Reset Password',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Enter your email address and we will send you a link to reset your password.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  TextField(
-                    controller: resetEmailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email Address',
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Icon(Icons.email_outlined),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 18,
-                      ),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    autofocus: true,
-                  ),
-                  const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: isDarkMode
-                              ? Colors.white
-                              : Colors.black87,
-                        ),
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 16,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: const Color(
-                            0xFF90CAF9,
-                          ), // Pastel Blue
-                          foregroundColor: Colors.black87,
-                        ),
-                        onPressed: isSubmitting
-                            ? null
-                            : () async {
-                                final resetEmail = resetEmailController.text
-                                    .trim();
-                                if (resetEmail.isEmpty) return;
-
-                                setModalState(() {
-                                  isSubmitting = true;
-                                });
-
-                                try {
-                                  // Normally you would use FirebaseAuth.instance.sendPasswordResetEmail(email: resetEmail);
-                                  // For now, logging to 'passwordResets' as requested for admin dashboard
-                                  await FirebaseFirestore.instance
-                                      .collection('passwordResets')
-                                      .add({
-                                        'email': resetEmail,
-                                        'status': 'pending',
-                                        'requestedAt':
-                                            FieldValue.serverTimestamp(),
-                                      });
-
-                                  // Check if component still mounted
-                                  if (context.mounted) {
-                                    Navigator.of(context).pop();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: const Row(
-                                          children: [
-                                            Icon(
-                                              Icons.check_circle,
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(width: 12),
-                                            Expanded(
-                                              child: Text(
-                                                'Password reset instructions sent to your email!',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        backgroundColor: Colors.green[700],
-                                        behavior: SnackBarBehavior.floating,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        duration: const Duration(seconds: 4),
-                                      ),
-                                    );
-                                  }
-                                } catch (e) {
-                                  setModalState(() {
-                                    isSubmitting = false;
-                                  });
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text('Error: ${e.toString()}'),
-                                        backgroundColor: Colors.red,
-                                      ),
-                                    );
-                                  }
-                                }
-                              },
-                        child: isSubmitting
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: const CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.black87,
-                                ),
-                              )
-                            : const Text(
-                                'Send Reset Link',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                      ),
-                    ],
-                  ),
-                ],
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.info_outline, color: Color(0xFF384CA0), size: 28),
+              SizedBox(width: 12),
+              Text('Password Reset'),
+            ],
+          ),
+          content: const Text(
+            'To reset your password, please contact a UNI Desk administrator.',
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: isDarkMode ? Colors.white : Colors.black87,
               ),
+              child: const Text('OK', style: TextStyle(fontSize: 16)),
             ),
-          );
-        },
-      ),
+          ],
+        );
+      },
     );
   }
 

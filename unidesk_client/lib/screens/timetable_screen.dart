@@ -1,8 +1,8 @@
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../main.dart';
 import '../core/app_theme.dart';
 import '../widgets/app_pickers.dart';
@@ -27,7 +27,8 @@ class LectureEvent {
 }
 
 class TimetableScreen extends StatefulWidget {
-  const TimetableScreen({super.key});
+  final String? batch;
+  const TimetableScreen({super.key, this.batch});
 
   @override
   State<TimetableScreen> createState() => _TimetableScreenState();
@@ -40,6 +41,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   bool _isLoading = true;
 
   final Map<DateTime, List<LectureEvent>> _events = {};
+  final Set<DateTime> _holidays = {};
 
   final List<Color> _pastelColors = const [
     Color(0xFFB3E5FC), // Light Blue
@@ -57,68 +59,219 @@ class _TimetableScreenState extends State<TimetableScreen> {
     _loadScheduleData();
   }
 
+  @override
+  void didUpdateWidget(covariant TimetableScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.batch != widget.batch) {
+      setState(() {
+        _isLoading = true;
+      });
+      _loadScheduleData();
+    }
+  }
+
   Future<void> _loadScheduleData() async {
     try {
-      final jsonString = await rootBundle.loadString('assets/24.1.json');
-      final List<dynamic> jsonList = jsonDecode(jsonString);
+      _events.clear();
+      _holidays.clear();
+      String? batch = widget.batch;
+      String? degree;
+      String? batchToken;
 
-      if (jsonList.isEmpty) return;
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+        final userData = doc.data();
+        batch ??= userData?['batch'];
+        degree = userData?['degree'];
+        batchToken = userData?['batchToken'];
+      }
+
+      // Fallback if still null
+      batch ??= '24.1';
+
+      final String trimmedBatch = batch.trim();
+      final String? trimmedDegree = degree?.trim();
+      final String? trimmedBatchToken = batchToken?.trim();
+
+      debugPrint('Fetching schedules for Batch: "$trimmedBatch", Degree: "$trimmedDegree", batchToken: "$trimmedBatchToken"');
+
+      Query<Map<String, dynamic>> query = FirebaseFirestore.instance.collection('class_schedules');
+      
+      if (trimmedBatchToken != null && trimmedBatchToken.isNotEmpty) {
+        // Efficient way: use batchToken
+        query = query.where('batchToken', isEqualTo: trimmedBatchToken);
+      } else {
+        // Original way: use batch and filter by degree later
+        query = query.where('batch', isEqualTo: trimmedBatch);
+      }
+      
+      final snapshot = await query.get();
+      
+      debugPrint('Found ${snapshot.docs.length} schedule documents.');
+
+      if (snapshot.docs.isEmpty) {
+        setState(() {
+          _isLoading = false;
+        });
+        return;
+      }
 
       int colorIndex = 0;
-      for (int i = 1; i < jsonList.length; i++) {
-        final row = jsonList[i] as Map<String, dynamic>;
-        final excelDate = row['Date'];
-        if (excelDate == null || excelDate is! num) continue;
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        final String? docDegree = data['degree']?.toString().trim();
 
-        // Convert Excel serial date to Dart DateTime
-        // Excel epoch is Dec 30, 1899
-        final targetDate = DateTime.utc(
-          1899,
-          12,
-          30,
-        ).add(Duration(days: excelDate.toInt()));
-
-        String time1 = row['Time Slots']?.toString() ?? '';
-        String time2 = row['__EMPTY']?.toString() ?? '';
-        String time3 = row['__EMPTY_1']?.toString() ?? '';
-
-        final List<String> extractedEvents = [time1, time2, time3]
-            .where(
-              (s) =>
-                  s.trim().isNotEmpty &&
-                  !s.toLowerCase().contains('weekdays') &&
-                  !s.toLowerCase().contains('weekend'),
-            )
-            .toList();
-
-        if (extractedEvents.isNotEmpty) {
-          _events[targetDate] ??= [];
-          for (final eventText in extractedEvents) {
-            String extractedTitle = eventText.trim();
-            String extractedTime = "TBA";
-
-            // Simple heuristic to extract time if appended inside brackets or explicit
-            if (extractedTitle.contains('-') && extractedTitle.contains('am') ||
-                extractedTitle.contains('pm')) {
-              // Leave times mostly as they are if it's uniquely formatted, otherwise we pass it explicitly.
-            } else {
-              extractedTime =
-                  '09:00 AM - 12:00 PM'; // Generic fallback if we just see "Video Production [KW]"
-            }
-
-            _events[targetDate]!.add(
-              LectureEvent(
-                title: extractedTitle,
-                time: extractedTime,
-                color: _pastelColors[colorIndex % _pastelColors.length],
-              ),
-            );
-            colorIndex++;
+        // If batchToken was used, we don't need local filtering by degree.
+        // If not, we keep the original logic.
+        if (trimmedBatchToken == null || trimmedBatchToken.isEmpty) {
+          if (docDegree != null && trimmedDegree != null && docDegree != trimmedDegree) {
+            debugPrint('Skipping doc ${doc.id} due to degree mismatch: "$docDegree" != "$trimmedDegree"');
+            continue;
           }
         }
+
+        final date = data['date'];
+        if (date == null) {
+          debugPrint('Skipping doc ${doc.id} due to missing date.');
+          continue;
+        }
+
+        DateTime targetDate;
+        if (date is Timestamp) {
+          targetDate = date.toDate();
+        } else if (date is String) {
+          String dateStr = date.trim();
+          try {
+            targetDate = DateTime.parse(dateStr);
+          } catch (e) {
+            // Try common alternative formats
+            try {
+              // dd/MM/yyyy or d/M/yyyy
+              targetDate = DateFormat('d/M/yyyy').parse(dateStr);
+            } catch (_) {
+              try {
+                // dd-MM-yyyy or d-M-yyyy
+                targetDate = DateFormat('d-M-yyyy').parse(dateStr);
+              } catch (_) {
+                debugPrint('Skipping doc ${doc.id} due to malformed date string: "$dateStr". Errors: $e');
+                continue;
+              }
+            }
+          }
+        } else {
+          debugPrint('Skipping doc ${doc.id} due to unsupported date type: ${date.runtimeType}');
+          continue;
+        }
+
+        // Normalize to UTC for consistent calendar mapping
+        final normalizedDate = DateTime.utc(targetDate.year, targetDate.month, targetDate.day);
+
+        final title = data['title']?.toString() ?? 'Untitled Lecture';
+        final time = data['time']?.toString() ?? 'TBA';
+        final location = data['location']?.toString() ?? 'TBA';
+        final lecturer = data['lecturer']?.toString() ?? 'TBA';
+
+        final lowerTitle = title.toLowerCase().trim();
+        final dayName = DateFormat('EEEE').format(normalizedDate).toLowerCase();
+        
+        // Structural placeholders to skip entirely
+        final List<String> structuralPlaceholders = [
+          dayName,
+          'weekend',
+          'weekdays',
+        ];
+
+        final List<String> dayNames = [
+          'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
+        ];
+
+        // Holiday keywords to highlight on calendar but remove from upcoming
+        final List<String> holidayKeywords = [
+          'poya day',
+          'holiday',
+          'vacation',
+          'independence day',
+          'may day',
+          'aurudu',
+          'avurudu',
+          'tamil thai pongal day',
+          'vesak',
+          'christmas',
+        ];
+
+        // Check if title is purely structural (e.g., "Thursday", "Weekdays,Tuesday")
+        final parts = lowerTitle.split(',').map((e) => e.trim()).toList();
+        bool isStructural = parts.every((p) => 
+            structuralPlaceholders.contains(p) || dayNames.contains(p));
+
+        if (isStructural) {
+          debugPrint('Skipping structural placeholder: "$title" on $normalizedDate');
+          continue;
+        }
+
+        // Check if title or specific range marks a holiday
+        bool isHoliday = false;
+        
+        // Check for keywords
+        for (var keyword in holidayKeywords) {
+          if (lowerTitle.contains(keyword)) {
+            isHoliday = true;
+            break;
+          }
+        }
+
+        // Add hardcoded range for Aurudu 2026 as specifically requested
+        final auruduStart = DateTime.utc(2026, 4, 11);
+        final auruduEnd = DateTime.utc(2026, 4, 19);
+        if (normalizedDate.isAfter(auruduStart.subtract(const Duration(days: 1))) && 
+            normalizedDate.isBefore(auruduEnd.add(const Duration(days: 1)))) {
+           isHoliday = true;
+        }
+
+        if (isHoliday) {
+          // Explicitly exclude April 1st, 2026 as requested
+          if (normalizedDate.year == 2026 && 
+              normalizedDate.month == 4 && 
+              normalizedDate.day == 1) {
+            debugPrint('Skipping holiday marking for April 1st, 2026 as per request.');
+          } else {
+            debugPrint('Marking holiday: "$title" on $normalizedDate');
+            _holidays.add(normalizedDate);
+            continue;
+          }
+        }
+
+        debugPrint('Adding event: $title on $normalizedDate');
+
+        _events[normalizedDate] ??= [];
+        _events[normalizedDate]!.add(
+          LectureEvent(
+            title: title,
+            time: time,
+            location: location,
+            lecturer: lecturer,
+            color: _pastelColors[colorIndex % _pastelColors.length],
+          ),
+        );
+        colorIndex++;
+      }
+
+      // Explicitly mark Aurudu 2026 range (April 11-19)
+      final auruduStart = DateTime.utc(2026, 4, 11);
+      final auruduEnd = DateTime.utc(2026, 4, 19);
+      for (int i = 0; i <= auruduEnd.difference(auruduStart).inDays; i++) {
+        _holidays.add(auruduStart.add(Duration(days: i)));
+      }
+
+      if (_events.isEmpty && snapshot.docs.isNotEmpty) {
+        debugPrint('WARNING: Found ${snapshot.docs.length} documents but 0 were valid after filtering/parsing.');
       }
     } catch (e) {
-      debugPrint('Error parsing timetable JSON: $e');
+      debugPrint('Error fetching class schedules from Firestore: $e');
     } finally {
       if (mounted) {
         setState(() {
@@ -130,7 +283,27 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   List<LectureEvent> _getEventsForDay(DateTime day) {
     final normalizedDay = DateTime.utc(day.year, day.month, day.day);
-    return _events[normalizedDay] ?? [];
+    final events = List<LectureEvent>.from(_events[normalizedDay] ?? []);
+
+    if (_holidays.contains(normalizedDay) && events.isEmpty) {
+      String holidayTitle = 'Holiday';
+      final auruduStart = DateTime.utc(2026, 4, 11);
+      final auruduEnd = DateTime.utc(2026, 4, 19);
+      if (normalizedDay.isAfter(auruduStart.subtract(const Duration(days: 1))) &&
+          normalizedDay.isBefore(auruduEnd.add(const Duration(days: 1)))) {
+        holidayTitle = 'Aurudu Holiday';
+      }
+
+      events.add(LectureEvent(
+        title: holidayTitle,
+        time: 'All Day',
+        location: 'None',
+        lecturer: 'University',
+        color: _pastelColors[5], // Pastel Orange
+      ));
+    }
+
+    return events;
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -220,6 +393,83 @@ class _TimetableScreenState extends State<TimetableScreen> {
               selectedDayPredicate: (day) {
                 return isSameDay(_selectedDay, day);
               },
+              holidayPredicate: (day) {
+                return _holidays.contains(DateTime.utc(day.year, day.month, day.day));
+              },
+              calendarBuilders: CalendarBuilders(
+                holidayBuilder: (context, day, focusedDay) {
+                  return Center(
+                    child: Text(
+                      '${day.day}',
+                      style: TextStyle(
+                        color: _pastelColors[5], // Pastel Orange
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+                },
+                selectedBuilder: (context, day, focusedDay) {
+                  final isHoliday = _holidays.contains(DateTime.utc(day.year, day.month, day.day));
+                  if (isHoliday) {
+                    return Center(
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          color: _pastelColors[5], // Pastel Orange
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    );
+                  }
+                  return Container(
+                    margin: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          color: isDark ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                todayBuilder: (context, day, focusedDay) {
+                  final isHoliday = _holidays.contains(DateTime.utc(day.year, day.month, day.day));
+                  if (isHoliday) {
+                    return Center(
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          color: _pastelColors[5], // Pastel Orange
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }
+                  return Container(
+                    margin: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: (isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E)).withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          color: isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
               onDaySelected: _onDaySelected,
               onPageChanged: (focusedDay) {
                 _focusedDay = focusedDay;
@@ -264,10 +514,14 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   color: isDark ? Colors.black : Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
+                holidayTextStyle: TextStyle(
+                  color: _pastelColors[5], // Pastel Orange
+                  fontWeight: FontWeight.bold,
+                ),
                 todayDecoration: BoxDecoration(
                   color:
                       (isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E))
-                          .withOpacity(0.1),
+                           .withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 todayTextStyle: TextStyle(

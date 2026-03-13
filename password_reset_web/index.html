@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniDesk Admin Password Reset</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #384CA0;
+            --primary-light: #4A62C6;
+            --pastel-blue: #90CAF9;
+            --bg-color: #f5f7fa;
+            --surface: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --error: #ef4444;
+            --success: #10b981;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #111827;
+                --surface: #1f2937;
+                --text-main: #f9fafb;
+                --text-muted: #9ca3af;
+                --border: #374151;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            background-color: var(--surface);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .logo-text {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .logo-text {
+                color: var(--pastel-blue);
+            }
+            .btn {
+                background-color: var(--pastel-blue) !important;
+                color: #111827 !important;
+            }
+            .btn:hover {
+                background-color: #64b5f6 !important;
+            }
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background-color: var(--surface);
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(56, 76, 160, 0.15);
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            input:focus {
+                border-color: var(--pastel-blue);
+                box-shadow: 0 0 0 3px rgba(144, 202, 249, 0.15);
+            }
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background-color: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .message {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            display: none;
+            text-align: left;
+        }
+
+        .message.error {
+            display: block;
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .message.success {
+            display: block;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid currentColor;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 8px;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn.loading .loader {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-text">NIBM UniDesk</div>
+        <br>
+        <h1>Admin Password Reset</h1>
+        <p class="subtitle">Enter your new password below to reset your admin account credentials.</p>
+        
+        <form id="resetForm">
+            <div id="statusMessage" class="message"></div>
+            
+            <div class="form-group">
+                <label for="newPassword">New Password</label>
+                <input type="password" id="newPassword" placeholder="Enter new password" required minlength="6">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm new password" required minlength="6">
+            </div>
+            
+            <button type="submit" class="btn" id="submitBtn">
+                <span class="loader"></span>
+                <span class="btn-text">Reset Password</span>
+            </button>
+        </form>
+    </div>
+
+    <script type="module">
+        // IMPORTANT: The user must replace these with their Firebase config from the Flutter backend
+        // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        // import { getAuth, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const form = document.getElementById('resetForm');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const statusMessage = document.getElementById('statusMessage');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.querySelector('.btn-text');
+
+        // Parse action code from URL (Firebase adds this automatically when clicking email links)
+        const urlParams = new URLSearchParams(window.location.search);
+        const actionCode = urlParams.get('oobCode');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            statusMessage.className = 'message';
+            
+            const newPassword = newPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            
+            if (newPassword !== confirmPassword) {
+                statusMessage.textContent = 'Passwords do not match.';
+                statusMessage.className = 'message error';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                statusMessage.textContent = 'Password must be at least 6 characters.';
+                statusMessage.className = 'message error';
+                return;
+            }
+
+            // Simulate Network Request
+            submitBtn.classList.add('loading');
+            btnText.textContent = 'Resetting...';
+            submitBtn.disabled = true;
+
+            try {
+                // If actionCode exists and firebaseConfig is set up, we'd do:
+                // await confirmPasswordReset(auth, actionCode, newPassword);
+                
+                // For local simulation
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                statusMessage.textContent = 'Password reset successfully! You can now login to the admin dashboard.';
+                statusMessage.className = 'message success';
+                form.reset();
+            } catch (error) {
+                statusMessage.textContent = 'Error resetting password: ' + error.message + ' (Make sure Firebase config is updated)';
+                statusMessage.className = 'message error';
+            } finally {
+                submitBtn.classList.remove('loading');
+                btnText.textContent = 'Reset Password';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

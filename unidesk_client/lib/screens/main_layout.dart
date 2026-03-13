@@ -6,6 +6,7 @@ import 'timetable_screen.dart';
 import 'services_screen.dart';
 import 'profile_screen.dart';
 import 'my_requests_screen.dart';
+import '../core/notification_service.dart';
 
 class MainLayout extends StatefulWidget {
   const MainLayout({super.key});
@@ -17,20 +18,12 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
   int _currentIndex = 0;
 
-  late List<Widget> _screens;
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _updateUserStatus('online');
-    _screens = [
-      HomeScreen(onNavigateToTimetable: () => _navigateToTab(1)),
-      const TimetableScreen(),
-      ServicesScreen(onBackPressed: () => _navigateToTab(0)),
-      MyRequestsScreen(onBackPressed: () => _navigateToTab(0)),
-      const ProfileScreen(),
-    ];
+    NotificationService().initialize();
   }
 
   @override
@@ -54,6 +47,7 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _updateUserStatus('offline');
+    NotificationService().stopListening();
     super.dispose();
   }
 
@@ -87,83 +81,109 @@ class _MainLayoutState extends State<MainLayout> with WidgetsBindingObserver {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final navBgColor = isDark ? const Color(0xFF1E1E1E) : Colors.black;
-    final navIconColor = Colors.white;
+    const navIconColor = Colors.white;
 
-    return Scaffold(
-      extendBody: true, // Allows body to extend behind bottom nav
-      body: Stack(
-        children: [
-          // Main Content
-          Positioned.fill(child: _screens[_currentIndex]),
+    final user = FirebaseAuth.instance.currentUser;
 
-          // Floating Bottom Navigation Bar
-          Positioned(
-            left: 32,
-            right: 32,
-            bottom: 32,
-            child: Container(
-              height: 72,
-              decoration: BoxDecoration(
-                color: navBgColor,
-                borderRadius: BorderRadius.circular(36),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildNavItem(
-                    Icons.home_outlined,
-                    Icons.home,
-                    0,
-                    navIconColor,
-                  ),
-                  _buildNavItem(
-                    Icons.calendar_today_outlined,
-                    Icons.calendar_today,
-                    1,
-                    navIconColor,
-                  ),
+    return StreamBuilder<DocumentSnapshot>(
+      stream:
+          user != null
+              ? FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(user.uid)
+                  .snapshots()
+              : null,
+      builder: (context, snapshot) {
+        String? batch;
+        if (snapshot.hasData && snapshot.data!.exists) {
+          batch = (snapshot.data!.data() as Map<String, dynamic>)['batch'];
+        }
 
-                  // Center highlighted button for 'Requests'
-                  GestureDetector(
-                    onTap: () {
-                      _navigateToTab(2);
-                    },
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
+        final List<Widget> screens = [
+          HomeScreen(onNavigateToTimetable: () => _navigateToTab(1)),
+          TimetableScreen(batch: batch),
+          ServicesScreen(onBackPressed: () => _navigateToTab(0)),
+          MyRequestsScreen(onBackPressed: () => _navigateToTab(0)),
+          const ProfileScreen(),
+        ];
+
+        return Scaffold(
+          extendBody: true, // Allows body to extend behind bottom nav
+          body: Stack(
+            children: [
+              // Main Content
+              Positioned.fill(child: screens[_currentIndex]),
+
+              // Floating Bottom Navigation Bar
+              Positioned(
+                left: 32,
+                right: 32,
+                bottom: 32,
+                child: Container(
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: navBgColor,
+                    borderRadius: BorderRadius.circular(36),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
                       ),
-                      child: Icon(Icons.add, color: navBgColor, size: 28),
-                    ),
+                    ],
                   ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildNavItem(
+                        Icons.home_outlined,
+                        Icons.home,
+                        0,
+                        navIconColor,
+                      ),
+                      _buildNavItem(
+                        Icons.calendar_today_outlined,
+                        Icons.calendar_today,
+                        1,
+                        navIconColor,
+                      ),
 
-                  _buildNavItem(
-                    Icons.confirmation_number_outlined,
-                    Icons.confirmation_number,
-                    3,
-                    navIconColor,
+                      // Center highlighted button for 'Requests'
+                      GestureDetector(
+                        onTap: () {
+                          _navigateToTab(2);
+                        },
+                        child: Container(
+                          width: 48,
+                          height: 48,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.add, color: navBgColor, size: 28),
+                        ),
+                      ),
+
+                      _buildNavItem(
+                        Icons.confirmation_number_outlined,
+                        Icons.confirmation_number,
+                        3,
+                        navIconColor,
+                      ),
+                      _buildNavItem(
+                        Icons.person_outline,
+                        Icons.person,
+                        4,
+                        navIconColor,
+                      ),
+                    ],
                   ),
-                  _buildNavItem(
-                    Icons.person_outline,
-                    Icons.person,
-                    4,
-                    navIconColor,
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
