@@ -29,18 +29,10 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     final inputEmail = _emailController.text.trim();
     final inputPassword = _passwordController.text.trim();
 
-    String actualEmail = inputEmail;
-    String actualPassword = inputPassword;
-
-    if (inputEmail == 'admin' && inputPassword == 'admin') {
-      actualEmail = 'admin@unidesk.edu';
-      actualPassword = 'admin123';
-    }
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: actualEmail,
-        password: actualPassword,
+        email: inputEmail,
+        password: inputPassword,
       );
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -48,35 +40,6 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         );
       }
     } on FirebaseAuthException catch (e) {
-      if (inputEmail == 'admin') {
-        try {
-          final cred = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-                email: actualEmail,
-                password: actualPassword,
-              );
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(cred.user!.uid)
-              .set({
-                'name': 'Demo Admin',
-                'email': actualEmail,
-                'role': 'admin',
-                'createdAt': FieldValue.serverTimestamp(),
-              });
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const MainDashboard()),
-            );
-          }
-        } catch (creationError) {
-          setState(() {
-            _errorMessage = creationError.toString();
-          });
-        }
-        return; // Skip normal final block if we intercepted
-      }
-
       setState(() {
         _errorMessage = e.message ?? 'An error occurred during login.';
       });
@@ -370,7 +333,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(
                         _errorMessage,
-                        style: const TextStyle(color: AppTheme.pastelBlue),
+                        style: const TextStyle(color: Colors.red),
                         textAlign: TextAlign.center,
                       ),
                     ),

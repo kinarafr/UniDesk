@@ -2458,6 +2458,34 @@ class _AddUserDialogState extends State<AddUserDialog> {
           userData['degree'] = _selectedDegree;
           userData['batch'] = _selectedBatch;
           userData['studentId'] = _studentIdController.text.trim();
+          
+          // Generate batchToken: [batch]_[degree_abbreviation]
+          final Map<String, String> abbrMap = {
+            'BSc (Hons) Computing (COMP)': 'COMP',
+            'BSc (Hons) Software Engineering (SE)': 'SE',
+            'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+            'BSc (Hons) Computer Science (CS)': 'CS',
+            'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+            'BSc (Hons) Data Science (DS)': 'DS',
+            'BA (Hons) Creative Multimedia (CM)': 'BACM',
+            'Bachelor of Business Analytics (BBA)': 'BBA',
+            'BA (Hons) Human Resource Management (HRM)': 'HRM',
+            'BA (Hons) Professional Accounting (ACC)': 'ACC',
+            'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+            'BSc (Hons) Business Management (BM)': 'BM',
+            'BSc (Hons) Marketing Management (MM)': 'MM',
+            'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+            'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+            'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+            'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+            'BA (Hons) Interior Architecture (IA)': 'IA',
+            'BA (Hons) Fashion Design (FD)': 'FD',
+            'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+            'BA (Hons) English Studies (ES)': 'ES',
+            'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+          };
+          final degreeAbbr = abbrMap[_selectedDegree] ?? 'STU';
+          userData['batchToken'] = '${_selectedBatch}_$degreeAbbr';
         }
 
         await FirebaseFirestore.instance
@@ -2741,10 +2769,39 @@ class _EditUserDialogState extends State<EditUserDialog> {
         updateData['degree'] = _selectedDegree;
         updateData['batch'] = _selectedBatch;
         updateData['studentId'] = _studentIdController.text.trim();
+        
+        // Generate batchToken: [batch]_[degree_abbreviation]
+        final Map<String, String> abbrMap = {
+          'BSc (Hons) Computing (COMP)': 'COMP',
+          'BSc (Hons) Software Engineering (SE)': 'SE',
+          'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+          'BSc (Hons) Computer Science (CS)': 'CS',
+          'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+          'BSc (Hons) Data Science (DS)': 'DS',
+          'BA (Hons) Creative Multimedia (CM)': 'BACM',
+          'Bachelor of Business Analytics (BBA)': 'BBA',
+          'BA (Hons) Human Resource Management (HRM)': 'HRM',
+          'BA (Hons) Professional Accounting (ACC)': 'ACC',
+          'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+          'BSc (Hons) Business Management (BM)': 'BM',
+          'BSc (Hons) Marketing Management (MM)': 'MM',
+          'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+          'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+          'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+          'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+          'BA (Hons) Interior Architecture (IA)': 'IA',
+          'BA (Hons) Fashion Design (FD)': 'FD',
+          'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+          'BA (Hons) English Studies (ES)': 'ES',
+          'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+        };
+        final degreeAbbr = abbrMap[_selectedDegree] ?? 'STU';
+        updateData['batchToken'] = '${_selectedBatch}_$degreeAbbr';
       } else {
         updateData['degree'] = FieldValue.delete();
         updateData['batch'] = FieldValue.delete();
         updateData['studentId'] = FieldValue.delete();
+        updateData['batchToken'] = FieldValue.delete();
       }
 
       await FirebaseFirestore.instance
@@ -3313,6 +3370,41 @@ class SettingsView extends StatelessWidget {
                           if (needsUpdate) {
                             batch.update(doc.reference, updates);
                           }
+
+                          // 3. Batch Token update if missing
+                          if (data['role'] == 'student' &&
+                              data['batch'] != null &&
+                              data['degree'] != null &&
+                              data['batchToken'] == null) {
+                            final Map<String, String> abbrMap = {
+                              'BSc (Hons) Computing (COMP)': 'COMP',
+                              'BSc (Hons) Software Engineering (SE)': 'SE',
+                              'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+                              'BSc (Hons) Computer Science (CS)': 'CS',
+                              'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+                              'BSc (Hons) Data Science (DS)': 'DS',
+                              'BA (Hons) Creative Multimedia (CM)': 'BACM',
+                              'Bachelor of Business Analytics (BBA)': 'BBA',
+                              'BA (Hons) Human Resource Management (HRM)': 'HRM',
+                              'BA (Hons) Professional Accounting (ACC)': 'ACC',
+                              'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+                              'BSc (Hons) Business Management (BM)': 'BM',
+                              'BSc (Hons) Marketing Management (MM)': 'MM',
+                              'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+                              'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+                              'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+                              'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+                              'BA (Hons) Interior Architecture (IA)': 'IA',
+                              'BA (Hons) Fashion Design (FD)': 'FD',
+                              'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+                              'BA (Hons) English Studies (ES)': 'ES',
+                              'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+                            };
+                            final bValue = data['batch'].toString();
+                            final dValue = data['degree'].toString();
+                            final dAbbr = abbrMap[dValue] ?? 'STU';
+                            batch.update(doc.reference, {'batchToken': '${bValue}_$dAbbr'});
+                          }
                         }
 
                         // Also check class schedules for health
@@ -3345,6 +3437,38 @@ class SettingsView extends StatelessWidget {
 
                             if (scheduleNeedsUpdate) {
                                 batch.update(doc.reference, scheduleUpdates);
+                            }
+
+                            // 3. Add/Update batchToken for schedule
+                            final finalBatch = scheduleUpdates['batch'] ?? data['batch'];
+                            final finalDegree = scheduleUpdates['degree'] ?? data['degree'];
+                            if (finalBatch != null && finalDegree != null) {
+                                final Map<String, String> abbrMap = {
+                                  'BSc (Hons) Computing (COMP)': 'COMP',
+                                  'BSc (Hons) Software Engineering (SE)': 'SE',
+                                  'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+                                  'BSc (Hons) Computer Science (CS)': 'CS',
+                                  'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+                                  'BSc (Hons) Data Science (DS)': 'DS',
+                                  'BA (Hons) Creative Multimedia (CM)': 'BACM',
+                                  'Bachelor of Business Analytics (BBA)': 'BBA',
+                                  'BA (Hons) Human Resource Management (HRM)': 'HRM',
+                                  'BA (Hons) Professional Accounting (ACC)': 'ACC',
+                                  'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+                                  'BSc (Hons) Business Management (BM)': 'BM',
+                                  'BSc (Hons) Marketing Management (MM)': 'MM',
+                                  'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+                                  'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+                                  'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+                                  'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+                                  'BA (Hons) Interior Architecture (IA)': 'IA',
+                                  'BA (Hons) Fashion Design (FD)': 'FD',
+                                  'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+                                  'BA (Hons) English Studies (ES)': 'ES',
+                                  'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+                                };
+                                final dAbbr = abbrMap[finalDegree.toString()] ?? 'STU';
+                                batch.update(doc.reference, {'batchToken': '${finalBatch}_$dAbbr'});
                             }
                         }
 
@@ -3506,9 +3630,36 @@ class _DataImportCardState extends State<DataImportCard> {
             timeStr = '5.30pm - 8.30pm';
           }
 
+          final Map<String, String> abbrMap = {
+            'BSc (Hons) Computing (COMP)': 'COMP',
+            'BSc (Hons) Software Engineering (SE)': 'SE',
+            'BSc (Hons) Ethical Hacking and Network Security (EHNS)': 'EHNS',
+            'BSc (Hons) Computer Science (CS)': 'CS',
+            'BSc (Hons) Information Technology for Business (ITB)': 'ITB',
+            'BSc (Hons) Data Science (DS)': 'DS',
+            'BA (Hons) Creative Multimedia (CM)': 'BACM',
+            'Bachelor of Business Analytics (BBA)': 'BBA',
+            'BA (Hons) Human Resource Management (HRM)': 'HRM',
+            'BA (Hons) Professional Accounting (ACC)': 'ACC',
+            'BSc (Hons) Digital Banking and Finance (DBF)': 'DBF',
+            'BSc (Hons) Business Management (BM)': 'BM',
+            'BSc (Hons) Marketing Management (MM)': 'MM',
+            'BSc (Hons) Events, Tourism and Hospitality Management (ETHM)': 'ETHM',
+            'BEng (Hons) Electrical and Electronic Engineering (EEE)': 'EEE',
+            'BEng (Hons) Manufacturing Engineering (ME)': 'ME',
+            'BSc (Hons) Quantity Surveying & Commercial Management (QS)': 'QS',
+            'BA (Hons) Interior Architecture (IA)': 'IA',
+            'BA (Hons) Fashion Design (FD)': 'FD',
+            'BSc (Hons) Psychology and Counselling (PSYCH)': 'PSYCH',
+            'BA (Hons) English Studies (ES)': 'ES',
+            'BA (Hons) English and TESOL (TESOL)': 'TESOL',
+          };
+          final dAbbr = abbrMap['BA (Hons) Creative Multimedia (CM)'] ?? 'STU';
+
           importBatch.set(FirebaseFirestore.instance.collection('class_schedules').doc(), {
             'batch': batchName,
             'degree': 'BA (Hons) Creative Multimedia (CM)',
+            'batchToken': '${batchName}_$dAbbr',
             'date': dateStr!,
             'time': timeStr,
             'title': text,

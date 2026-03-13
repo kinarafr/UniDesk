@@ -41,6 +41,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   bool _isLoading = true;
 
   final Map<DateTime, List<LectureEvent>> _events = {};
+  final Set<DateTime> _holidays = {};
 
   final List<Color> _pastelColors = const [
     Color(0xFFB3E5FC), // Light Blue
@@ -72,8 +73,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
   Future<void> _loadScheduleData() async {
     try {
       _events.clear();
+      _holidays.clear();
       String? batch = widget.batch;
       String? degree;
+      String? batchToken;
 
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
@@ -84,6 +87,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         final userData = doc.data();
         batch ??= userData?['batch'];
         degree = userData?['degree'];
+        batchToken = userData?['batchToken'];
       }
 
       // Fallback if still null
@@ -91,14 +95,23 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
       final String trimmedBatch = batch.trim();
       final String? trimmedDegree = degree?.trim();
+      final String? trimmedBatchToken = batchToken?.trim();
 
-      debugPrint('Fetching schedules for Batch: "$trimmedBatch", Degree: "$trimmedDegree"');
+      debugPrint('Fetching schedules for Batch: "$trimmedBatch", Degree: "$trimmedDegree", batchToken: "$trimmedBatchToken"');
 
-      final snapshot = await FirebaseFirestore.instance.collection('class_schedules')
-          .where('batch', isEqualTo: trimmedBatch)
-          .get();
+      Query<Map<String, dynamic>> query = FirebaseFirestore.instance.collection('class_schedules');
       
-      debugPrint('Found ${snapshot.docs.length} schedule documents for batch "$trimmedBatch".');
+      if (trimmedBatchToken != null && trimmedBatchToken.isNotEmpty) {
+        // Efficient way: use batchToken
+        query = query.where('batchToken', isEqualTo: trimmedBatchToken);
+      } else {
+        // Original way: use batch and filter by degree later
+        query = query.where('batch', isEqualTo: trimmedBatch);
+      }
+      
+      final snapshot = await query.get();
+      
+      debugPrint('Found ${snapshot.docs.length} schedule documents.');
 
       if (snapshot.docs.isEmpty) {
         setState(() {
@@ -112,11 +125,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
         final data = doc.data();
         final String? docDegree = data['degree']?.toString().trim();
 
-        // If degree is specified in the document, it must match the user's degree.
-        // If it's missing, we show it (as requested by the user's current situation).
-        if (docDegree != null && trimmedDegree != null && docDegree != trimmedDegree) {
-          debugPrint('Skipping doc ${doc.id} due to degree mismatch: "$docDegree" != "$trimmedDegree"');
-          continue;
+        // If batchToken was used, we don't need local filtering by degree.
+        // If not, we keep the original logic.
+        if (trimmedBatchToken == null || trimmedBatchToken.isEmpty) {
+          if (docDegree != null && trimmedDegree != null && docDegree != trimmedDegree) {
+            debugPrint('Skipping doc ${doc.id} due to degree mismatch: "$docDegree" != "$trimmedDegree"');
+            continue;
+          }
         }
 
         final date = data['date'];
@@ -160,6 +175,76 @@ class _TimetableScreenState extends State<TimetableScreen> {
         final location = data['location']?.toString() ?? 'TBA';
         final lecturer = data['lecturer']?.toString() ?? 'TBA';
 
+        final lowerTitle = title.toLowerCase().trim();
+        final dayName = DateFormat('EEEE').format(normalizedDate).toLowerCase();
+        
+        // Structural placeholders to skip entirely
+        final List<String> structuralPlaceholders = [
+          dayName,
+          'weekend',
+          'weekdays',
+        ];
+
+        final List<String> dayNames = [
+          'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
+        ];
+
+        // Holiday keywords to highlight on calendar but remove from upcoming
+        final List<String> holidayKeywords = [
+          'poya day',
+          'holiday',
+          'vacation',
+          'independence day',
+          'may day',
+          'aurudu',
+          'avurudu',
+          'tamil thai pongal day',
+          'vesak',
+          'christmas',
+        ];
+
+        // Check if title is purely structural (e.g., "Thursday", "Weekdays,Tuesday")
+        final parts = lowerTitle.split(',').map((e) => e.trim()).toList();
+        bool isStructural = parts.every((p) => 
+            structuralPlaceholders.contains(p) || dayNames.contains(p));
+
+        if (isStructural) {
+          debugPrint('Skipping structural placeholder: "$title" on $normalizedDate');
+          continue;
+        }
+
+        // Check if title or specific range marks a holiday
+        bool isHoliday = false;
+        
+        // Check for keywords
+        for (var keyword in holidayKeywords) {
+          if (lowerTitle.contains(keyword)) {
+            isHoliday = true;
+            break;
+          }
+        }
+
+        // Add hardcoded range for Aurudu 2026 as specifically requested
+        final auruduStart = DateTime.utc(2026, 4, 11);
+        final auruduEnd = DateTime.utc(2026, 4, 19);
+        if (normalizedDate.isAfter(auruduStart.subtract(const Duration(days: 1))) && 
+            normalizedDate.isBefore(auruduEnd.add(const Duration(days: 1)))) {
+           isHoliday = true;
+        }
+
+        if (isHoliday) {
+          // Explicitly exclude April 1st, 2026 as requested
+          if (normalizedDate.year == 2026 && 
+              normalizedDate.month == 4 && 
+              normalizedDate.day == 1) {
+            debugPrint('Skipping holiday marking for April 1st, 2026 as per request.');
+          } else {
+            debugPrint('Marking holiday: "$title" on $normalizedDate');
+            _holidays.add(normalizedDate);
+            continue;
+          }
+        }
+
         debugPrint('Adding event: $title on $normalizedDate');
 
         _events[normalizedDate] ??= [];
@@ -173,6 +258,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
           ),
         );
         colorIndex++;
+      }
+
+      // Explicitly mark Aurudu 2026 range (April 11-19)
+      final auruduStart = DateTime.utc(2026, 4, 11);
+      final auruduEnd = DateTime.utc(2026, 4, 19);
+      for (int i = 0; i <= auruduEnd.difference(auruduStart).inDays; i++) {
+        _holidays.add(auruduStart.add(Duration(days: i)));
       }
 
       if (_events.isEmpty && snapshot.docs.isNotEmpty) {
@@ -191,7 +283,27 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   List<LectureEvent> _getEventsForDay(DateTime day) {
     final normalizedDay = DateTime.utc(day.year, day.month, day.day);
-    return _events[normalizedDay] ?? [];
+    final events = List<LectureEvent>.from(_events[normalizedDay] ?? []);
+
+    if (_holidays.contains(normalizedDay) && events.isEmpty) {
+      String holidayTitle = 'Holiday';
+      final auruduStart = DateTime.utc(2026, 4, 11);
+      final auruduEnd = DateTime.utc(2026, 4, 19);
+      if (normalizedDay.isAfter(auruduStart.subtract(const Duration(days: 1))) &&
+          normalizedDay.isBefore(auruduEnd.add(const Duration(days: 1)))) {
+        holidayTitle = 'Aurudu Holiday';
+      }
+
+      events.add(LectureEvent(
+        title: holidayTitle,
+        time: 'All Day',
+        location: 'None',
+        lecturer: 'University',
+        color: _pastelColors[5], // Pastel Orange
+      ));
+    }
+
+    return events;
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -281,6 +393,83 @@ class _TimetableScreenState extends State<TimetableScreen> {
               selectedDayPredicate: (day) {
                 return isSameDay(_selectedDay, day);
               },
+              holidayPredicate: (day) {
+                return _holidays.contains(DateTime.utc(day.year, day.month, day.day));
+              },
+              calendarBuilders: CalendarBuilders(
+                holidayBuilder: (context, day, focusedDay) {
+                  return Center(
+                    child: Text(
+                      '${day.day}',
+                      style: TextStyle(
+                        color: _pastelColors[5], // Pastel Orange
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+                },
+                selectedBuilder: (context, day, focusedDay) {
+                  final isHoliday = _holidays.contains(DateTime.utc(day.year, day.month, day.day));
+                  if (isHoliday) {
+                    return Center(
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          color: _pastelColors[5], // Pastel Orange
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    );
+                  }
+                  return Container(
+                    margin: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          color: isDark ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                todayBuilder: (context, day, focusedDay) {
+                  final isHoliday = _holidays.contains(DateTime.utc(day.year, day.month, day.day));
+                  if (isHoliday) {
+                    return Center(
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          color: _pastelColors[5], // Pastel Orange
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  }
+                  return Container(
+                    margin: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: (isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E)).withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(
+                          color: isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
               onDaySelected: _onDaySelected,
               onPageChanged: (focusedDay) {
                 _focusedDay = focusedDay;
@@ -325,10 +514,14 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   color: isDark ? Colors.black : Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
+                holidayTextStyle: TextStyle(
+                  color: _pastelColors[5], // Pastel Orange
+                  fontWeight: FontWeight.bold,
+                ),
                 todayDecoration: BoxDecoration(
                   color:
                       (isDark ? AppTheme.pastelBlue : const Color(0xFF3B5B8E))
-                          .withOpacity(0.1),
+                           .withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 todayTextStyle: TextStyle(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'main_layout.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -26,18 +25,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final inputEmail = _emailController.text.trim();
     final inputPassword = _passwordController.text.trim();
 
-    String actualEmail = inputEmail;
-    String actualPassword = inputPassword;
-
-    if (inputEmail == 'user' && inputPassword == 'user') {
-      actualEmail = 'user@unidesk.edu';
-      actualPassword = 'user123';
-    }
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: actualEmail,
-        password: actualPassword,
+        email: inputEmail,
+        password: inputPassword,
       );
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -45,38 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } on FirebaseAuthException catch (e) {
-      if (inputEmail == 'user' &&
-          (e.code == 'user-not-found' ||
-              e.code == 'invalid-credential' ||
-              e.code == 'wrong-password')) {
-        try {
-          final cred = await FirebaseAuth.instance
-              .createUserWithEmailAndPassword(
-                email: actualEmail,
-                password: actualPassword,
-              );
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(cred.user!.uid)
-              .set({
-                'name': 'Demo Student',
-                'email': actualEmail,
-                'role': 'student',
-                'createdAt': FieldValue.serverTimestamp(),
-              });
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const MainLayout()),
-            );
-          }
-        } catch (creationError) {
-          setState(() {
-            _errorMessage = creationError.toString();
-          });
-        }
-        return; // Skip normal final block if we intercepted
-      }
-
       setState(() {
         _errorMessage = e.message ?? 'An error occurred during login.';
       });
