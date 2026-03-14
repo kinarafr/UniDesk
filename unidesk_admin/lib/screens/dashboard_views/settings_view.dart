@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:unidesk_admin/main.dart';
 import 'package:unidesk_admin/core/app_theme.dart';
+import 'package:unidesk_admin/services/backup_service.dart';
+import 'package:unidesk_admin/services/restore_service.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  bool _isBackingUp = false;
+  bool _isRestoring = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +29,9 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 16),
             _buildAccessibilitySection(context),
             const SizedBox(height: 16),
-            _buildMaintenanceSection(context),
+            _buildBackupSection(context),
             const SizedBox(height: 16),
-            const DataImportCard(),
+            _buildRestoreSection(context),
           ],
         ),
       ),
@@ -104,64 +114,71 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  Widget _buildMaintenanceSection(BuildContext context) {
+  Widget _buildBackupSection(BuildContext context) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
-        title: const Text('Data Health Check', style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: const Text('Verify data integrity and fix common issues'),
-        leading: const Icon(Icons.build_circle_outlined, color: Colors.orange),
-        trailing: ElevatedButton(
-          onPressed: () => _runHealthCheck(context),
-          child: const Text('Run'),
-        ),
+        title: const Text('Backup Data', style: TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: const Text('Download a copy of all users, tickets, and notifications as a ZIP file'),
+        leading: const Icon(Icons.cloud_download_outlined, color: Colors.blue),
+        trailing: _isBackingUp 
+          ? const CircularProgressIndicator()
+          : ElevatedButton(
+              onPressed: () => _handleBackup(context),
+              child: const Text('Download'),
+            ),
       ),
     );
   }
 
-  Future<void> _runHealthCheck(BuildContext context) async {
-    // Basic implementation of the health check logic
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Running Health Check...')));
-    // ... Health check logic from main_dashboard ...
-  }
-}
-
-class DataImportCard extends StatefulWidget {
-  const DataImportCard({super.key});
-
-  @override
-  State<DataImportCard> createState() => _DataImportCardState();
-}
-
-class _DataImportCardState extends State<DataImportCard> {
-  final TextEditingController _jsonController = TextEditingController();
-  final TextEditingController _batchController = TextEditingController();
-  bool _isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildRestoreSection(BuildContext context) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Data Import', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey)),
-            TextField(controller: _batchController, decoration: const InputDecoration(labelText: 'Batch')),
-            TextField(controller: _jsonController, maxLines: 5, decoration: const InputDecoration(labelText: 'JSON')),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _isLoading ? null : () {
-                // Import logic
-              },
-              child: const Text('Import'),
+      child: ListTile(
+        title: const Text('Restore Data', style: TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: const Text('Upload a previous backup ZIP file to restore Firestore data'),
+        leading: const Icon(Icons.cloud_upload_outlined, color: Colors.green),
+        trailing: _isRestoring
+          ? const CircularProgressIndicator()
+          : ElevatedButton(
+              onPressed: () => _handleRestore(context),
+              child: const Text('Upload'),
             ),
-          ],
-        ),
       ),
     );
+  }
+
+  Future<void> _handleBackup(BuildContext context) async {
+    setState(() => _isBackingUp = true);
+    try {
+      await BackupService.exportAllData();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Backup downloaded successfully')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Backup failed: $e'), backgroundColor: Colors.red));
+      }
+    } finally {
+      if (mounted) setState(() => _isBackingUp = false);
+    }
+  }
+
+  Future<void> _handleRestore(BuildContext context) async {
+    setState(() => _isRestoring = true);
+    try {
+      await RestoreService.importData();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Data restored successfully')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Restore failed: $e'), backgroundColor: Colors.red));
+      }
+    } finally {
+      if (mounted) setState(() => _isRestoring = false);
+    }
   }
 }
